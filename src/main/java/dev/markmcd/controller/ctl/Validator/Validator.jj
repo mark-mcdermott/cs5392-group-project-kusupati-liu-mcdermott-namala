@@ -1,0 +1,84 @@
+options {
+STATIC = false;
+}
+
+PARSER_BEGIN(CtlValidator)
+package main.modelCheckCTL.controller.ctl.ctlValidator;
+
+/* clt parser rules approach from https://github.com/pedrogongora/antelope/blob/master/AntelopeCore/src/antelope/ctl/parser/CTLParser.jj, accessed 9/20 */
+public class CtlValidator {
+
+}
+
+PARSER_END(CtlValidator)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+      <NOT: "not">
+    | <AND: "and">
+    | <OR: "or">
+    | <IMPLIES: "->">
+    | <AX: "AX">
+    | <AF: "AF">
+    | <AG: "AG">
+    | <EX: "EX">
+    | <EF: "EF">
+    | <EG: "EG">
+    | <A: "A">
+    | <E: "E">
+    | <U: "U">
+    | <LPAREN: "(">
+    | <RPAREN: ")">
+    | <ATOM: ["a"-"z"](["0"-"9"])*>
+}
+
+/** Root production. */
+void Validate():
+{}
+{
+    formula() <EOF>
+}
+
+void formula():
+{}
+{
+    expression() [ binaryPredicate() ]
+}
+
+void expression():
+{}
+{
+        <ATOM>
+    |   <NOT> formula()
+    |   <LPAREN> formula() <RPAREN>
+    |   temporalExpression()
+}
+
+void binaryPredicate():
+{}
+{
+        <AND> formula()
+    |   <OR> formula()
+    |   <IMPLIES> formula()
+}
+
+void temporalExpression():
+{}
+{
+      <AX> formula()
+    | <AF> formula()
+    | <AG> formula()
+    | <EX> formula()
+    | <EF> formula()
+    | <EG> formula()
+    | <A> <LPAREN> formula() <U> formula() <RPAREN>
+    | <E> <LPAREN> formula() <U> formula() <RPAREN>
+}

@@ -1,1 +1,4 @@
-/Users/markmcdermott/Desktop/modelCheckingCTL/src/test/java/dev/markmcd/AppTest.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/test/java/dev/markmcd/model/kripke/StateTest.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/test/java/dev/markmcd/model/kripke/KripkeTest.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/test/java/dev/markmcd/MainTest.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/test/java/dev/markmcd/utils/UtilsTest.java

@@ -1,1 +1,11 @@
-/Users/markmcdermott/Desktop/modelCheckingCTL/src/main/java/dev/markmcd/App.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/main/java/dev/markmcd/model/Model.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/main/java/dev/markmcd/controller/ModelInputSource.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/main/java/dev/markmcd/controller/ctl/ctlUtils.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/main/java/dev/markmcd/controller/Controller.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/main/java/dev/markmcd/model/kripke/State.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/main/java/dev/markmcd/view/View.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/main/java/dev/markmcd/model/ModelCheckInputs.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/main/java/dev/markmcd/utils/Utils.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/main/java/dev/markmcd/Main.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/main/java/dev/markmcd/model/kripke/Kripke.java
+/Users/markmcdermott/Desktop/modelCheckingCTL/src/main/java/dev/markmcd/model/kripke/Transition.java
