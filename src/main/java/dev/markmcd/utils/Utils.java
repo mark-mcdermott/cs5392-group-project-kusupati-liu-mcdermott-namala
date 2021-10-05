@@ -1,15 +1,15 @@
 package dev.markmcd.utils;
 
-import dev.markmcd.controller.Arguments;
-import dev.markmcd.controller.ModelInputSource;
-import dev.markmcd.model.kripke.State;
-import dev.markmcd.model.kripke.Transition;
+import dev.markmcd.controller.types.misc.Arguments;
+import dev.markmcd.controller.types.modelRelated.ModelInputSource;
+import dev.markmcd.controller.types.kripke.State;
+import dev.markmcd.controller.types.kripke.Transition;
 
 import java.io.IOException;
 import java.util.*;
 
-import static dev.markmcd.controller.ModelInputSource.ARGUMENT;
-import static dev.markmcd.controller.ModelInputSource.FILE;
+import static dev.markmcd.controller.types.modelRelated.ModelInputSource.ARGUMENT;
+import static dev.markmcd.controller.types.modelRelated.ModelInputSource.FILE;
 
 /**
  * Generic utility methods for dealing with {@link State}s, {@link Transition}s, CTL labels and {@link Set}s.
@@ -195,76 +195,41 @@ public class Utils {
 
     // Set Utils
 
-        // contains
-
-        // areEqual
-
-    /*
-     * Copyright (c) 1995-1997 Sun Microsystems, Inc. All Rights Reserved.
-     *
-     * Permission to use, copy, modify, and distribute this software
-     * and its documentation for NON-COMMERCIAL purposes and without
-     * fee is hereby granted provided that this copyright notice
-     * appears in all copies. Please refer to the file "copyright.html"
-     * for further important copyright and licensing information.
-     *
-     * SUN MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
-     * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
-     * TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-     * PARTICULAR PURPOSE, OR NON-INFRINGEMENT. SUN SHALL NOT BE LIABLE FOR
-     * ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR
-     * DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES.
-     */
-
-    public static Arguments parseArgs(String[] args) throws IOException {
-
-        int i = 0;
-        String arg;
-
-        String kripkeFilename = "";
-        String stateToCheckStr = null;
-        ModelInputSource modelInputSource = ARGUMENT;
-        String modelInputStr = "";
-
-        while (i < args.length && args[i].startsWith("-")) {
-            arg = args[i++];
-
-            // kripke file
-            if (arg.equals("-k")) {
-                if (i < args.length)
-                    kripkeFilename = args[i++];
+    public static Boolean contains(Set states, State state) {
+        Integer stateNum = state.getNumber();
+        for (Object stateObj : states) {
+            State thisState = (State) stateObj;
+            if (thisState.getNumber() == stateNum) {
+                return true;
             }
-
-            // state to check
-            if (arg.equals("-s")) {
-                if (i < args.length)
-                    stateToCheckStr = args[i++];
-            }
-
-            // model
-            if (arg.equals("-a")) {
-                if (i < args.length)
-                    modelInputSource = ARGUMENT;
-                    modelInputStr = args[i++];
-            }
-
-            // model file
-            if (arg.equals("-f")) {
-                if (i < args.length)
-                    modelInputSource = FILE;
-                    modelInputStr = args[i++];
-            }
-
         }
-        if (i != args.length)
-            System.err.println("Usage: java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <model>");
-        else if (stateToCheckStr == null) {
-            return new Arguments(kripkeFilename,modelInputSource,modelInputStr);
-        } else if (stateToCheckStr != null) {
-            return new Arguments(kripkeFilename,stateToCheckStr,modelInputSource,modelInputStr);
-        }
-        return null;
+        return false;
     }
+
+    public static Boolean areEqual(Set setA, Set setB) {
+        if (setA.size() == setB.size()) {
+            for (Object stateObj : setA) {
+                State state = (State) stateObj;
+                if (!contains(setB,state)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // remove byte order mark https://www.postgresql.org/message-id/20180717101246.GA41457%40elch.exwg.net
+    public static String removeByteOrderMark(String str) {
+        char firstChar = str.toCharArray()[0];
+        int asciiNum = (int) firstChar;
+        if (asciiNum == 65279) {
+            str = str.substring(1);
+        }
+        return str;
+    }
+
 
 
 

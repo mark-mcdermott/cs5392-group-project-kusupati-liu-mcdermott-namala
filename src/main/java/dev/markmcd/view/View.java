@@ -1,6 +1,6 @@
 package dev.markmcd.view;
 
-import dev.markmcd.model.kripke.Kripke;
+import dev.markmcd.controller.types.kripke.Kripke;
 
 /**
  * Prints the output of the model checking to the terminal

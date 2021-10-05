@@ -37,7 +37,7 @@ CTL model checker written in Java and using a JavaCC parser.
             - I opened my etc/paths file with `sudo vi etc/paths` 
             - I added this line to the end of my paths file: `/Users/markmcdermott/javacc-javacc-7.0.10/scripts`
             - Then I quit terminal and reopened it 
-        - Once JavaCC is installed, you can start changing and regenerating the compiler files. These steps will modify the parser files, but the same steps will work for the validator as well:
+        - Once JavaCC is installed, you can modify and then and regenerating the grammar file. These steps will modify the parser files, but the same steps will work for the validator as well:
             - `cd` into the parser directory (src/main/java/dev/markmcd/controller/ctl/Parser)
             - Open Parser.jj in your IDE or text editor.
             - All you modifications will happen only in this .jj file.

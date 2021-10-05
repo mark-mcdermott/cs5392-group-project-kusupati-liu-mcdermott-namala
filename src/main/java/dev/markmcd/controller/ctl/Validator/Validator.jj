@@ -2,15 +2,17 @@ options {
 STATIC = false;
 }
 
-PARSER_BEGIN(CtlValidator)
-package main.modelCheckCTL.controller.ctl.ctlValidator;
+PARSER_BEGIN(Validator)
+package dev.markmcd.controller.ctl.Validator;
+
+import dev.markmcd.controller.ctl.Validator.ParseException;
 
 /* clt parser rules approach from https://github.com/pedrogongora/antelope/blob/master/AntelopeCore/src/antelope/ctl/parser/CTLParser.jj, accessed 9/20 */
-public class CtlValidator {
+public class Validator {
 
 }
 
-PARSER_END(CtlValidator)
+PARSER_END(Validator)
 
 SKIP :
 {

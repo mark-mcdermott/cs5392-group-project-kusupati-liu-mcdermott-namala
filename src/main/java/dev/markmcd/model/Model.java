@@ -1,9 +1,9 @@
 package dev.markmcd.model;
 
-import dev.markmcd.controller.Arguments;
-import dev.markmcd.model.kripke.Kripke;
-import dev.markmcd.model.kripke.State;
-import dev.markmcd.model.kripke.Transition;
+import dev.markmcd.controller.types.misc.Arguments;
+import dev.markmcd.controller.types.kripke.Kripke;
+import dev.markmcd.controller.types.kripke.State;
+import dev.markmcd.controller.types.misc.Options;
 
 import java.io.IOException;
 
@@ -26,16 +26,18 @@ public class Model {
     private String model;
 
     /**
-     * {@link State} to see if it holds on the model for specified proerties. If omitted, all states are checked. This will be null until a {@link State} is supplied
+     * {@link State} to see if it holds on the model for specified properties. If omitted, all states are checked. This will be null until a {@link State} is supplied
      */
     private State stateToCheck;
 
     /**
-     * arguments
+     * user set options
      */
-    private Arguments arguments;
+    private Options options;
 
-
+    /**
+     *
+     */
     private Kripke kripke;
 
     public String getKripkeFile() {
@@ -75,12 +77,12 @@ public class Model {
         this.kripke = kripke;
     }
 
-    public Arguments getArguments() {
-        return arguments;
+    public Options getOptions() {
+        return options;
     }
 
-    public void setArguments(Arguments arguments) {
-        this.arguments = arguments;
+    public void setOptions(Options options) {
+        this.options = options;
     }
 
 }

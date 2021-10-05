@@ -1,11 +1,9 @@
 package dev.markmcd.utils;
 
-import dev.markmcd.model.kripke.State;
-import dev.markmcd.model.kripke.Transition;
-import dev.markmcd.utils.Utils;
+import dev.markmcd.controller.types.kripke.State;
+import dev.markmcd.controller.types.kripke.Transition;
 import org.junit.Test;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
