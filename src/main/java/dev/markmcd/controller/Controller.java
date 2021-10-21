@@ -203,19 +203,19 @@ public class Controller {
         kripkeFileObj.setKripkeFilename(kripkeFile);
         kripkeFileObj.setStates(states);
         kripkeFileObj.setTransitions(transitions);
-        int lineNum = 1;
+        kripkeFileObj.setLineNum(1);
         while (reader.ready()) {
             String line = reader.readLine();
             line = line.trim();
             char firstChar = line.charAt(0);
 
             // first line should always be state line
-            if (lineNum == 1) {
+            if (kripkeFileObj.getLineNum() == 1) {
                 line = removeByteOrderMark(line);
                 kripkeFileObj = parseKripkeStates(kripkeFileObj, line); }
             // after first line, if it starts with a "t", it's a transition line
             else if (firstChar == 't') {
-                kripkeFileObj.setLineNum(lineNum);
+                // kripkeFileObj.setLineNum(krip);
                 if (kripkeFileObj.getKripkeFilename().equals("Broken Model 4.txt")) {
                     int i=0;
                 }
@@ -228,11 +228,13 @@ public class Controller {
                 kripkeFileObj = parseKripkeLabelsLine(kripkeFileObj, line);
                 parsedKripkeLabelsLine = true;
             }
-            lineNum++;
+            int curLineNum = kripkeFileObj.getLineNum();
+            curLineNum++;
+            kripkeFileObj.setLineNum(curLineNum);
         }
         Kripke kripke = new Kripke(states, transitions);
         if (parsedKripkeLabelsLine == false) {
-            kripkeFileObj.setErrorMessage("Syntax error in model file \"" + kripkeFile + "\" on line " + lineNum + ": no labels line found (a label line example could be: \"s1 : p;\").");
+            kripkeFileObj.setErrorMessage("Syntax error in model file \"" + kripkeFileObj.getKripkeFilename() + "\" on line " + kripkeFileObj.getLineNum() + ": no labels line found (a label line example could be: \"s1 : p;\").");
         }
         kripkeFileObj.setKripke(kripke);
         return kripkeFileObj;
@@ -253,6 +255,7 @@ public class Controller {
         String stateName = lineArr[0];
         stateName = stateName.replace(",","");
         Integer stateNum = parseInt(stateName.replace("s",""));
+        if (!contains(kripkeFileObj.getStates(),new State(stateNum))) { kripkeFileObj.setErrorMessage("Syntax error in model file \"" + kripkeFileObj.getKripkeFilename() + "\" on line " + kripkeFileObj.getLineNum() + ": state \"" + stateName + "\" not found in kripke states."); }
         // char secondChar = line.charAt(1);
         // Integer stateNum = Character.getNumericValue(secondChar);
         Set labels = new HashSet<Character>();
@@ -265,6 +268,7 @@ public class Controller {
             String lineArrElem = (String) lineArrElemObj;
             if (lineArrElemNum != 0 && lineArrElemNum != 1) { // skip state name and colon and start at labels
                 Character label = lineArrElem.charAt(0);
+                if (labels.contains(label)) { kripkeFileObj.setErrorMessage("Syntax error in model file \"" + kripkeFileObj.getKripkeFilename() + "\" on line " + kripkeFileObj.getLineNum() + ": label \"" + label + "\" already exists in state \"" + stateName + "\"."); }
                 labels.add(label);
 //                if (line.length() > 2) {
 //                    line = line.substring(2); // remove first char and the space after it
@@ -333,7 +337,9 @@ public class Controller {
                 Integer fromNum = parseInt(fromName.replace("s", ""));
                 Integer toNum = parseInt(toName.replace("s", ""));
                 State fromState = new State(fromNum);
+                if (!contains(kripkeFileObj.getStates(),fromState)) { kripkeFileObj.setErrorMessage("Syntax error in model file \"" + kripkeFileObj.getKripkeFilename() + "\" on line " + kripkeFileObj.getLineNum() + ": transition from state (\"" + fromName + "\") not found in kripke states."); }
                 State toState = new State(toNum);
+                if (!contains(kripkeFileObj.getStates(),toState)) { kripkeFileObj.setErrorMessage("Syntax error in model file \"" + kripkeFileObj.getKripkeFilename() + "\" on line " + kripkeFileObj.getLineNum() + ": transition to state (\"" + toName + "\") not found in kripke states."); }
                 Transition newTransition = new Transition(transitionNum, fromState, toState);
                 for (int i = 1; i <= kripkeFileObj.getTransitions().size(); i++) {
                     Transition thisTransition = getTransition(i, kripkeFileObj.getTransitions());
