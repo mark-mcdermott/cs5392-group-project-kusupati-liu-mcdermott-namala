@@ -1,13 +1,13 @@
 package dev.markmcd.controller.ctl;
 
 import dev.markmcd.controller.types.misc.Arguments;
-import dev.markmcd.controller.types.modelRelated.ModelInputSource;
+import dev.markmcd.controller.types.modelRelated.FormulaInputSource;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static dev.markmcd.controller.types.modelRelated.ModelInputSource.ARGUMENT;
-import static dev.markmcd.controller.types.modelRelated.ModelInputSource.FILE;
+import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.ARGUMENT;
+import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.FILE;
 
 public class ArgumentsTest {
 
@@ -28,7 +28,7 @@ public class ArgumentsTest {
     // checks if the (4 param) Arguments constructor throws NullExceptionError if modelInputSource is null
     @Test(expected = NullPointerException.class)
     public void testArguments3() throws NullPointerException, IOException {
-        ModelInputSource nullVal = null;
+        FormulaInputSource nullVal = null;
         new Arguments("kripke.txt", "s0", nullVal, "model.txt");
     }
 
@@ -153,7 +153,7 @@ public class ArgumentsTest {
     // checks if the (3 param) Arguments constructor throws NullExceptionError if modelInputSource is null
     @Test(expected = NullPointerException.class)
     public void testArguments23() throws NullPointerException, IOException {
-        ModelInputSource nullVal = null;
+        FormulaInputSource nullVal = null;
         new Arguments("kripke.txt", nullVal, "model.txt");
     }
 

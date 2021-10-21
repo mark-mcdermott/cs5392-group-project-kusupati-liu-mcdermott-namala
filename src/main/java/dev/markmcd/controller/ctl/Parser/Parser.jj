@@ -5,12 +5,13 @@ STATIC = false;
 PARSER_BEGIN(Parser)
 package dev.markmcd.controller.ctl.Parser;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.HashSet;
 import dev.markmcd.controller.types.modelRelated.ModelCheckInputs;
 import dev.markmcd.controller.types.kripke.Kripke;
-import dev.markmcd.model.kripke.State;
-import dev.markmcd.model.kripke.Transition;
+import dev.markmcd.controller.types.kripke.State;
+import dev.markmcd.controller.types.kripke.Transition;
 
 import static dev.markmcd.controller.ctl.CtlUtils.statesWithLabel;
 import static dev.markmcd.controller.ctl.CtlUtils.union;
@@ -96,22 +97,6 @@ public class Parser {
         return preA;
     }
 
-}}
-
-}}
-
-}}
-
-}}
-
-}}
-
-}}
-
-}}
-
-}}
-
 }
 
 PARSER_END(Parser)
@@ -145,7 +130,7 @@ TOKEN :
 }
 
 /** Root production. */
-Set Parse() throws ParseException, IOException:
+Set Parse() throws ParseException, IOException :
 {
     Set f;
 }
@@ -155,7 +140,7 @@ Set Parse() throws ParseException, IOException:
     { return f; }
 }
 
-Set formula(Set states) throws ParseException, IOException:
+Set formula(Set states) throws ParseException, IOException :
 {
     Set e;
     Set b = null;

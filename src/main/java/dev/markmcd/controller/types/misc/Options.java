@@ -1,11 +1,11 @@
 package dev.markmcd.controller.types.misc;
 
-import dev.markmcd.controller.types.modelRelated.ModelInputSource;
+import dev.markmcd.controller.types.modelRelated.FormulaInputSource;
 
 import java.io.IOException;
 
-import static dev.markmcd.controller.types.modelRelated.ModelInputSource.ARGUMENT;
-import static dev.markmcd.controller.types.modelRelated.ModelInputSource.FILE;
+import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.ARGUMENT;
+import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.FILE;
 
 /**
  * Class with user set options. Some of these options get set at the top of Main. The args come into Main as command line arguments, which are parsed and processed here.
@@ -25,11 +25,11 @@ public class Options {
     private String stateToCheckStr;
 
     /**
-     * Simple {@link ModelInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the model is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the model itself is hardcoded in the command line argument after the -a flag.
+     * Simple {@link FormulaInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the model is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the model itself is hardcoded in the command line argument after the -a flag.
      */
-    private ModelInputSource modelInputSource;
-    private String modelInputFilename;
-    private String model;
+    private FormulaInputSource formulaInputSource;
+    private String formulaInputFilename;
+    private String formula;
 
     // user set options from the top of Main
     private String testFilesDir;
@@ -57,12 +57,12 @@ public class Options {
         Arguments arguments = parseArgs(args);
         this.kripkeFilename = arguments.getKripkeFilename();
         this.stateToCheckStr = arguments.getStateToCheckStr();
-        this.modelInputSource = arguments.getModelInputSource();
+        this.formulaInputSource = arguments.getFormulaInputSource();
         if (arguments.getModelFilename() != null) {
-            this.modelInputSource = arguments.getModelInputSource();
+            this.formulaInputSource = arguments.getFormulaInputSource();
         }
         if (arguments.getModel() != null) {
-            this.model = arguments.getModel();
+            this.formula = arguments.getModel();
         }
 
 
@@ -100,8 +100,8 @@ public class Options {
 
         String kripkeFilename = "";
         String stateToCheckStr = null;
-        ModelInputSource modelInputSource = ARGUMENT;
-        String modelInputStr = "";
+        FormulaInputSource formulaInputSource = ARGUMENT;
+        String formulaInputStr = "";
 
         while (i < args.length && args[i].startsWith("-")) {
             arg = args[i++];
@@ -118,27 +118,27 @@ public class Options {
                     stateToCheckStr = args[i++];
             }
 
-            // model
+            // formula
             if (arg.equals("-a")) {
                 if (i < args.length)
-                    modelInputSource = ARGUMENT;
-                    modelInputStr = args[i++];
+                    formulaInputSource = ARGUMENT;
+                    formulaInputStr = args[i++];
             }
 
-            // model file
+            // formula file
             if (arg.equals("-f")) {
                 if (i < args.length)
-                    modelInputSource = FILE;
-                    modelInputStr = args[i++];
+                    formulaInputSource = FILE;
+                    formulaInputStr = args[i++];
             }
 
         }
         if (i != args.length)
-            System.err.println("Usage: java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <model>");
+            System.err.println("Usage: java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <formula>");
         else if (stateToCheckStr == null) {
-            return new Arguments(kripkeFilename,modelInputSource,modelInputStr);
+            return new Arguments(kripkeFilename,formulaInputSource,formulaInputStr);
         } else if (stateToCheckStr != null) {
-            return new Arguments(kripkeFilename,stateToCheckStr,modelInputSource,modelInputStr);
+            return new Arguments(kripkeFilename,stateToCheckStr,formulaInputSource,formulaInputStr);
         }
         return null;
     }
@@ -151,20 +151,20 @@ public class Options {
         return kripkeFilename;
     }
 
-    public ModelInputSource getModelInputSource() {
-        return modelInputSource;
+    public FormulaInputSource getFormulaInputSource() {
+        return formulaInputSource;
     }
 
-    public String getModel() {
-        return model;
+    public String getFormula() {
+        return formula;
     }
 
     public Boolean getShouldE2ETestsRun() {
         return shouldE2ETestsRun;
     }
 
-    public String getModelInputFilename() {
-        return modelInputFilename;
+    public String getFormulaInputFilename() {
+        return formulaInputFilename;
     }
 
     public String getTestFilesDir() {

@@ -1,6 +1,5 @@
 package dev.markmcd.model;
 
-import dev.markmcd.controller.types.misc.Arguments;
 import dev.markmcd.controller.types.kripke.Kripke;
 import dev.markmcd.controller.types.kripke.State;
 import dev.markmcd.controller.types.misc.Options;
@@ -20,10 +19,9 @@ public class Model {
     private String kripkeFile;
 
     /**
-     * Well formed CTL model. Ie, "EXp", "AG(AF(p and q))", etc. Nested operators in nested operators are fine here, infinite up to the limits of hardware memory, probably. This is run through the ctlValidator to ensure its well formed and an IOException is thrown if it's not.
-     * Be mindful of the ambiguity between the "model" in model-view-controller and "model" in CTL model checking - here "model" means the CTL model in model checking.
+     * Well formed CTL formula. Ie, "EXp", "AG(AF(p and q))", etc. Nested operators in nested operators are fine here, infinite up to the limits of hardware memory, probably. This is run through the ctlValidator to ensure its well formed and an IOException is thrown if it's not.
      */
-    private String model;
+    private String formula;
 
     /**
      * {@link State} to see if it holds on the model for specified properties. If omitted, all states are checked. This will be null until a {@link State} is supplied
@@ -49,13 +47,13 @@ public class Model {
         this.kripkeFile = kripkeFile;
     }
 
-    public String getModel() {
-        return model;
+    public String getFormula() {
+        return formula;
     }
 
-    public void setModel(String model) {
-        if (model == null) { throw new NullPointerException("model param is null in setModel in Model"); }
-        this.model = model;
+    public void setFormula(String formula) {
+        if (formula == null) { throw new NullPointerException("model param is null in setModel in Model"); }
+        this.formula = formula;
     }
 
     public State getStateToCheck() {

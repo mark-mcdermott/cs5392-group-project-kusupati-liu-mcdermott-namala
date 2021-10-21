@@ -1,5 +1,6 @@
 package dev.markmcd.controller;
 
+import dev.markmcd.controller.ctl.Parser.ParseException;
 import dev.markmcd.controller.types.kripke.Kripke;
 import dev.markmcd.controller.types.misc.TestFiles;
 import dev.markmcd.model.Model;
@@ -18,7 +19,7 @@ public class ControllerTest {
 
     // test if Controller throws NullPointerException if model param is null
     @Test(expected = NullPointerException.class)
-    public void testController1() throws IOException {
+    public void testController1() throws IOException, ParseException {
         Model model = null;
         View view = new View();
         Options options = new Options();
@@ -27,7 +28,7 @@ public class ControllerTest {
 
     // test if Controller throws NullPointerException if view param is null
     @Test(expected = NullPointerException.class)
-    public void testController2() throws IOException {
+    public void testController2() throws IOException, ParseException {
         Model model = new Model();
         View view = null;
         Options options = new Options();
@@ -36,7 +37,7 @@ public class ControllerTest {
 
     // test if Controller throws NullPointerException if args param is null
     @Test(expected = NullPointerException.class)
-    public void testController3() throws IOException {
+    public void testController3() throws IOException, ParseException {
         Model model = new Model();
         View view = new View();
         Options options = new Options();
@@ -45,7 +46,7 @@ public class ControllerTest {
 
     // test if runProgram throws NullException if args param is null
     @Test(expected = NullPointerException.class)
-    public void testRunProgram1() throws IOException {
+    public void testRunProgram1() throws IOException, ParseException {
         Controller controller = new Controller(new Model(), new View(), new Options());
         Options options = new Options();
         controller.runProgram(options);
@@ -53,7 +54,7 @@ public class ControllerTest {
 
     // test if runProgram throws NullException if options param is null
     @Test(expected = NullPointerException.class)
-    public void testRunProgram2() throws IOException {
+    public void testRunProgram2() throws IOException, ParseException {
         Controller controller = new Controller(new Model(), new View(), new Options());
         Options options = null;
         controller.runProgram(options);
@@ -63,7 +64,7 @@ public class ControllerTest {
 
     // tests if getTestFiles throws NullPointerException if testFilesDir param is null
     @Test(expected = NullPointerException.class)
-    public void testGetTestFiles1() throws IOException {
+    public void testGetTestFiles1() throws IOException, ParseException {
         Controller controller = new Controller(new Model(), new View(), new Options());
         String testFilesDir = null;
         controller.getTestFiles(testFilesDir);
@@ -71,7 +72,7 @@ public class ControllerTest {
 
     // tests if getTestFiles throws IllegalArgumentException if testFilesDir not the name of an actual directory
     @Test(expected = IllegalArgumentException.class)
-    public void testGetTestFiles2() throws IOException {
+    public void testGetTestFiles2() throws IOException, ParseException {
         Controller controller = new Controller(new Model(), new View(), new Options());
         String testFilesDir = "test";
         controller.getTestFiles(testFilesDir);
@@ -79,7 +80,7 @@ public class ControllerTest {
 
     // tests there are no png files in getTestFiles output
     @Test
-    public void testGetTestFiles3() throws IOException {
+    public void testGetTestFiles3() throws IOException, ParseException {
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;
         String[] args = {"test"};
@@ -94,7 +95,7 @@ public class ControllerTest {
 
     // tests getTestFiles is getting correct results
     @Test
-    public void testGetTestFiles4() throws IOException {
+    public void testGetTestFiles4() throws IOException, ParseException {
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;
         String[] args = {"-k","kripke.txt","-f","model.txt"};
@@ -114,7 +115,7 @@ public class ControllerTest {
 
     // tests getKripkeFromFile throws NullPointerException when kripkeFile para is null
     @Test(expected = NullPointerException.class)
-    public void testGetKripkeFromFile1() throws NullPointerException, IOException {
+    public void testGetKripkeFromFile1() throws NullPointerException, IOException, ParseException {
         String[] args = {"-k","kripke.txt","-f","model.txt"};
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;
@@ -126,7 +127,7 @@ public class ControllerTest {
 
     // tests getKripkeFromFile gets correct Kripke info
     @Test
-    public void testGetKripkeFromFile2() throws NullPointerException, IOException {
+    public void testGetKripkeFromFile2() throws NullPointerException, IOException, ParseException {
         String[] args = {"-k","kripke.txt","-f","model.txt"};
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;

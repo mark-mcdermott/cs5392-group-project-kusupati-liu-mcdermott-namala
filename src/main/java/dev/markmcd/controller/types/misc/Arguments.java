@@ -1,11 +1,11 @@
 package dev.markmcd.controller.types.misc;
 
-import dev.markmcd.controller.types.modelRelated.ModelInputSource;
+import dev.markmcd.controller.types.modelRelated.FormulaInputSource;
 
 import java.io.IOException;
 
-import static dev.markmcd.controller.types.modelRelated.ModelInputSource.FILE;
-import static dev.markmcd.controller.types.modelRelated.ModelInputSource.ARGUMENT;
+import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.FILE;
+import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.ARGUMENT;
 import static dev.markmcd.utils.Utils.isStateName;
 import static dev.markmcd.utils.Utils.isTxtFile;
 
@@ -44,7 +44,7 @@ public class Arguments {
      *  FILE means the model is supplied in a textfile specified after the -f flag in the command line arguments.
      *  ARGUMENT means the model itself is hardcoded in the command line argument after the -a flag.
      */
-    ModelInputSource modelInputSource;
+    FormulaInputSource formulaInputSource;
 
     /**
      * Optional .txt {@link String} filename specifying location of the file. If this if omitted then the model properties must be supplied instead.
@@ -67,12 +67,12 @@ public class Arguments {
      * Constructor including state to check (the other constructor omits the state to check), the kripke file name,the model input source and the model input string.
      * @param kripkeFilename {@link String} Filename of .txt file containing the kripke structure. Don't include the full path, just the filename. The file needs to be in the src/main/resources directory.
      * @param stateToCheckStr {@link String} name of the state to check, like "s0" or "s13". Constructor checks to ensure stateToCheckStr starts with lowercase "s" and next has an integer after that.
-     * @param modelInputSource Simple {@link ModelInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the model is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the model itself is hardcoded in the command line argument after the -a flag.
+     * @param formulaInputSource Simple {@link FormulaInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the model is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the model itself is hardcoded in the command line argument after the -a flag.
      * @param modelInputStr {@link String} representing either the .txt filename where the model is supplied or is actual CTL model string itself. Whether this string is the filename or the model is determined by the above modelInputSource param - FILE means filename and ARGUMENT means the model itself.
      * @throws IOException
      */
-    public Arguments(String kripkeFilename, String stateToCheckStr, ModelInputSource modelInputSource, String modelInputStr) throws IOException {
-        if (kripkeFilename == null || stateToCheckStr == null || modelInputSource == null || modelInputSource == null) {
+    public Arguments(String kripkeFilename, String stateToCheckStr, FormulaInputSource formulaInputSource, String modelInputStr) throws IOException {
+        if (kripkeFilename == null || stateToCheckStr == null || formulaInputSource == null || formulaInputSource == null) {
             throw new NullPointerException("Arguments param is null");
         } else if (kripkeFilename == "" || stateToCheckStr == "" || modelInputStr == "") {
             throw new IOException("Arguments param is empty string");
@@ -84,14 +84,14 @@ public class Arguments {
             throw new IOException("Specified state to check is not a state name. State name must be \"s\" followed by an integer. ie, \"s0\" or \"s1\".");
         }
         this.stateToCheckStr = stateToCheckStr;
-        this.modelInputSource = modelInputSource;
-        if (modelInputSource == FILE) {
+        this.formulaInputSource = formulaInputSource;
+        if (formulaInputSource == FILE) {
             if (!isTxtFile(modelInputStr)) {
                 throw new IOException("modelInputStr filename in Arguments isn't a .txt filename.");
             }
             this.modelFilename = modelInputStr;
             this.model = null;
-        } else if (modelInputSource == ARGUMENT){
+        } else if (formulaInputSource == ARGUMENT){
             if (isTxtFile(modelInputStr)) { throw new IOException("Arguments specified ARGUMENT model input, but modelInputStr is a .txt filename"); }
             this.model = modelInputStr;
             this.modelFilename = null;
@@ -101,12 +101,12 @@ public class Arguments {
     /**
      * Constructor that omits state to check (the other constructor includes the state to check), the kripke file name,the model input source and the model input string.
      * @param kripkeFilename {@link String} Filename of .txt file containing the kripke structure. Don't include the full path, just the filename. The file needs to be in the src/main/resources directory.
-     * @param modelInputSource Simple {@link ModelInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the model is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the model itself is hardcoded in the command line argument after the -a flag.
+     * @param formulaInputSource Simple {@link FormulaInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the model is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the model itself is hardcoded in the command line argument after the -a flag.
      * @param modelInputStr {@link String} representing either the .txt filename where the model is supplied or is actual CTL model string itself. Whether this string is the filename or the model is determined by the above modelInputSource param - FILE means filename and ARGUMENT means the model itself.
      * @throws IOException
      */
-    public Arguments(String kripkeFilename, ModelInputSource modelInputSource, String modelInputStr) throws IOException {
-        if (kripkeFilename == null || modelInputSource == null || modelInputSource == null) {
+    public Arguments(String kripkeFilename, FormulaInputSource formulaInputSource, String modelInputStr) throws IOException {
+        if (kripkeFilename == null || formulaInputSource == null || formulaInputSource == null) {
             throw new NullPointerException("Arguments param is null");
         } else if (kripkeFilename == "" || modelInputStr == "") {
             throw new IOException("Arguments param is empty string");
@@ -114,14 +114,14 @@ public class Arguments {
             throw new IOException("kripke filename in Arguments isn't a .txt filename.");
         }
         this.kripkeFilename = kripkeFilename;
-        this.modelInputSource = modelInputSource;
-        if (modelInputSource == FILE) {
+        this.formulaInputSource = formulaInputSource;
+        if (formulaInputSource == FILE) {
             if (!isTxtFile(modelInputStr)) {
                 throw new IOException("modelInputStr filename in Arguments isn't a .txt filename.");
             }
             this.modelFilename = modelInputStr;
             this.model = null;
-        } else if (modelInputSource == ARGUMENT){
+        } else if (formulaInputSource == ARGUMENT){
             if (isTxtFile(modelInputStr)) { throw new IOException("Arguments specified ARGUMENT model input, but modelInputStr is a .txt filename"); }
             this.model = modelInputStr;
             this.modelFilename = null;
@@ -132,8 +132,8 @@ public class Arguments {
         return model;
     }
 
-    public ModelInputSource getModelInputSource() {
-        return modelInputSource;
+    public FormulaInputSource getFormulaInputSource() {
+        return formulaInputSource;
     }
 
     public String getKripkeFilename() {

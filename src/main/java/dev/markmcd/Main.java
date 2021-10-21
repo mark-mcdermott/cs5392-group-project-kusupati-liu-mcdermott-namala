@@ -1,6 +1,7 @@
 package dev.markmcd;
 
 import dev.markmcd.controller.Controller;
+import dev.markmcd.controller.ctl.Parser.ParseException;
 import dev.markmcd.controller.types.misc.Options;
 import dev.markmcd.model.Model;
 import dev.markmcd.view.View;
@@ -8,7 +9,7 @@ import dev.markmcd.view.View;
 import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParseException {
 
         // options set here
         String testFilesDir = "end-to-end-tests";

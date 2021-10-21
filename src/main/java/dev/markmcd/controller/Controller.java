@@ -1,13 +1,16 @@
 package dev.markmcd.controller;
 
+import dev.markmcd.controller.ctl.Parser.ParseException;
 import dev.markmcd.controller.types.misc.Options;
-import dev.markmcd.controller.types.modelRelated.ModelInputSource;
+import dev.markmcd.controller.types.modelRelated.FormulaInputSource;
 import dev.markmcd.controller.types.misc.TestFiles;
+import dev.markmcd.controller.types.modelRelated.ModelCheckInputs;
 import dev.markmcd.model.Model;
 import dev.markmcd.controller.types.kripke.Kripke;
 import dev.markmcd.controller.types.kripke.State;
 import dev.markmcd.controller.types.kripke.Transition;
 import dev.markmcd.view.View;
+import dev.markmcd.controller.ctl.Parser.Parser;
 
 
 import java.io.BufferedReader;
@@ -47,9 +50,9 @@ public class Controller {
     private String[] args;
 
     /**
-     * Simple {@link ModelInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the formula is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the formula itself is hardcoded in the command line argument after the -a flag.
+     * Simple {@link FormulaInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the formula is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the formula itself is hardcoded in the command line argument after the -a flag.
      */
-    private ModelInputSource modelInputSource;
+    private FormulaInputSource formulaInputSource;
 
     /**
      * whether or not one wants to run the model checking tests in the resources/test-files/ directory
@@ -69,7 +72,7 @@ public class Controller {
      * @param options Two command line arguments are mandatory: -k <kripke file> specifying the Kripke filename and then either -a <model> or -f <model filename>. There is an optional -s <state name> argument specifying a state to check.
      * @throws IOException
      */
-    public Controller(Model model, View view, Options options) throws IOException {
+    public Controller(Model model, View view, Options options) throws IOException, ParseException {
         if (model == null || view == null || options == null) { throw new NullPointerException("A param to Controller constructor is null"); }
         this.model = model;
         this.view = view;
@@ -81,7 +84,7 @@ public class Controller {
      * @param options Two command line arguments are mandatory: -k <kripke file> specifying the Kripke filename and then either -a <formula> or -f <formula filename>. There is an optional -s <state name> argument specifying a state to check.
      * @throws IOException
      */
-    public void runProgram(Options options) throws IOException {
+    public void runProgram(Options options) throws IOException, ParseException {
         if (options == null) {
             throw new NullPointerException("runProgram options param is null");
         }
@@ -143,13 +146,18 @@ public class Controller {
      * @param testFilesDir A {@link String} of the folder inside the resources folder that has all the end to end test files
      * @throws IOException
      */
-    public void validateEndToEndTestModels(String testFilesDir) throws IOException {
+    public void validateEndToEndTestModels(String testFilesDir) throws IOException, ParseException {
         TestFiles testFiles = getTestFiles(testFilesDir);
+        String testFormula = "p";
 
         for (Object testFilesObj : testFiles.getKripkesValid()) {
             String testFile = (String) testFilesObj;
             System.out.println(testFile);
             Kripke kripke = getKripkeFromFile(testFile);
+            ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripke, testFormula);
+            Parser parser = new Parser(modelCheckInputs);
+            parser.Parse();
+
         }
 
     }
