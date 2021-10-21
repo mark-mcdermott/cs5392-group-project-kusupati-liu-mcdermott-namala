@@ -155,9 +155,14 @@ public class Controller {
 
         for (Object testFilesObj : testFiles.getKripkesValid()) {
             String testFile = (String) testFilesObj;
-            System.out.println(testFile);
             KripkeFileObj kripkeFileObj = getKripkeFromFile(testFile);
-            if (kripkeFileObj.getErrorMessage() != null) { handleError(kripkeFileObj.getErrorMessage(),printExceptions); }
+            if (kripkeFileObj.getErrorMessage() != null) {
+                String origErrorMessage = kripkeFileObj.getErrorMessage();
+                String newErrorMessage = "❌ failed parsing - " + origErrorMessage;
+                handleError(newErrorMessage,printExceptions);
+            } else {
+                System.out.println("✅ passed parsing - " + testFile);
+            }
             ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), testFormula);
             Parser parser = new Parser(modelCheckInputs);
             parser.Parse();
@@ -165,9 +170,15 @@ public class Controller {
 
         for (Object testFilesObj : testFiles.getKripkesInvalid()) {
             String testFile = (String) testFilesObj;
-            System.out.println(testFile);
+            // System.out.println(testFile);
             KripkeFileObj kripkeFileObj = getKripkeFromFile(testFile);
-            if (kripkeFileObj.getErrorMessage() != null) { handleError(kripkeFileObj.getErrorMessage(),printExceptions); }
+            if (kripkeFileObj.getErrorMessage() != null) {
+                String origErrorMessage = kripkeFileObj.getErrorMessage();
+                String newErrorMessage = "❌ failed parsing - " + origErrorMessage;
+                handleError(newErrorMessage,printExceptions);
+            } else {
+                System.out.println("✅ passed parsing - " + testFile);
+            }
             ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), testFormula);
             Parser parser = new Parser(modelCheckInputs);
             parser.Parse();
