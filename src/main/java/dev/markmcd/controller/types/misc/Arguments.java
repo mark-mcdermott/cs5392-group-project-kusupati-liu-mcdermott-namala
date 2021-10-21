@@ -64,14 +64,20 @@ public class Arguments {
     String model;
 
     /**
+     * {@Boolean} specifying that the end to end tests should be run
+     */
+    Boolean runEndToEndTests;
+
+    /**
      * Constructor including state to check (the other constructor omits the state to check), the kripke file name,the model input source and the model input string.
      * @param kripkeFilename {@link String} Filename of .txt file containing the kripke structure. Don't include the full path, just the filename. The file needs to be in the src/main/resources directory.
      * @param stateToCheckStr {@link String} name of the state to check, like "s0" or "s13". Constructor checks to ensure stateToCheckStr starts with lowercase "s" and next has an integer after that.
      * @param formulaInputSource Simple {@link FormulaInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the model is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the model itself is hardcoded in the command line argument after the -a flag.
      * @param modelInputStr {@link String} representing either the .txt filename where the model is supplied or is actual CTL model string itself. Whether this string is the filename or the model is determined by the above modelInputSource param - FILE means filename and ARGUMENT means the model itself.
+     * @param runEndToEndTests {@Boolean} specifying that the end to end tests should be run
      * @throws IOException
      */
-    public Arguments(String kripkeFilename, String stateToCheckStr, FormulaInputSource formulaInputSource, String modelInputStr) throws IOException {
+    public Arguments(String kripkeFilename, String stateToCheckStr, FormulaInputSource formulaInputSource, String modelInputStr, Boolean runEndToEndTests) throws IOException {
         if (kripkeFilename == null || stateToCheckStr == null || formulaInputSource == null || formulaInputSource == null) {
             throw new NullPointerException("Arguments param is null");
         } else if (kripkeFilename == "" || stateToCheckStr == "" || modelInputStr == "") {
@@ -96,6 +102,7 @@ public class Arguments {
             this.model = modelInputStr;
             this.modelFilename = null;
         }
+        this.runEndToEndTests = runEndToEndTests;
     }
 
     /**
@@ -103,9 +110,10 @@ public class Arguments {
      * @param kripkeFilename {@link String} Filename of .txt file containing the kripke structure. Don't include the full path, just the filename. The file needs to be in the src/main/resources directory.
      * @param formulaInputSource Simple {@link FormulaInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the model is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the model itself is hardcoded in the command line argument after the -a flag.
      * @param modelInputStr {@link String} representing either the .txt filename where the model is supplied or is actual CTL model string itself. Whether this string is the filename or the model is determined by the above modelInputSource param - FILE means filename and ARGUMENT means the model itself.
+     * @param runEndToEndTests {@Boolean} specifying that the end to end tests should be run
      * @throws IOException
      */
-    public Arguments(String kripkeFilename, FormulaInputSource formulaInputSource, String modelInputStr) throws IOException {
+    public Arguments(String kripkeFilename, FormulaInputSource formulaInputSource, String modelInputStr, Boolean runEndToEndTests) throws IOException {
         if (kripkeFilename == null || formulaInputSource == null || formulaInputSource == null) {
             throw new NullPointerException("Arguments param is null");
         } else if (kripkeFilename == "" || modelInputStr == "") {
@@ -126,6 +134,7 @@ public class Arguments {
             this.model = modelInputStr;
             this.modelFilename = null;
         }
+        this.runEndToEndTests = runEndToEndTests;
     }
 
     public String getModel() {
@@ -146,5 +155,9 @@ public class Arguments {
 
     public String getStateToCheckStr() {
         return stateToCheckStr;
+    }
+
+    public Boolean getRunEndToEndTests() {
+        return runEndToEndTests;
     }
 }

@@ -13,10 +13,9 @@ public class Main {
 
         // options set here
         String testFilesDir = "end-to-end-tests";
-        Boolean runEndToEndTests = true;
 
         // setup main program (MVC structure based off https://www.edureka.co/blog/mvc-architecture-in-java/)
-        Options options = new Options(args, testFilesDir, runEndToEndTests);
+        Options options = new Options(args, testFilesDir);
         Model model = new Model();
         View view = new View();
         new Controller(model, view, options);

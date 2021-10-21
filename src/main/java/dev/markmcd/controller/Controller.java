@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.logging.*;
 import java.util.*;
 
 import static dev.markmcd.utils.Utils.*;
@@ -90,8 +91,8 @@ public class Controller {
             throw new NullPointerException("runProgram options param is null");
         }
 
-        if (options.getShouldE2ETestsRun()) {
-            validateEndToEndTestModels(options.getTestFilesDir());
+        if (options.getRunEndToEndTests()) {
+            validateEndToEndTestModels(options.getTestFilesDir(), true);
             // runEndToEndTests();
         }
         // runTests();
@@ -147,28 +148,27 @@ public class Controller {
      * @param testFilesDir A {@link String} of the folder inside the resources folder that has all the end to end test files
      * @throws IOException
      */
-    public void validateEndToEndTestModels(String testFilesDir) throws IOException, ParseException {
+    public void validateEndToEndTestModels(String testFilesDir, Boolean printExceptions) throws IOException, ParseException {
         TestFiles testFiles = getTestFiles(testFilesDir);
         String testFormula = "p";
 
         for (Object testFilesObj : testFiles.getKripkesValid()) {
             String testFile = (String) testFilesObj;
             System.out.println(testFile);
-            Kripke kripke = getKripkeFromFile(testFile);
+            Kripke kripke = getKripkeFromFile(testFile, printExceptions);
             ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripke, testFormula);
             Parser parser = new Parser(modelCheckInputs);
             parser.Parse();
         }
 
-        // TODO: start here - parsing broken models (do the errors need line numbers?
-//        for (Object testFilesObj : testFiles.getKripkesInvalid()) {
-//            String testFile = (String) testFilesObj;
-//            System.out.println(testFile);
-//            Kripke kripke = getKripkeFromFile(testFile);
-//            ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripke, testFormula);
-//            Parser parser = new Parser(modelCheckInputs);
-//            parser.Parse();
-//        }
+        for (Object testFilesObj : testFiles.getKripkesInvalid()) {
+            String testFile = (String) testFilesObj;
+            System.out.println(testFile);
+            Kripke kripke = getKripkeFromFile(testFile, printExceptions);
+            ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripke, testFormula);
+            Parser parser = new Parser(modelCheckInputs);
+            parser.Parse();
+        }
 
     }
 
@@ -186,15 +186,17 @@ public class Controller {
      * s3 : , (i.e. set of propositional atoms for state s3 is empty)
      * s4 : t;
      * @param kripkeFile {@link String} filename of a kripke text file
+     * @param printExceptions {@link Boolean} true means exceptions will only be printed to console, false means exceptions will be thrown and will stop the program
      * @return A {@link Kripke} object
      * @throws IOException
      */
-    public Kripke getKripkeFromFile(String kripkeFile) throws IOException {
+    public Kripke getKripkeFromFile(String kripkeFile, Boolean printExceptions) throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(testFilesDir + "/" + kripkeFile);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
         Set states = new HashSet<State>();
-        Set transitions = new HashSet<Transition>();
+        Set transitions  = new HashSet<Transition>();
+        Boolean parsedKripkeLabelsLine = false;
         int lineNum = 1;
         while (reader.ready()) {
             String line = reader.readLine();
@@ -204,19 +206,28 @@ public class Controller {
             // first line should always be state line
             if (lineNum == 1) {
                 line = removeByteOrderMark(line);
-                if (kripkeFile.equals("Broken Model 2.txt")) {
-                    int i=0;
-                }
-                states = parseKripkeStates(line); }
+                states = parseKripkeStates(line, printExceptions, kripkeFile); }
             // after first line, if it starts with a "t", it's a transition line
+            if (kripkeFile.equals("Broken Model 3.txt")) {
+                    int i=0;
+            }
             else if (firstChar == 't') { transitions.add(parseKripkeTransitionLine(line)); }
             // and if it starts with an s it's a labels line
             else if (firstChar == 's') {
                 parseKripkeLabelsLine(line, states);
+                parsedKripkeLabelsLine = true;
             }
             lineNum++;
         }
         Kripke kripke = new Kripke(states, transitions);
+        if (parsedKripkeLabelsLine == false) {
+            if (printExceptions) {
+                System.err.println("Syntax error in model file \"" + kripkeFile + "\" on line " + lineNum + ": no labels line found (a label line example could be: \"s1 : p;\").");
+                return kripke;
+            } else {
+                throw new IOException("Syntax error in model file \"" + kripkeFile + "\" on line " + lineNum + ": no labels line found (a label line example could be: \"s1 : p;\").");
+            }
+        }
         return kripke;
     }
 
@@ -233,6 +244,7 @@ public class Controller {
     private static void parseKripkeLabelsLine(String line, Set states) throws IOException {
         String[] lineArr = line.split(" ",0);
         String stateName = lineArr[0];
+        stateName = stateName.replace(",","");
         Integer stateNum = parseInt(stateName.replace("s",""));
         // char secondChar = line.charAt(1);
         // Integer stateNum = Character.getNumericValue(secondChar);
@@ -255,31 +267,39 @@ public class Controller {
             }
             lineArrElemNum++;
         }
-        getState(stateNum, states).setLabels(labels);
+        if (contains(states,new State(stateNum))) {
+            getState(stateNum, states).setLabels(labels);
+        }
     }
 
     /**
      * Gets all the states in a Kripke from the text file of the Kripke. The line must be in a format like this: "s1, s2, s3, s4;" where the states are separated by a comma and a space and the last state is followed by a semicolon.
      * @param line {@link String} line from a Kripke text file (the first line). The line must be in a format like this: "s1, s2, s3, s4;" where the states are separated by a comma and a space and the last state is followed by a semicolon.
+     * @param printExceptions {@link Boolean} true means exceptions will only be printed to console, false means exceptions will be thrown and will stop the program
      * @return A {@link Set} representing all the {@link State}s specified in the line.
      */
-    private static Set parseKripkeStates(String line) throws IOException {
-       Set states = new HashSet<State>();
-       line = line.trim();
-       String[] stateStrings = line.split(",",0);
-       for (Object stateObj : stateStrings) {
-           String stateStr = (String) stateObj;
-           stateStr = stateStr.trim();
-           stateStr = stateStr.replace(",","");
-           stateStr = stateStr.replace(";","");
-           stateStr = stateStr.replace("s","");
-           Integer stateInt = parseInt(stateStr);
-           State newState = new State(stateInt);
-           if (contains(states, newState)) {
-               throw new IOException("Duplicate state in model file.");
-           }
-           states.add(newState);
-       }
+    private static Set parseKripkeStates(String line, Boolean printExceptions, String kripkeFile) throws IOException {
+        Set states = new HashSet<State>();
+        line = line.trim();
+        String[] stateStrings = line.split(",",0);
+        for (Object stateObj : stateStrings) {
+            String stateStr = (String) stateObj;
+            stateStr = stateStr.trim();
+            stateStr = stateStr.replace(",","");
+            stateStr = stateStr.replace(";","");
+            stateStr = stateStr.replace("s","");
+            Integer stateInt = parseInt(stateStr);
+            State newState = new State(stateInt);
+            if (contains(states, newState)) {
+                if (printExceptions) {
+                    System.err.println("Syntax error in model file \"" + kripkeFile + "\" on line 1: duplicate state \"" + newState.toString() + "\" found.");
+                    return states;
+                } else {
+                    throw new IOException("Syntax error in model file \"" + kripkeFile + "\" on line 1: duplicate state \"" + newState.toString() + "\" found.");
+                }
+            }
+            states.add(newState);
+        }
        return states;
     }
 
@@ -292,6 +312,7 @@ public class Controller {
     private static Transition parseKripkeTransitionLine(String line) {
         String[] transitionLineArr = line.split(" ",0); // ie, ["t1",":","s1","-","s2,"]
         String transitionName = transitionLineArr[0];
+        // if (transitionLineArr.length > 2) {
         String fromName = transitionLineArr[2];
         String toName = transitionLineArr[4];
         toName = toName.replace(",","");

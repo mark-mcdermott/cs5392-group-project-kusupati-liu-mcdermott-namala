@@ -84,7 +84,7 @@ public class ControllerTest {
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;
         String[] args = {"test"};
-        Options options = new Options(args, testFilesDir, runEndToEndTests);
+        Options options = new Options(args, testFilesDir);
         Controller controller = new Controller(new Model(), new View(), new Options());
         TestFiles testFiles = controller.getTestFiles(options.getTestFilesDir());
         List kripkesInvalid = testFiles.getKripkesInvalid();
@@ -99,7 +99,7 @@ public class ControllerTest {
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;
         String[] args = {"-k","kripke.txt","-f","model.txt"};
-        Options options = new Options(args, testFilesDir, runEndToEndTests);
+        Options options = new Options(args, testFilesDir);
         Controller controller = new Controller(new Model(), new View(), options);
         TestFiles testFiles = controller.getTestFiles(options.getTestFilesDir());
         List kripkesInvalidActual = testFiles.getKripkesInvalid();
@@ -119,10 +119,15 @@ public class ControllerTest {
         String[] args = {"-k","kripke.txt","-f","model.txt"};
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;
-        Options options = new Options(args, testFilesDir, runEndToEndTests);
+        Options options = new Options(args, testFilesDir);
         Controller controller = new Controller(new Model(), new View(), options);
         String nullStr = null;
-        Kripke kripke = controller.getKripkeFromFile(nullStr);
+        try {
+            Kripke kripke = controller.getKripkeFromFile(nullStr, true);
+        } catch (Error e) {
+            System.err.println(e);
+        }
+
     }
 
     // tests getKripkeFromFile gets correct Kripke info
@@ -131,10 +136,10 @@ public class ControllerTest {
         String[] args = {"-k","kripke.txt","-f","model.txt"};
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;
-        Options options = new Options(args, testFilesDir, runEndToEndTests);
+        Options options = new Options(args, testFilesDir);
         Controller controller = new Controller(new Model(), new View(), options);
         String modelFilename = "Model 1.txt";
-        Kripke kripke = controller.getKripkeFromFile(modelFilename);
+        Kripke kripke = controller.getKripkeFromFile(modelFilename, true);
         String kripkeStr = kripke.toString();
 
     }

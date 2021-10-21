@@ -2,6 +2,7 @@ package dev.markmcd.utils;
 
 import dev.markmcd.controller.types.kripke.State;
 import dev.markmcd.controller.types.kripke.Transition;
+import dev.markmcd.controller.types.misc.Options;
 
 import java.io.IOException;
 import java.util.*;
@@ -14,6 +15,7 @@ import java.util.*;
  * More specific CTL utils are in CtlUtils in the controller/ctl directory.
  */
 public class Utils {
+    public Boolean printExceptions;
 
     // States Utils
 

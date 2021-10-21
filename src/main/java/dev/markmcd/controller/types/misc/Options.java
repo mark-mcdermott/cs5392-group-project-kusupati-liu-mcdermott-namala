@@ -31,9 +31,18 @@ public class Options {
     private String formulaInputFilename;
     private String formula;
 
+    /**
+     * {@Boolean} specifying that the end to end tests should be run
+     */
+    Boolean runEndToEndTests;
+
+    /**
+     * {@Boolean} true for printing exceptions to console and not halting program, false for throwing exceptions which halt program
+     */
+    Boolean printExceptions;
+
     // user set options from the top of Main
     private String testFilesDir;
-    private Boolean shouldE2ETestsRun;
 
     /**
      * Empty constructor - for unit testing only
@@ -44,14 +53,12 @@ public class Options {
      * Main constructor
      * @param args
      * @param testFilesDir
-     * @param shouldE2ETestsRun
      * @throws IOException
      */
-    public Options(String[] args, String testFilesDir, Boolean shouldE2ETestsRun) throws IOException {
+    public Options(String[] args, String testFilesDir) throws IOException {
 
         // set user set options
         this.testFilesDir = testFilesDir;
-        this.shouldE2ETestsRun = shouldE2ETestsRun;
 
         // parse command line arguments and set the options found there
         Arguments arguments = parseArgs(args);
@@ -64,7 +71,7 @@ public class Options {
         if (arguments.getModel() != null) {
             this.formula = arguments.getModel();
         }
-
+        this.runEndToEndTests = arguments.runEndToEndTests;
 
     }
 
@@ -102,6 +109,7 @@ public class Options {
         String stateToCheckStr = null;
         FormulaInputSource formulaInputSource = ARGUMENT;
         String formulaInputStr = "";
+        Boolean runEndToEndTests = false;
 
         while (i < args.length && args[i].startsWith("-")) {
             arg = args[i++];
@@ -132,13 +140,18 @@ public class Options {
                     formulaInputStr = args[i++];
             }
 
+            // end to end tests
+            if (arg.equals("-e")) {
+                runEndToEndTests = true;
+            }
+
         }
         if (i != args.length)
-            System.err.println("Usage: java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <formula>");
+            System.err.println("Usage: java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <formula> -e");
         else if (stateToCheckStr == null) {
-            return new Arguments(kripkeFilename,formulaInputSource,formulaInputStr);
+            return new Arguments(kripkeFilename,formulaInputSource,formulaInputStr,runEndToEndTests);
         } else if (stateToCheckStr != null) {
-            return new Arguments(kripkeFilename,stateToCheckStr,formulaInputSource,formulaInputStr);
+            return new Arguments(kripkeFilename,stateToCheckStr,formulaInputSource,formulaInputStr,runEndToEndTests);
         }
         return null;
     }
@@ -159,8 +172,8 @@ public class Options {
         return formula;
     }
 
-    public Boolean getShouldE2ETestsRun() {
-        return shouldE2ETestsRun;
+    public Boolean getRunEndToEndTests() {
+        return runEndToEndTests;
     }
 
     public String getFormulaInputFilename() {
