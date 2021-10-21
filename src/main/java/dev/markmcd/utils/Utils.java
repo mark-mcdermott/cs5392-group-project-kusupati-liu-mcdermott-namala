@@ -118,6 +118,26 @@ public class Utils {
         throw new IOException("state number " + stateNum + " not found in state set in getState");
     }
 
+    /**
+     * Gets a transition from a transition set, given its transition number.
+     * Throws IOExceptionError if state is not found. Throws NullPointerError if either param is null.
+     * @param transitionNum {@link Integer} of state needed from state set
+     * @param transitions The {@link Set} of {@link Transition}s one needs a particular transition from
+     * @return the {@link Transition} from the transition set, if found
+     */
+    public static Transition getTransition(Integer transitionNum, Set transitions) throws IOException {
+        if (transitionNum == null) { throw new NullPointerException("stateNum param in getState is null"); }
+        if (transitions == null) { throw new NullPointerException("states param in getState is null"); }
+        for (Object transitionObj : transitions) {
+            if (transitionObj == null) { throw new NullPointerException("a state in state set in getState is null"); }
+            Transition transition = (Transition) transitionObj;
+            if (transition.getNumber() == transitionNum) {
+                return transition;
+            }
+        }
+        throw new IOException("transition number " + transitionNum + " not found in state set in getState");
+    }
+
 
     // Transitions Utils
 
@@ -240,6 +260,8 @@ public class Utils {
         }
     }
 
+
+
     // remove byte order mark https://www.postgresql.org/message-id/20180717101246.GA41457%40elch.exwg.net
     public static String removeByteOrderMark(String str) {
         char firstChar = str.toCharArray()[0];
@@ -250,6 +272,19 @@ public class Utils {
         return str;
     }
 
+    /**
+     * For debugging vs production. For debugging, we want to throw exception and halt program. For production, we want to print the error and keep going
+     * @param errorMessage
+     * @param printExceptions
+     * @throws Exception
+     */
+    public static void handleError(String errorMessage, Boolean printExceptions) throws Exception {
+        if (printExceptions) {
+            System.err.println(errorMessage);
+        } else {
+            throw new Exception(errorMessage);
+        }
+    }
 
 
 

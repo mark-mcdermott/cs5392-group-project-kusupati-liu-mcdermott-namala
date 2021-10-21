@@ -9,7 +9,7 @@ import dev.markmcd.view.View;
 import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) throws IOException, ParseException {
+    public static void main(String[] args) throws Exception {
 
         // options set here
         String testFilesDir = "end-to-end-tests";
