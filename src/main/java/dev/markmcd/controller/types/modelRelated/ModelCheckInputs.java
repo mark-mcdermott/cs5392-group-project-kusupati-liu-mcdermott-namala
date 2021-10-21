@@ -29,63 +29,63 @@ public class ModelCheckInputs {
     private State stateToCheck;
 
     /**
-     * A well formed CTL model. Ie, "EXp", "AG(AF(p and q))", etc. Nested operators in nested operators are fine here, infinite up to the limits of hardware memory, probably. This is run through the ctlValidator to ensure its well formed and an IOException is thrown if it's not.
+     * A well formed CTL formula. Ie, "EXp", "AG(AF(p and q))", etc. Nested operators in nested operators are fine here, infinite up to the limits of hardware memory, probably. This is run through the ctlValidator to ensure its well formed and an IOException is thrown if it's not.
      */
-    private String model;
+    private String formula;
 
     /**
-     * {@link InputStream} created from the model {@link String} in the class constructor. This is implementation specific input for the <a href="https://javacc.github.io/javacc/">JavaCC</a> compiler used.
+     * {@link InputStream} created from the formula {@link String} in the class constructor. This is implementation specific input for the <a href="https://javacc.github.io/javacc/">JavaCC</a> compiler used.
      */
-    private InputStream modelStream;
+    private InputStream formulaStream;
 
     /**
-     * Constructor specifying kripke, model and state to check. None can be null. If omitting state to check, use the constructor with just kripke and model. The model stream is created from the model here.
+     * Constructor specifying kripke, formula and state to check. None can be null. If omitting state to check, use the constructor with just kripke and formula. The formula stream is created from the model here.
      * @param kripke must be fully populated with {@link State}s and {@link Transition}s when passed as an argument. Any labels must be already attached to the states. Some error checking is done here to avoid null values, incorrect transitions (ie a state may only have transitions that start at that state), etc
-     * @param model well formed CTL model. Ie, "EXp", "AG(AF(p and q))", etc. Nested operators in nested operators are fine here, infinite up to the limits of hardware memory, probably. This is run through the ctlValidator to ensure its well formed and an IOException is thrown if it's not.
+     * @param formula well formed CTL formula. Ie, "EXp", "AG(AF(p and q))", etc. Nested operators in nested operators are fine here, infinite up to the limits of hardware memory, probably. This is run through the ctlValidator to ensure its well formed and an IOException is thrown if it's not.
      * @param stateToCheck {@link State} to see if it holds on the model for specified proerties. If omitted, all states are checked. This will be null until a {@link State} is supplied
      * @throws UnsupportedEncodingException
      */
-    public ModelCheckInputs(Kripke kripke, String model, State stateToCheck) throws IOException {
+    public ModelCheckInputs(Kripke kripke, String formula, State stateToCheck) throws IOException {
 
         if (kripke == null) { throw new NullPointerException("kripke is null in ModelCheckInputs call"); }
         kripke.checkKripkeForNulls(); // check kripke for null states, transitions or labels and throws exception if found
-        if (model == null) { throw new NullPointerException("model is null in ModelCheckInputs call"); }
+        if (formula == null) { throw new NullPointerException("formula is null in ModelCheckInputs call"); }
         if (stateToCheck == null) { throw new NullPointerException("stateToCheck is null in ModelCheckInputs call"); }
 
         // set properties
         this.kripke = kripke;
-        this.model = model;
+        this.formula = formula;
         this.stateToCheck = stateToCheck;
-        this.modelStream = new ByteArrayInputStream(model.getBytes("UTF-8"));
+        this.formulaStream = new ByteArrayInputStream(formula.getBytes("UTF-8"));
     }
 
     /**
      * The constructor to use when omitting the optional state to check. Since state to check is omitted, all states will be checked. This constructor only specifies the Kripke and the model and state to check and neither can be null. The model stream is created from the model here.
      * @param kripke must be fully populated with {@link State}s and {@link Transition}s when passed as an argument. Any labels must be already attached to the states. Some error checking is done here to avoid null values, incorrect transitions (ie a state may only have transitions that start at that state), etc
-     * @param model well formed CTL model. Ie, "EXp", "AG(AF(p and q))", etc. Nested operators in nested operators are fine here, infinite up to the limits of hardware memory, probably. This is run through the ctlValidator to ensure its well formed and an IOException is thrown if it's not.
+     * @param formula well formed CTL formula. Ie, "EXp", "AG(AF(p and q))", etc. Nested operators in nested operators are fine here, infinite up to the limits of hardware memory, probably. This is run through the ctlValidator to ensure its well formed and an IOException is thrown if it's not.
      * @throws UnsupportedEncodingException
      */
-    public ModelCheckInputs(Kripke kripke, String model) throws IOException {
+    public ModelCheckInputs(Kripke kripke, String formula) throws IOException {
 
         if (kripke == null) { throw new NullPointerException("kripke is null in ModelCheckInputs call"); }
         kripke.checkKripkeForNulls(); // check kripke for null states, transitions or labels and throws exception if found
-        if (model == null) { throw new NullPointerException("model is null in ModelCheckInputs call"); }
+        if (formula == null) { throw new NullPointerException("model is null in ModelCheckInputs call"); }
 
         // set properties
         this.kripke = kripke;
-        this.model = model;
-        this.modelStream = new ByteArrayInputStream(model.getBytes("UTF-8"));
+        this.formula = formula;
+        this.formulaStream = new ByteArrayInputStream(formula.getBytes("UTF-8"));
     }
 
-    public InputStream getModelStream() {
-        return modelStream;
+    public InputStream getFormulaStream() {
+        return formulaStream;
     }
 
     public Kripke getKripke() {
         return kripke;
     }
 
-    public String getModel() {
-        return model;
+    public String getFormula() {
+        return formula;
     }
 }

@@ -12,9 +12,9 @@ CTL model checker written in Java and using a JavaCC parser.
  3) Cd into project
     - `cd cs5392-group-project`
  4) Run the program
-    - `java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <model>`
+    - `java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <formula>`
     - The arguments in `[ ]` are optional
-    - The model flag takes either `-a` for specifying the model in directly in the argument (inside quotes) or `-f` for specifying a file which contains the model. 
+    - The model flag takes either `-a` for specifying the formula in directly in the argument (inside quotes) or `-f` for specifying a file which contains the formula. 
     - The `-s` argument for state to check is optional. If omitted, all states are checked.
     - Some command line examples:
         - `java -jar modelCheckingCTL -k kripke.txt s0 -a "EXp"`

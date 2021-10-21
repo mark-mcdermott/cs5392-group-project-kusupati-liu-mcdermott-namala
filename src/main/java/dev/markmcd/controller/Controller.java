@@ -31,7 +31,7 @@ public class Controller {
     private Model model;
 
     /**
-     * The view in this version is just a rudimentary command line output that says if the state(s) hold for the model and tries to give meaningful error messages if anything failed along the way.
+     * The view in this version is just a rudimentary command line output that says if the formula holds for the model and tries to give meaningful error messages if anything failed along the way.
      * Hoping to add Java Swing and Jung to this in a future version for a GUI and directed graph visualization.
      */
     private View view;
@@ -42,12 +42,12 @@ public class Controller {
     private Options options;
 
     /**
-     * Two command line arguments are mandatory: -k <kripke file> specifying the kripke filename and then either -a <model> or -f <model filename>. There is an optional -s <state name> argument specifying a state to check.
+     * Two command line arguments are mandatory: -k <kripke file> specifying the kripke filename and then either -a <formula> or -f <formula filename>. There is an optional -s <state name> argument specifying a state to check.
      */
     private String[] args;
 
     /**
-     * Simple {@link ModelInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the model is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the model itself is hardcoded in the command line argument after the -a flag.
+     * Simple {@link ModelInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the formula is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the formula itself is hardcoded in the command line argument after the -a flag.
      */
     private ModelInputSource modelInputSource;
 
@@ -78,7 +78,7 @@ public class Controller {
 
     /**
      * This is the meat and potatoes of the program - all the major function calls are here. Proecesses the arguments, runs tests, runs the model checking
-     * @param options Two command line arguments are mandatory: -k <kripke file> specifying the Kripke filename and then either -a <model> or -f <model filename>. There is an optional -s <state name> argument specifying a state to check.
+     * @param options Two command line arguments are mandatory: -k <kripke file> specifying the Kripke filename and then either -a <formula> or -f <formula filename>. There is an optional -s <state name> argument specifying a state to check.
      * @throws IOException
      */
     public void runProgram(Options options) throws IOException {

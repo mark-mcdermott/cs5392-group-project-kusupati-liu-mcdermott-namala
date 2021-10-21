@@ -1,15 +1,10 @@
 package dev.markmcd.utils;
 
-import dev.markmcd.controller.types.misc.Arguments;
-import dev.markmcd.controller.types.modelRelated.ModelInputSource;
 import dev.markmcd.controller.types.kripke.State;
 import dev.markmcd.controller.types.kripke.Transition;
 
 import java.io.IOException;
 import java.util.*;
-
-import static dev.markmcd.controller.types.modelRelated.ModelInputSource.ARGUMENT;
-import static dev.markmcd.controller.types.modelRelated.ModelInputSource.FILE;
 
 /**
  * Generic utility methods for dealing with {@link State}s, {@link Transition}s, CTL labels and {@link Set}s.
