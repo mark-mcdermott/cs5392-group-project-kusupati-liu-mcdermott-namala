@@ -272,6 +272,8 @@ public class UtilsTest {
         getStatesStr(set);
     }
 
+    // no need to test printStatesStr (it's already tested with the testGetStatesStr tests above
+
     // test getState throws NullPointerException if stateNum param is null
     @Test(expected = NullPointerException.class)
     public void testGetState1() throws IOException {
@@ -418,8 +420,265 @@ public class UtilsTest {
         assertEquals("t1 : s1 - s2,\nt2 : s1 - s3;\n", transitionStr);
     }
 
-    // TODO: test getLabelsStr here
-    // TODO: test contains here
-    // TODO: test areEqual here
+
+
+    // no need to test printTransactions - it's tested with the testGetTransitionsStr tests above
+
+    // tests if getLabelsStr gets correct output with one state with one label
+    @Test
+    public void testGetLabelsStr1() throws IOException {
+        Set states = new HashSet();
+        Set labels = new HashSet();
+        State state1 = new State(1);
+        labels.add('p');
+        state1.setLabels(labels);
+        states.add(state1);
+        String labelsStr = getLabelsStr(states);
+        assertEquals("s1 : p;", labelsStr);
+    }
+
+    // tests if getLabelsStr gets correct output with one state with two labels
+    @Test
+    public void testGetLabelsStr2() throws IOException {
+        Set states = new HashSet();
+        Set labels = new HashSet();
+        State state1 = new State(1);
+        labels.add('p');
+        labels.add('q');
+        state1.setLabels(labels);
+        states.add(state1);
+        String labelsStr = getLabelsStr(states);
+        assertEquals("s1 : p q;", labelsStr);
+    }
+
+    // tests if getLabelsStr gets correct output with two states with two labels each
+    @Test
+    public void testGetLabelsStr3() throws IOException {
+        Set states = new HashSet();
+        Set labels1 = new HashSet();
+        Set labels2 = new HashSet();
+        State state1 = new State(1);
+        State state2 = new State(2);
+        labels1.add('p');
+        labels1.add('q');
+        labels2.add('r');
+        labels2.add('s');
+        state1.setLabels(labels1);
+        state2.setLabels(labels2);
+        states.add(state1);
+        states.add(state2);
+        String labelsStr = getLabelsStr(states);
+        assertEquals("s1 : p q,\ns2 : r s;", labelsStr);
+    }
+
+    // tests if getLabelsStr gets correct output with two states where first state has no labels and second state has two labels
+    @Test
+    public void testGetLabelsStr4() throws IOException {
+        Set states = new HashSet();
+        Set labels1 = new HashSet();
+        Set labels2 = new HashSet();
+        State state1 = new State(1);
+        State state2 = new State(2);
+        labels2.add('r');
+        labels2.add('s');
+        state1.setLabels(labels1);
+        state2.setLabels(labels2);
+        states.add(state1);
+        states.add(state2);
+        String labelsStr = getLabelsStr(states);
+        assertEquals("s1 : ,\ns2 : r s;", labelsStr);
+    }
+
+    // tests if contains throws NullPointerException if states is null
+    @Test(expected = NullPointerException.class)
+    public void testContains1() throws IOException {
+        Set states = null;
+        State state1 = new State(1);
+        contains(states,state1);
+    }
+
+    // tests if contains throws NullPointerException if state is null
+    @Test(expected = NullPointerException.class)
+    public void testContains2() throws IOException {
+        Set states = new HashSet();
+        State state1 = null;
+        contains(states,state1);
+    }
+
+    // tests if contains throws ClassCastException if states contains strings
+    @Test(expected = ClassCastException.class)
+    public void testContains3() throws IOException {
+        Set states = new HashSet();
+        states.add("a");
+        states.add("b");
+        State state1 = new State(1);
+        contains(states,state1);
+    }
+
+    // tests if contains returns false if states is empty
+    @Test
+    public void testContains4() throws IOException {
+        Set states = new HashSet();
+        State state1 = new State(1);
+        Boolean result = contains(states,state1);
+        assertFalse(result);
+    }
+
+    // tests if contains returns true if states is has only desired state
+    @Test
+    public void testContains5() throws IOException {
+        Set states = new HashSet();
+        State state1 = new State(1);
+        states.add(state1);
+        Boolean result = contains(states,state1);
+        assertTrue(result);
+    }
+
+    // tests if contains returns false if states has two states but neither is the desired state
+    @Test
+    public void testContains6() throws IOException {
+        Set states = new HashSet();
+        State state1 = new State(1);
+        State state2 = new State(2);
+        State state3 = new State(3);
+        states.add(state1);
+        states.add(state2);
+        Boolean result = contains(states,state3);
+        assertFalse(result);
+    }
+
+    // tests if contains returns true if states has two states and first is desired state
+    @Test
+    public void testContains7() throws IOException {
+        Set states = new HashSet();
+        State state1 = new State(1);
+        State state2 = new State(2);
+        states.add(state1);
+        states.add(state2);
+        Boolean result = contains(states,state1);
+        assertTrue(result);
+    }
+
+    // tests if contains returns true if states has two states and second is desired state
+    @Test
+    public void testContains8() throws IOException {
+        Set states = new HashSet();
+        State state1 = new State(1);
+        State state2 = new State(2);
+        states.add(state1);
+        states.add(state2);
+        Boolean result = contains(states,state2);
+        assertTrue(result);
+    }
+
+    // tests if areEqual throws NullPointer exception if setA is null
+    @Test(expected = NullPointerException.class)
+    public void testAreEqual1() throws IOException {
+        Set setA = null;
+        Set setB = new HashSet();
+        Boolean result = areEqual(setA,setB);
+    }
+
+    // tests if areEqual throws NullPointer exception if setB is null
+    @Test(expected = NullPointerException.class)
+    public void testAreEqual2() throws IOException {
+        Set setA = new HashSet();
+        Set setB = null;
+        Boolean result = areEqual(setA,setB);
+    }
+
+    // tests if areEqual returns false if first set is empty
+    @Test
+    public void testAreEqual3() throws IOException {
+        Set setA = new HashSet();
+        Set setB = new HashSet();
+        State state1 = new State(1);
+        setB.add(state1);
+        Boolean result = areEqual(setA,setB);
+        assertFalse(result);
+    }
+
+    // tests if areEqual returns false if second set is empty
+    @Test
+    public void testAreEqual4() throws IOException {
+        Set setA = new HashSet();
+        Set setB = new HashSet();
+        State state1 = new State(1);
+        setA.add(state1);
+        Boolean result = areEqual(setA,setB);
+        assertFalse(result);
+    }
+
+    // tests if areEqual returns true if both sets have only s1
+    @Test
+    public void testAreEqual5() throws IOException {
+        Set setA = new HashSet();
+        Set setB = new HashSet();
+        State state1 = new State(1);
+        setA.add(state1);
+        setB.add(state1);
+        Boolean result = areEqual(setA,setB);
+        assertTrue(result);
+    }
+
+    // tests if areEqual returns false if both sets have s1 and one other state
+    @Test
+    public void testAreEqual6() throws IOException {
+        Set setA = new HashSet();
+        Set setB = new HashSet();
+        State state1 = new State(1);
+        State state2 = new State(2);
+        State state3 = new State(3);
+        setA.add(state1);
+        setA.add(state2);
+        setB.add(state1);
+        setB.add(state3);
+        Boolean result = areEqual(setA,setB);
+        assertFalse(result);
+    }
+
+    // tests if areEqual returns false if one set has s1 and the second set has s2
+    @Test
+    public void testAreEqual7() throws IOException {
+        Set setA = new HashSet();
+        Set setB = new HashSet();
+        State state1 = new State(1);
+        State state2 = new State(2);
+        State state3 = new State(3);
+        setA.add(state1);
+        setB.add(state2);
+        Boolean result = areEqual(setA,setB);
+        assertFalse(result);
+    }
+
+    // tests if areEqual returns false if one set has s1 and the second set has s2 and s3
+    @Test
+    public void testAreEqual8() throws IOException {
+        Set setA = new HashSet();
+        Set setB = new HashSet();
+        State state1 = new State(1);
+        State state2 = new State(2);
+        State state3 = new State(3);
+        setA.add(state1);
+        setB.add(state2);
+        setB.add(state3);
+        Boolean result = areEqual(setA,setB);
+        assertFalse(result);
+    }
+
+    // tests if areEqual returns false if both sets have s10 and s100
+    @Test
+    public void testAreEqual9() throws IOException {
+        Set setA = new HashSet();
+        Set setB = new HashSet();
+        State state1 = new State(10);
+        State state2 = new State(100);
+        setA.add(state1);
+        setA.add(state2);
+        setB.add(state1);
+        setB.add(state2);
+        Boolean result = areEqual(setA,setB);
+        assertTrue(result);
+    }
 
 }

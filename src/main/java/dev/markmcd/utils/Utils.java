@@ -184,18 +184,32 @@ public class Utils {
         Collections.sort(statesList);
 
         String labelsStr = "";
+        int stateNum = 0;
+        int numStates = statesList.size();
         for (Object stateObj : statesList) {
             State state = (State) stateObj;
             labelsStr = labelsStr + state.toStringDetailed();
+            if (numStates > 1 && stateNum < numStates - 1) {
+                labelsStr = labelsStr + ",\n";
+                stateNum++;
+            }
         }
-        labelsStr = labelsStr.substring(0,labelsStr.length() - 2); // remove trailing comma and newline
-        labelsStr = labelsStr + ";\n";
+        labelsStr = labelsStr + ";";
         return labelsStr;
     }
 
     // Set Utils
 
+    /**
+     * Checks if a set of {@link State}s has a certain state in it.
+     * Note that only a state of the same state number is checked for. ie, 1 for s1. So this is not checking for the exact state by memory address. This is a loose implementation - might have to change this when I add Jung GUI back in
+     * @param states set of {@link State}s to be searched for the state
+     * @param state a {@link State} to be checked if it is in the set of states
+     * @return true if state is in set, false otherwise
+     */
     public static Boolean contains(Set states, State state) {
+        if (states == null) { throw new NullPointerException("States param in contains is null"); }
+        if (state == null) { throw new NullPointerException("State param in contains is null"); }
         Integer stateNum = state.getNumber();
         for (Object stateObj : states) {
             State thisState = (State) stateObj;
@@ -206,8 +220,17 @@ public class Utils {
         return false;
     }
 
+
+    /**
+     * Tests if two sets of states are "equal", ie. do they each have the same number of states and does the second set have a state with the same num as a state in the first set
+     * Note that only a state of the same state number is checked for. ie, 1 for s1. So this is not checking for the exact state by memory address. This is a loose implementation - might have to change this when I add Jung GUI back in
+     * @param setA set of {@link State}s to be compared to setB
+     * @param setB set of {@link State}s to be compared to setA
+     * @return true if sets are the same size and they have states of the same state numbers.
+     */
     public static Boolean areEqual(Set setA, Set setB) {
-        if (setA.size() == setB.size()) {
+        if (setA == null || setB == null) { throw new NullPointerException("areEqual param(s) is null."); }
+        if (setA.size() > 0 && setA.size() == setB.size()) {
             for (Object stateObj : setA) {
                 State state = (State) stateObj;
                 if (!contains(setB,state)) {

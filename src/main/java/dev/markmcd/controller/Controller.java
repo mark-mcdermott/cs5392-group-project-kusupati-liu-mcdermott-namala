@@ -66,22 +66,25 @@ public class Controller {
      * Kicks off the program after being called from Main
      * @param model The model (MVC "model", not CTL "model" in this case) stores the Kripke filename, the ctl model to test, the state to check, the command line arguments and the Kripke data
      * @param view The view in this version is just a rudimentary command line output that says if the state(s) hold for the model and tries to give meaningful error messages if anything failed along the way.
+     * @param options Two command line arguments are mandatory: -k <kripke file> specifying the Kripke filename and then either -a <model> or -f <model filename>. There is an optional -s <state name> argument specifying a state to check.
      * @throws IOException
      */
     public Controller(Model model, View view, Options options) throws IOException {
         if (model == null || view == null || options == null) { throw new NullPointerException("A param to Controller constructor is null"); }
         this.model = model;
         this.view = view;
-        runProgram(args, options);
+        runProgram(options);
     }
 
     /**
      * This is the meat and potatoes of the program - all the major function calls are here. Proecesses the arguments, runs tests, runs the model checking
-     * @param args Two command line arguments are mandatory: -k <kripke file> specifying the Kripke filename and then either -a <model> or -f <model filename>. There is an optional -s <state name> argument specifying a state to check.
+     * @param options Two command line arguments are mandatory: -k <kripke file> specifying the Kripke filename and then either -a <model> or -f <model filename>. There is an optional -s <state name> argument specifying a state to check.
      * @throws IOException
      */
-    public void runProgram(String[] args, Options options) throws IOException {
-        if (args == null || options == null) { throw new NullPointerException("runProgram param is null"); }
+    public void runProgram(Options options) throws IOException {
+        if (options == null) {
+            throw new NullPointerException("runProgram options param is null");
+        }
 
         if (options.getShouldE2ETestsRun()) {
             validateEndToEndTestModels(options.getTestFilesDir());
@@ -140,7 +143,7 @@ public class Controller {
      * @param testFilesDir A {@link String} of the folder inside the resources folder that has all the end to end test files
      * @throws IOException
      */
-    private void validateEndToEndTestModels(String testFilesDir) throws IOException {
+    public void validateEndToEndTestModels(String testFilesDir) throws IOException {
         TestFiles testFiles = getTestFiles(testFilesDir);
 
         for (Object testFilesObj : testFiles.getKripkesValid()) {
@@ -168,7 +171,7 @@ public class Controller {
      * @return A {@link Kripke} object
      * @throws IOException
      */
-    private Kripke getKripkeFromFile(String kripkeFile) throws IOException {
+    public Kripke getKripkeFromFile(String kripkeFile) throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(testFilesDir + "/" + kripkeFile);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
@@ -251,13 +254,18 @@ public class Controller {
      * @return A {@link Transition} of the transition name and its from and to states.
      */
     private static Transition parseKripkeTransitionLine(String line) {
-        char secondChar = line.charAt(1);
-        Integer elemNum = Character.getNumericValue(secondChar);
-        Integer fromNum = parseInt(line.substring(6,7));
-        Integer toNum = parseInt(line.substring(11,12));
+        String[] transitionLineArr = line.split(" ",0); // ie, ["t1",":","s1","-","s2,"]
+        String transitionName = transitionLineArr[0];
+        String fromName = transitionLineArr[2];
+        String toName = transitionLineArr[4];
+        toName = toName.replace(",","");
+        toName = toName.replace(";","");
+        Integer transitionNum = parseInt(transitionName.replace("t",""));
+        Integer fromNum = parseInt(fromName.replace("s",""));
+        Integer toNum = parseInt(toName.replace("s",""));
         State fromState = new State(fromNum);
         State toState = new State(toNum);
-        return new Transition(elemNum, fromState, toState);
+        return new Transition(transitionNum, fromState, toState);
     }
 
     private void runEndToEndTests() {
