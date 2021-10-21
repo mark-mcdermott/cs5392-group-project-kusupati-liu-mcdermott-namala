@@ -113,7 +113,7 @@ public class Utils {
                 return state;
             }
         }
-        throw new IOException("state number" + stateNum + " not found in state set in getState");
+        throw new IOException("state number " + stateNum + " not found in state set in getState");
     }
 
 

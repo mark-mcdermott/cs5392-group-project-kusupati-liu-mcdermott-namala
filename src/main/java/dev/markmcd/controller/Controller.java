@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 import static dev.markmcd.utils.Utils.*;
+import static dev.markmcd.utils.Utils.contains;
 import static java.lang.Integer.parseInt;
 import static java.lang.Integer.valueOf;
 
@@ -157,8 +158,17 @@ public class Controller {
             ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripke, testFormula);
             Parser parser = new Parser(modelCheckInputs);
             parser.Parse();
-
         }
+
+        // TODO: start here - parsing broken models (do the errors need line numbers?
+//        for (Object testFilesObj : testFiles.getKripkesInvalid()) {
+//            String testFile = (String) testFilesObj;
+//            System.out.println(testFile);
+//            Kripke kripke = getKripkeFromFile(testFile);
+//            ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripke, testFormula);
+//            Parser parser = new Parser(modelCheckInputs);
+//            parser.Parse();
+//        }
 
     }
 
@@ -194,11 +204,16 @@ public class Controller {
             // first line should always be state line
             if (lineNum == 1) {
                 line = removeByteOrderMark(line);
+                if (kripkeFile.equals("Broken Model 2.txt")) {
+                    int i=0;
+                }
                 states = parseKripkeStates(line); }
             // after first line, if it starts with a "t", it's a transition line
             else if (firstChar == 't') { transitions.add(parseKripkeTransitionLine(line)); }
             // and if it starts with an s it's a labels line
-            else if (firstChar == 's') { parseKripkeLabelsLine(line, states); }
+            else if (firstChar == 's') {
+                parseKripkeLabelsLine(line, states);
+            }
             lineNum++;
         }
         Kripke kripke = new Kripke(states, transitions);
@@ -216,20 +231,29 @@ public class Controller {
      * @throws IOException
      */
     private static void parseKripkeLabelsLine(String line, Set states) throws IOException {
-        char secondChar = line.charAt(1);
-        Integer stateNum = Character.getNumericValue(secondChar);
+        String[] lineArr = line.split(" ",0);
+        String stateName = lineArr[0];
+        Integer stateNum = parseInt(stateName.replace("s",""));
+        // char secondChar = line.charAt(1);
+        // Integer stateNum = Character.getNumericValue(secondChar);
         Set labels = new HashSet<Character>();
-        line = line.substring(5); // remove everything in the front (ie, "s1 : ") so only the labels are left (ie, "q t r,")
-        line = line.substring(0, line.length() - 1); // remove trailing comma or semicolon
-
-        while (line.length() > 0) {
-            Character label = line.charAt(0);
-            labels.add(label);
-            if (line.length() > 2) {
-                line = line.substring(2); // remove first char and the space after it
-            } else {
-                line = "";
+        // line = line.substring(5); // remove everything in the front (ie, "s1 : ") so only the labels are left (ie, "q t r,")
+        // line = line.substring(0, line.length() - 1); // remove trailing comma or semicolon
+        lineArr[lineArr.length - 1].replace(",","");
+        lineArr[lineArr.length - 1].replace(";","");
+        int lineArrElemNum = 0;
+        for (Object lineArrElemObj : lineArr) {
+            String lineArrElem = (String) lineArrElemObj;
+            if (lineArrElemNum != 0 && lineArrElemNum != 1) { // skip state name and colon and start at labels
+                Character label = lineArrElem.charAt(0);
+                labels.add(label);
+//                if (line.length() > 2) {
+//                    line = line.substring(2); // remove first char and the space after it
+//                } else {
+//                    line = "";
+//                }
             }
+            lineArrElemNum++;
         }
         getState(stateNum, states).setLabels(labels);
     }
@@ -239,7 +263,7 @@ public class Controller {
      * @param line {@link String} line from a Kripke text file (the first line). The line must be in a format like this: "s1, s2, s3, s4;" where the states are separated by a comma and a space and the last state is followed by a semicolon.
      * @return A {@link Set} representing all the {@link State}s specified in the line.
      */
-    private static Set parseKripkeStates(String line) {
+    private static Set parseKripkeStates(String line) throws IOException {
        Set states = new HashSet<State>();
        line = line.trim();
        String[] stateStrings = line.split(",",0);
@@ -250,7 +274,11 @@ public class Controller {
            stateStr = stateStr.replace(";","");
            stateStr = stateStr.replace("s","");
            Integer stateInt = parseInt(stateStr);
-           states.add(new State(stateInt));
+           State newState = new State(stateInt);
+           if (contains(states, newState)) {
+               throw new IOException("Duplicate state in model file.");
+           }
+           states.add(newState);
        }
        return states;
     }
