@@ -71,27 +71,12 @@ public class ControllerTest {
         controller.getTestFiles(testFilesDir);
     }
 
-    // tests if getTestFiles throws IllegalArgumentException if testFilesDir not the name of an actual directory
-    @Test(expected = IllegalArgumentException.class)
+    // tests if getTestFiles throws NullPointerException if testFilesDir not the name of an actual directory
+    @Test(expected = NullPointerException.class)
     public void testGetTestFiles2() throws Exception {
         Controller controller = new Controller(new Model(), new View(), new Options());
         String testFilesDir = "test";
         controller.getTestFiles(testFilesDir);
-    }
-
-    // tests there are no png files in getTestFiles output
-    @Test
-    public void testGetTestFiles3() throws Exception {
-        String testFilesDir = "end-to-end-tests";
-        Boolean runEndToEndTests = true;
-        String[] args = {"test"};
-        Options options = new Options(args, testFilesDir);
-        Controller controller = new Controller(new Model(), new View(), new Options());
-        TestFiles testFiles = controller.getTestFiles(options.getTestFilesDir());
-        List kripkesInvalid = testFiles.getKripkesInvalid();
-        List kripkesValid = testFiles.getKripkesValid();
-        List models = testFiles.getModels();
-        //
     }
 
     // tests getTestFiles is getting correct results

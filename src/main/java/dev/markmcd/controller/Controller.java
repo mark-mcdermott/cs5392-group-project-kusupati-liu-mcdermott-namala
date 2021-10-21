@@ -267,7 +267,10 @@ public class Controller {
         for (Object lineArrElemObj : lineArr) {
             String lineArrElem = (String) lineArrElemObj;
             if (lineArrElemNum != 0 && lineArrElemNum != 1) { // skip state name and colon and start at labels
-                Character label = lineArrElem.charAt(0);
+                // Character label = lineArrElem.charAt(0);
+                String label = lineArrElem;
+                label.replace(",","");
+                label.replace(";","");
                 if (labels.contains(label)) { kripkeFileObj.setErrorMessage("Syntax error in model file \"" + kripkeFileObj.getKripkeFilename() + "\" on line " + kripkeFileObj.getLineNum() + ": label \"" + label + "\" already exists in state \"" + stateName + "\"."); }
                 labels.add(label);
 //                if (line.length() > 2) {

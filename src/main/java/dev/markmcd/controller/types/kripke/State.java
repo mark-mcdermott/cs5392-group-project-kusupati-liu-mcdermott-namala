@@ -129,8 +129,8 @@ public class State implements Comparable<State> {
         if (labels == null) { throw new NullPointerException("Trying to get state's label string, but the label set is null."); }
         String labelsStr = "";
         for (Object labelObj : labels ) {
-            Character labelChar = (Character) labelObj;
-            labelsStr = labelsStr + labelChar + " ";
+            String thisLabelStr = (String) labelObj;
+            labelsStr = labelsStr + thisLabelStr + " ";
         }
         labelsStr = labelsStr.trim();
         return labelsStr;
@@ -148,8 +148,9 @@ public class State implements Comparable<State> {
         Boolean hasLabel = false;
         for (Object labelObj : labels ) {
             if (labelObj == null) { throw new NullPointerException("label in label set in labelToCheck is null"); }
-            Character label = (Character) labelObj;
-            if (label == labelToCheck) {
+            // Character label = (Character) labelObj;
+            String label = (String) labelObj;
+            if (label.equals(labelToCheck)) {
                 return true;
             }
         }
