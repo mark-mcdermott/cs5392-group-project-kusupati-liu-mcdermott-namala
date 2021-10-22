@@ -5,10 +5,12 @@ import dev.markmcd.controller.ctl.Validator.ParseException;
 import dev.markmcd.controller.types.kripke.State;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import static dev.markmcd.utils.Utils.contains;
+import static dev.markmcd.utils.Utils.*;
 
 public class CtlUtils {
 
@@ -127,15 +129,15 @@ public class CtlUtils {
         return union;
     }
 
-    public static Set subtract(Set a, Set b) {
-        Set subtract = a;
+    public static Set subtract(Set a, Set b) throws IOException {
+        Set aCopy = copy(a);
         for (Object stateObj : b) {
-            State state = (State) stateObj;
-            if (contains(subtract,state)) {
-                subtract.remove(state);
-            }
+            State thisState = (State) stateObj;
+            Integer stateNumToRemove = thisState.getNumber();
+            State stateToRemove = getState(stateNumToRemove,aCopy);
+            aCopy.remove(stateToRemove);
         }
-        return subtract;
+        return aCopy;
     }
 
 }

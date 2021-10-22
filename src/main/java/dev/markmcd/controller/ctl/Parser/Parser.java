@@ -32,26 +32,26 @@ public class Parser implements ParserConstants {
 
     /* these algos are from p. 227 of pdf Logic In CS textbook */
 
-    public static Set EX(Set states) {
+    public static Set EX(Set states) throws IOException {
         return preE(states);
     }
 
-    public static Set EF(Set phi) {
+    public static Set EF(Set phi) throws IOException {
         Set tautology = S;
         return EU(tautology,phi);
     }
 
     // TODO this is totally untested so far
-    public static Set EG(Set phi) {
+    public static Set EG(Set phi) throws IOException {
         return not(AF(not(phi)));
     }
 
     // TODO this is totally untested so far
-    public static Set AX(Set states) {
+    public static Set AX(Set states) throws IOException {
         return not(EX(not(states)));
     }
 
-    public static Set AF(Set states) {
+    public static Set AF(Set states) throws IOException {
         Set X = S;
         Set Y = states;
         while (!areEqual(X,Y)) {
@@ -62,11 +62,11 @@ public class Parser implements ParserConstants {
     }
 
     // TODO this is totally untested so far
-    public static Set AG(Set states) {
+    public static Set AG(Set states) throws IOException {
         return not(EF(not(states)));
     }
 
-    public static Set EU(Set phi, Set psi) {
+    public static Set EU(Set phi, Set psi) throws IOException {
         Set W = phi;
         Set X = S;
         Set Y = psi;
@@ -78,7 +78,7 @@ public class Parser implements ParserConstants {
     }
 
     /* TODO: still needs heavy testing!! */
-    public static Set AU(Set phi, Set psi) {
+    public static Set AU(Set phi, Set psi) throws IOException {
         return or(not(EU(not(psi),and(not(phi),not(psi)))),EG(not(psi)));
     }
 
@@ -90,12 +90,12 @@ public class Parser implements ParserConstants {
         return intersection(a,b);
     }
 
-    public static Set not(Set a) {
+    public static Set not(Set a) throws IOException {
         return subtract(S,a);
     }
 
     /* TODO: function still untested */
-    public static Set preE(Set states) {
+    public static Set preE(Set states) throws IOException {
         Set S = kripke.getStates();
         Set preE = new HashSet();
         Set statesToCheck = subtract(S,states);
@@ -113,7 +113,7 @@ public class Parser implements ParserConstants {
     }
 
     /* TODO: function still untested */
-    public static Set preA(Set states) {
+    public static Set preA(Set states) throws IOException {
         Set S = kripke.getStates();
         Set preA = new HashSet();
         Set statesToCheck = subtract(S,states);

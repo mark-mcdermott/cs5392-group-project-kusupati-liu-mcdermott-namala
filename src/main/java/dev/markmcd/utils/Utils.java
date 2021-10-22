@@ -239,6 +239,16 @@ public class Utils {
         return false;
     }
 
+    public static void removeState(Set states, State state) {
+        Integer stateNum = state.getNumber();
+        for (Object stateObj : states) {
+            State thisState = (State) stateObj;
+            if (thisState.getNumber() == stateNum) {
+                states.remove(thisState);
+            }
+        }
+    }
+
     // from https://stackoverflow.com/a/31624585
     public static String trimAdvanced(String value) {
 
@@ -311,6 +321,16 @@ public class Utils {
         }
     }
 
+    public static Set copy(Set set) {
+        Set copy = new HashSet();
+        for (Object stateObj : set) {
+            State state = (State) stateObj;
+            State copyState = new State(state.getNumber());
+            copy.add(copyState);
+        }
+        return copy;
+    }
+
 
 
     // remove byte order mark https://www.postgresql.org/message-id/20180717101246.GA41457%40elch.exwg.net
@@ -336,6 +356,7 @@ public class Utils {
             throw new Exception(errorMessage);
         }
     }
+
 
 
 
