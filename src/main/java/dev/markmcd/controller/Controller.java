@@ -397,6 +397,7 @@ public class Controller {
                         String rawLineForStateToCheck = rawLine;
                         String[] lineArr = rawLineForStateToCheck.split(";",0);
                         stateToCheck = lineArr[0].trim();
+                        stateToCheck = stateToCheck.replaceAll("\uFEFF", "");
                         formula = lineArr[1];
                         expected = parseBoolean(lineArr[2]);
                         FormulaFileObj formulaFileObj = new FormulaFileObj(stateToCheck, formula, expected);
