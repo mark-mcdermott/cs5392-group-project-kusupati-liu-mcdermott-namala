@@ -29,8 +29,12 @@ public class Parser implements ParserConstants {
     }
 
     public static Set EX(Set states) {
-        Set preEStates = preE(states);
-        return preEStates;
+        return preE(states);
+    }
+
+    // TODO (stub)!!
+    public static Set AX(Set states) {
+        return preE(states);
     }
 
     public static Set AF(Set states, Set kripkeStates) {
@@ -200,7 +204,7 @@ Set statesWithLabels = statesWithLabel(states, t);
     case AX:{
       jj_consume_token(AX);
       f = formula(s);
-{if ("" != null) return f;} /* TODO: finish this stub */
+{if ("" != null) return AX(f);} /* TODO: finish this stub */
       break;
       }
     case AF:{

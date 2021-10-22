@@ -35,6 +35,11 @@ public class Parser {
         return preE(states);
     }
 
+    // TODO (stub)!!
+    public static Set AX(Set states) {
+        return preE(states);
+    }
+
     public static Set AF(Set states, Set kripkeStates) {
         Set X = kripkeStates;
         Set Y = states;
@@ -194,7 +199,7 @@ Set temporalExpression(Set s) throws ParseException, IOException :
 {
       /* TODO: these algos are on p. 227 of pdf of textbook */
       <AX> f = formula(s)
-      { return f; /* TODO: finish this stub */ }
+      { return AX(f); /* TODO: finish this stub */ }
     | <AF> f = formula(s)
       { return f; /* TODO: finish this stub */ }
     | <AG> f = formula(s)
