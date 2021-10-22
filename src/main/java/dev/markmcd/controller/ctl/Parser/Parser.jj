@@ -33,13 +33,40 @@ public class Parser {
 	  S = kripke.getStates();
     }
 
+    /* these algos are from p. 227 of pdf Logic In CS textbook */
+
     public static Set EX(Set states) {
         return preE(states);
     }
 
-    // TODO (stub)!!
+    public static Set EF(Set phi) {
+        Set tautology = S;
+        return EU(tautology,phi);
+    }
+
+    // TODO this is totally untested so far
+    public static Set EG(Set phi) {
+        return not(AF(not(phi)));
+    }
+
+    // TODO this is totally untested so far
     public static Set AX(Set states) {
-        return preE(states);
+        return not(EX(not(states)));
+    }
+
+    public static Set AF(Set states) {
+        Set X = S;
+        Set Y = states;
+        while (!areEqual(X,Y)) {
+            X = Y;
+            Y = union(Y,preA(Y));
+        }
+        return Y;
+    }
+
+    // TODO this is totally untested so far
+    public static Set AG(Set states) {
+        return not(EF(not(states)));
     }
 
     public static Set EU(Set phi, Set psi) {
@@ -53,14 +80,9 @@ public class Parser {
         return Y;
     }
 
-    public static Set AF(Set states, Set kripkeStates) {
-        Set X = kripkeStates;
-        Set Y = states;
-        while (!areEqual(X,Y)) {
-            X = Y;
-            Y = union(Y,preA(Y));
-        }
-        return Y;
+    /* TODO: still needs heavy testing!! */
+    public static Set AU(Set phi, Set psi) {
+        return or(not(EU(not(psi),and(not(phi),not(psi)))),EG(not(psi)));
     }
 
     public static Set or(Set a, Set b) {
@@ -71,8 +93,8 @@ public class Parser {
         return intersection(a,b);
     }
 
-    public static Set not(Set states, Set a) {
-        return subtract(states,a);
+    public static Set not(Set a) {
+        return subtract(S,a);
     }
 
     /* TODO: function still untested */
@@ -171,6 +193,8 @@ Set formula(Set states) throws ParseException, IOException :
         }
     | <E> <LPAREN> e = expression(states) <U> b = expression(states) <RPAREN>
       { return EU(e,b); }
+    | "A" <LPAREN> e = expression(states) <U> b = expression(states) <RPAREN>
+      { return AU(e,b); }
 }
 
 Set expression(Set states) throws ParseException, IOException :
@@ -187,7 +211,7 @@ Set expression(Set states) throws ParseException, IOException :
         }
     |   <NOT> f = formula(states)
         {
-            return not(states,f);
+            return not(f);
         }
     |   <LPAREN> f = formula(states) <RPAREN>
         { return f; }
@@ -205,26 +229,23 @@ Set binaryOp(Set subject, Set states) throws ParseException, IOException :
     |   <IMPLIES> predicate = formula(subject)
         {
             /* TODO: need to test this implies out a bunch - no idea if it's working right */
-            return or(not(states,subject),predicate);  /* (not subject or predicate) */
+            return or(not(subject),predicate);  /* (not subject or predicate) */
         }
 }
 
 Set temporalExpression(Set s) throws ParseException, IOException :
 { Set f; }
 {
-      /* TODO: these algos are on p. 227 of pdf of textbook */
       <AX> f = formula(s)
-      { return AX(f); /* TODO: finish this stub */ }
+      { return AX(f); }
     | <AF> f = formula(s)
-      { return f; /* TODO: finish this stub */ }
+      { return AF(f); }
     | <AG> f = formula(s)
-      { return f; /* TODO: finish this stub */ }
+      { return AG(f); }
     | <EX> f = formula(s)
       { return EX(f); }
     | <EF> f = formula(s)
-      { return f; /* TODO: finish this stub */ }
+      { return EF(f); }
     | <EG> f = formula(s)
-      { return f; /* TODO: finish this stub */ }
-    | <A> <LPAREN> f = formula(s) <U> f = formula(s) <RPAREN>
-      { return f; /* TODO: finish this stub */ }
+      { return EG(f); }
 }

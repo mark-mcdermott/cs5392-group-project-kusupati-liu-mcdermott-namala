@@ -1,5 +1,4 @@
-﻿s1;E(qUt);True
-s1;EGp and AGq;False
+﻿s1;EGp and AGq;False
 s2;EGp and AGq;False
 s3;EGp and AGq;False
 s4;EGp and AGq;False

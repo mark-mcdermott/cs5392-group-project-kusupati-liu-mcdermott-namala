@@ -30,13 +30,40 @@ public class Parser implements ParserConstants {
           S = kripke.getStates();
     }
 
+    /* these algos are from p. 227 of pdf Logic In CS textbook */
+
     public static Set EX(Set states) {
         return preE(states);
     }
 
-    // TODO (stub)!!
+    public static Set EF(Set phi) {
+        Set tautology = S;
+        return EU(tautology,phi);
+    }
+
+    // TODO this is totally untested so far
+    public static Set EG(Set phi) {
+        return not(AF(not(phi)));
+    }
+
+    // TODO this is totally untested so far
     public static Set AX(Set states) {
-        return preE(states);
+        return not(EX(not(states)));
+    }
+
+    public static Set AF(Set states) {
+        Set X = S;
+        Set Y = states;
+        while (!areEqual(X,Y)) {
+            X = Y;
+            Y = union(Y,preA(Y));
+        }
+        return Y;
+    }
+
+    // TODO this is totally untested so far
+    public static Set AG(Set states) {
+        return not(EF(not(states)));
     }
 
     public static Set EU(Set phi, Set psi) {
@@ -50,14 +77,9 @@ public class Parser implements ParserConstants {
         return Y;
     }
 
-    public static Set AF(Set states, Set kripkeStates) {
-        Set X = kripkeStates;
-        Set Y = states;
-        while (!areEqual(X,Y)) {
-            X = Y;
-            Y = union(Y,preA(Y));
-        }
-        return Y;
+    /* TODO: still needs heavy testing!! */
+    public static Set AU(Set phi, Set psi) {
+        return or(not(EU(not(psi),and(not(phi),not(psi)))),EG(not(psi)));
     }
 
     public static Set or(Set a, Set b) {
@@ -68,8 +90,8 @@ public class Parser implements ParserConstants {
         return intersection(a,b);
     }
 
-    public static Set not(Set states, Set a) {
-        return subtract(states,a);
+    public static Set not(Set a) {
+        return subtract(S,a);
     }
 
     /* TODO: function still untested */
@@ -130,7 +152,6 @@ public class Parser implements ParserConstants {
     case EX:
     case EF:
     case EG:
-    case A:
     case LPAREN:
     case ATOM:{
       e = expression(states);
@@ -159,6 +180,16 @@ if (b != null) { {if ("" != null) return b;} }
 {if ("" != null) return EU(e,b);}
       break;
       }
+    case A:{
+      jj_consume_token(A);
+      jj_consume_token(LPAREN);
+      e = expression(states);
+      jj_consume_token(U);
+      b = expression(states);
+      jj_consume_token(RPAREN);
+{if ("" != null) return AU(e,b);}
+      break;
+      }
     default:
       jj_la1[1] = jj_gen;
       jj_consume_token(-1);
@@ -180,7 +211,7 @@ Set statesWithLabels = statesWithLabel(states, t);
     case NOT:{
       jj_consume_token(NOT);
       f = formula(states);
-{if ("" != null) return not(states,f);}
+{if ("" != null) return not(f);}
       break;
       }
     case LPAREN:{
@@ -195,8 +226,7 @@ Set statesWithLabels = statesWithLabel(states, t);
     case AG:
     case EX:
     case EF:
-    case EG:
-    case A:{
+    case EG:{
       f = temporalExpression(states);
 {if ("" != null) return f;}
       break;
@@ -227,7 +257,7 @@ Set statesWithLabels = statesWithLabel(states, t);
       jj_consume_token(IMPLIES);
       predicate = formula(subject);
 /* TODO: need to test this implies out a bunch - no idea if it's working right */
-            {if ("" != null) return or(not(states,subject),predicate);}  /* (not subject or predicate) */
+            {if ("" != null) return or(not(subject),predicate);}  /* (not subject or predicate) */
 
       break;
       }
@@ -244,19 +274,19 @@ Set statesWithLabels = statesWithLabel(states, t);
     case AX:{
       jj_consume_token(AX);
       f = formula(s);
-{if ("" != null) return AX(f);} /* TODO: finish this stub */
+{if ("" != null) return AX(f);}
       break;
       }
     case AF:{
       jj_consume_token(AF);
       f = formula(s);
-{if ("" != null) return f;} /* TODO: finish this stub */
+{if ("" != null) return AF(f);}
       break;
       }
     case AG:{
       jj_consume_token(AG);
       f = formula(s);
-{if ("" != null) return f;} /* TODO: finish this stub */
+{if ("" != null) return AG(f);}
       break;
       }
     case EX:{
@@ -268,23 +298,13 @@ Set statesWithLabels = statesWithLabel(states, t);
     case EF:{
       jj_consume_token(EF);
       f = formula(s);
-{if ("" != null) return f;} /* TODO: finish this stub */
+{if ("" != null) return EF(f);}
       break;
       }
     case EG:{
       jj_consume_token(EG);
       f = formula(s);
-{if ("" != null) return f;} /* TODO: finish this stub */
-      break;
-      }
-    case A:{
-      jj_consume_token(A);
-      jj_consume_token(LPAREN);
-      f = formula(s);
-      jj_consume_token(U);
-      f = formula(s);
-      jj_consume_token(RPAREN);
-{if ("" != null) return f;} /* TODO: finish this stub */
+{if ("" != null) return EG(f);}
       break;
       }
     default:
@@ -310,7 +330,7 @@ Set statesWithLabels = statesWithLabel(states, t);
 	   jj_la1_init_0();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x1c0,0x15fe20,0x14fe20,0x1c0,0xfe00,};
+	   jj_la1_0 = new int[] {0x1c0,0x15fe20,0x147e20,0x1c0,0x7e00,};
 	}
 
   /** Constructor with InputStream. */
