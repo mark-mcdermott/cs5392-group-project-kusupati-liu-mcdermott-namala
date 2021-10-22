@@ -280,8 +280,8 @@ public class Controller {
             if (lineArrElemNum != 0 && lineArrElemNum != 1) { // skip state name and colon and start at labels
                 // Character label = lineArrElem.charAt(0);
                 String label = lineArrElem;
-                label.replace(",","");
-                label.replace(";","");
+                label = label.replace(",","");
+                label = label.replace(";","");
                 if (labels.contains(label)) { kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilename() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": label \"" + label + "\" already exists in state \"" + stateName + "\"."); }
                 labels.add(label);
 //                if (line.length() > 2) {
