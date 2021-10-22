@@ -13,12 +13,12 @@ import java.util.List;
 public class TestFiles {
     List kripkesValid;
     List kripkesInvalid;
-    List models;
+    List formulas;
 
-    public TestFiles(List kripkesValid, List kripkesInvalid, List models) {
+    public TestFiles(List kripkesValid, List kripkesInvalid, List formulas) {
         this.kripkesValid = kripkesValid;
         this.kripkesInvalid = kripkesInvalid;
-        this.models = models;
+        this.formulas = formulas;
     }
 
     public List getKripkesInvalid() {
@@ -29,7 +29,7 @@ public class TestFiles {
         return kripkesValid;
     }
 
-    public List getModels() {
-        return models;
+    public List getFormulas() {
+        return formulas;
     }
 }

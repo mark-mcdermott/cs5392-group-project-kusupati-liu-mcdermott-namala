@@ -87,7 +87,7 @@ public class Kripke {
             State state = (State) stateObj;
             if (state == null) { throw new NullPointerException("A state in kripke states is null in ModelCheckInputs call"); }
             for (Object labelObj : state.getLabels()) {
-                Character label = (Character) labelObj;
+                String label = (String) labelObj;
                 if (label == null) { throw new NullPointerException("A label in a kripke state is null in ModelCheckInputs call"); }
             }
             for (Object transitionObject : state.getTransitions()) {

@@ -1,19 +1,15 @@
 package dev.markmcd.controller;
 
-import dev.markmcd.controller.ctl.Parser.ParseException;
-import dev.markmcd.controller.types.kripke.Kripke;
 import dev.markmcd.controller.types.kripke.KripkeFileObj;
 import dev.markmcd.controller.types.misc.TestFiles;
 import dev.markmcd.model.Model;
 import dev.markmcd.view.View;
-import dev.markmcd.controller.Controller;
 import dev.markmcd.controller.types.misc.Options;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
+
 import static org.junit.Assert.assertEquals;
 
 public class ControllerTest {
@@ -90,7 +86,7 @@ public class ControllerTest {
         TestFiles testFiles = controller.getTestFiles(options.getTestFilesDir());
         List kripkesInvalidActual = testFiles.getKripkesInvalid();
         List kripkesValidActual = testFiles.getKripkesValid();
-        List modelsActual = testFiles.getModels();
+        List modelsActual = testFiles.getFormulas();
         List kripkesInvalidExpected = Arrays.asList("Broken Model 1.txt", "Broken Model 2.txt", "Broken Model 3.txt", "Broken Model 4.txt", "Broken Model 5.txt", "Broken Model 6.txt", "Broken Model 7.txt", "Broken Model 8.txt");
         List kripkesValidExpected = Arrays.asList("Model 1.txt","Model 2.txt","Model 3.txt","Model 4.txt","Model 5.txt","Model 6.txt","Model 7.txt");
         List modelsExpected = Arrays.asList("Model 1 - Test Formulas.txt","Model 2 - Test Formulas.txt","Model 3 - Test Formulas.txt","Model 4 - Test Formulas.txt","Model 5 - Test Formulas.txt","Model 6 - Test Formulas.txt","Model 7 - Test Formulas.txt");
@@ -109,7 +105,7 @@ public class ControllerTest {
         Controller controller = new Controller(new Model(), new View(), options);
         String nullStr = null;
         try {
-            KripkeFileObj kripkeFileObj = controller.getKripkeFromFile(nullStr);
+            KripkeFileObj kripkeFileObj = controller.getKripkeFileObj(nullStr);
         } catch (Error e) {
             System.err.println(e);
         }
@@ -125,7 +121,7 @@ public class ControllerTest {
         Options options = new Options(args, testFilesDir);
         Controller controller = new Controller(new Model(), new View(), options);
         String modelFilename = "Model 1.txt";
-        KripkeFileObj kripkeFileObj = controller.getKripkeFromFile(modelFilename);
+        KripkeFileObj kripkeFileObj = controller.getKripkeFileObj(modelFilename);
         String kripkeStr = kripkeFileObj.getKripke().toString();
     }
 

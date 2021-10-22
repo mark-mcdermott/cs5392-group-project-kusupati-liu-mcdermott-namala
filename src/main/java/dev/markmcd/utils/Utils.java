@@ -280,7 +280,7 @@ public class Utils {
      */
     public static void handleError(String errorMessage, Boolean printExceptions) throws Exception {
         if (printExceptions) {
-            System.err.println(errorMessage);
+            System.out.println(errorMessage);
         } else {
             throw new Exception(errorMessage);
         }
