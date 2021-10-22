@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import static java.lang.Integer.parseInt;
+
 /**
  * The ModelCheckInputs class has four private properties - the first three are inputs to this class: Kripke, the state to check and the model. The fourth, the modelStream, is generated within the constructor.
  * The {@link Kripke} must be fully populated with all necessary states, transitions and optionally (depending on the Kripke to model) labels. Null or empty states and transitions will throw a NullPointerException.
@@ -46,16 +48,27 @@ public class ModelCheckInputs {
      * @throws UnsupportedEncodingException
      */
     public ModelCheckInputs(Kripke kripke, String formula, State stateToCheck) throws IOException {
-
         if (kripke == null) { throw new NullPointerException("kripke is null in ModelCheckInputs call"); }
         kripke.checkKripkeForNulls(); // check kripke for null states, transitions or labels and throws exception if found
         if (formula == null) { throw new NullPointerException("formula is null in ModelCheckInputs call"); }
         if (stateToCheck == null) { throw new NullPointerException("stateToCheck is null in ModelCheckInputs call"); }
-
         // set properties
         this.kripke = kripke;
         this.formula = formula;
         this.stateToCheck = stateToCheck;
+        this.formulaStream = new ByteArrayInputStream(formula.getBytes("UTF-8"));
+    }
+
+    public ModelCheckInputs(Kripke kripke, String formula, String stateToCheckName) throws IOException {
+        if (kripke == null) { throw new NullPointerException("kripke is null in ModelCheckInputs call"); }
+        kripke.checkKripkeForNulls(); // check kripke for null states, transitions or labels and throws exception if found
+        if (formula == null) { throw new NullPointerException("formula is null in ModelCheckInputs call"); }
+        if (stateToCheckName == null) { throw new NullPointerException("stateToCheck is null in ModelCheckInputs call"); }
+        // set properties
+        this.kripke = kripke;
+        this.formula = formula;
+        Integer stateToCheckNum = parseInt(stateToCheckName.replace("s",""));
+        this.stateToCheck = new State(stateToCheckNum);
         this.formulaStream = new ByteArrayInputStream(formula.getBytes("UTF-8"));
     }
 
@@ -66,11 +79,9 @@ public class ModelCheckInputs {
      * @throws UnsupportedEncodingException
      */
     public ModelCheckInputs(Kripke kripke, String formula) throws IOException {
-
         if (kripke == null) { throw new NullPointerException("kripke is null in ModelCheckInputs call"); }
         kripke.checkKripkeForNulls(); // check kripke for null states, transitions or labels and throws exception if found
         if (formula == null) { throw new NullPointerException("model is null in ModelCheckInputs call"); }
-
         // set properties
         this.kripke = kripke;
         this.formula = formula;

@@ -1,4 +1,4 @@
-﻿s1;EXq;True
+﻿s4;AXq;True
 s1;EGp and AGq;False
 s2;EGp and AGq;False
 s3;EGp and AGq;False

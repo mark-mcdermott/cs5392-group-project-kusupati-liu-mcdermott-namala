@@ -421,15 +421,15 @@ public class Controller {
             // Object formulaFilenameObj = formulaFiles.get(i);
             Object formulaFilenameObj = formulaFiles.get(0);
             String formulaFilename = (String) formulaFilenameObj;
-            KripkeFileObj kripkeFileObj = getKripkeFileObj(kripkeFilename);
             List formulaFileObjList = getFormulaFileObjList(formulaFilename, options);
             int numToTest = 1;
             int numTested = 0;
             // for (Object formulaFileObjObj : formulaFileObjList) {
-            if (numTested < numToTest) {
+            while (numTested < numToTest) {
+                KripkeFileObj kripkeFileObj = getKripkeFileObj(kripkeFilename);
                 // FormulaFileObj formulaFileObj = (FormulaFileObj) formulaFileObjObj;
-                FormulaFileObj formulaFileObj = (FormulaFileObj) formulaFileObjList.get(0);
-                ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), formulaFileObj.getFormula());
+                FormulaFileObj formulaFileObj = (FormulaFileObj) formulaFileObjList.get(numTested);
+                ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), formulaFileObj.getFormula(), formulaFileObj.getStateToTest());
                 Parser parser = new Parser(modelCheckInputs);
                 Set statesThatHold = parser.Parse();
                 Boolean actual = null;
@@ -446,9 +446,9 @@ public class Controller {
                     }
                 } else {
                     if (formulaFileObj.getExpected()) {
-                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should hold hold for" + formulaFileObj.getStateToTest() + " but did not.");
+                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should hold hold for " + formulaFileObj.getStateToTest() + " but did not.");
                     } else {
-                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should hold not hold for" + formulaFileObj.getStateToTest() + " but did not.");
+                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should hold not hold for " + formulaFileObj.getStateToTest() + " but did not.");
                     }
                 }
                 numTested++;
