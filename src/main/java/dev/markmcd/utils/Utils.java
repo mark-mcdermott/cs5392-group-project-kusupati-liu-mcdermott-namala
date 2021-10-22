@@ -7,6 +7,8 @@ import dev.markmcd.controller.types.misc.Options;
 import java.io.IOException;
 import java.util.*;
 
+import static java.lang.Integer.parseInt;
+
 /**
  * Generic utility methods for dealing with {@link State}s, {@link Transition}s, CTL labels and {@link Set}s.
  * String utility methods for used in printing a Kripke structure are here - getStatesStr, getTransitionsStr and getLabelsStr. These are called from model/kripke/Kripke.java.
@@ -233,6 +235,55 @@ public class Utils {
             if (thisState.getNumber() == stateNum) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    // from https://stackoverflow.com/a/31624585
+    public static String trimAdvanced(String value) {
+
+        Objects.requireNonNull(value);
+
+        int strLength = value.length();
+        int len = value.length();
+        int st = 0;
+        char[] val = value.toCharArray();
+
+        if (strLength == 0) {
+            return "";
+        }
+
+        while ((st < len) && (val[st] <= ' ') || (val[st] == '\u00A0')) {
+            st++;
+            if (st == strLength) {
+                break;
+            }
+        }
+        while ((st < len) && (val[len - 1] <= ' ') || (val[len - 1] == '\u00A0')) {
+            len--;
+            if (len == 0) {
+                break;
+            }
+        }
+
+
+        return (st > len) ? "" : ((st > 0) || (len < strLength)) ? value.substring(st, len) : value;
+    }
+
+    public static Boolean containsStateName(Set states, String stateName) {
+        if (states == null) { throw new NullPointerException("States param in contains is null"); }
+        String stateNumStr = stateName.replace("s","");
+        stateNumStr = stateNumStr.replaceAll("\uFEFF", "");
+        try {
+           int stateNum = Integer.parseInt(stateNumStr);
+           for (Object stateObj : states) {
+               State thisState = (State) stateObj;
+               if (thisState.getNumber() == stateNum) {
+                   return true;
+               }
+           }
+        } catch (NumberFormatException nfe) {
+          // Handle the condition when str is not a number.
         }
         return false;
     }

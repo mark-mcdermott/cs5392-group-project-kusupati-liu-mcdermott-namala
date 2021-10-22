@@ -142,9 +142,9 @@ public class State implements Comparable<State> {
      * @return true if {@link State} has specified label in its label {@link Set}, false if it does not
      * @throws IOException
      */
-    public Boolean hasLabel(Character labelToCheck) throws IOException {
+    public Boolean hasLabel(String labelToCheck) throws IOException {
         if (labelToCheck == null) { throw new NullPointerException("labelToCheck in state hasLabel is null"); }
-        if (!isLowerCase(labelToCheck)) { throw new IOException("labelToCheck is not a lower case letter"); }
+        // if (!isLowerCase(labelToCheck)) { throw new IOException("labelToCheck is not a lower case letter"); }
         Boolean hasLabel = false;
         for (Object labelObj : labels ) {
             if (labelObj == null) { throw new NullPointerException("label in label set in labelToCheck is null"); }

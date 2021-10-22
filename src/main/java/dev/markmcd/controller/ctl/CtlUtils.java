@@ -67,7 +67,7 @@ public class CtlUtils {
         return false;
     }
 
-    public static Set statesWithLabel(Set states, Character label) throws IOException {
+    public static Set statesWithLabel(Set states, String label) throws IOException {
            Set statesWithLabel = new HashSet();
            for (Object stateObj : states) {
                State state = (State) stateObj;
@@ -81,8 +81,9 @@ public class CtlUtils {
 
         public static Set statesWithLabel(Set states, Token t) throws IOException {
            Set statesWithLabel = new HashSet();
-           String labelStr = t.toString();
-           Character label = labelStr.charAt(0);
+           // String labelStr = t.toString();
+           // Character label = labelStr.charAt(0);
+           String label = t.toString();
            for (Object stateObj : states) {
                State state = (State) stateObj;
                // System.out.println(state);

@@ -271,7 +271,7 @@ public class StateTest {
     @Test(expected = NullPointerException.class)
     public void hasLabel1() throws NullPointerException, IOException {
         State state1 = new State(1);
-        Character labelToCheck = null;
+        String labelToCheck = null;
         state1.hasLabel(labelToCheck);
     }
 
@@ -279,7 +279,7 @@ public class StateTest {
     @Test(expected = IOException.class)
     public void hasLabel2() throws IOException {
         State state1 = new State(1);
-        Character labelToCheck = 'A';
+        String labelToCheck = "A";
         state1.hasLabel(labelToCheck);
     }
 
@@ -287,7 +287,7 @@ public class StateTest {
     @Test(expected = IOException.class)
     public void hasLabel3() throws IOException {
         State state1 = new State(1);
-        Character labelToCheck = '1';
+        String labelToCheck = "1";
         state1.hasLabel(labelToCheck);
     }
 
@@ -295,7 +295,7 @@ public class StateTest {
     @Test(expected = IOException.class)
     public void hasLabel4() throws IOException {
         State state1 = new State(1);
-        Character labelToCheck = '@';
+        String labelToCheck = "@";
         state1.hasLabel(labelToCheck);
     }
 
@@ -303,7 +303,7 @@ public class StateTest {
     @Test(expected = IOException.class)
     public void hasLabel5() throws IOException {
         State state1 = new State(1);
-        Character labelToCheck = '\n';
+        String labelToCheck = "\n";
         state1.hasLabel(labelToCheck);
     }
 
@@ -312,12 +312,12 @@ public class StateTest {
     public void hasLabel6() throws NullPointerException, IOException {
         State state1 = new State(1);
         Set labels = new HashSet();
-        Character char1 = 'a';
-        Character char2 = null;
+        String char1 = "a";
+        String char2 = null;
         labels.add(char1);
         labels.add(char2);
         state1.setLabels(labels);
-        state1.hasLabel('p');
+        state1.hasLabel("p");
     }
 
     // tests if hasLabel returns true if labelToCheck is 'a' and state has 'a'
@@ -325,10 +325,10 @@ public class StateTest {
     public void hasLabel7() throws IOException {
         State state1 = new State(1);
         Set labels = new HashSet();
-        Character char1 = 'a';
+        String char1 = "a";
         labels.add(char1);
         state1.setLabels(labels);
-        assertTrue(state1.hasLabel('a'));
+        assertTrue(state1.hasLabel("a"));
     }
 
     // tests if hasLabel returns false if labelToCheck is 'a' and state has 'z'
@@ -336,10 +336,10 @@ public class StateTest {
     public void hasLabel8() throws IOException {
         State state1 = new State(1);
         Set labels = new HashSet();
-        Character char1 = 'z';
+        String char1 = "z";
         labels.add(char1);
         state1.setLabels(labels);
-        assertFalse(state1.hasLabel('a'));
+        assertFalse(state1.hasLabel("a"));
     }
 
     // tests if hasLabel returns false if labelToCheck is 'a' and state has no labels
@@ -348,7 +348,7 @@ public class StateTest {
         State state1 = new State(1);
         Set labels = new HashSet();
         state1.setLabels(labels);
-        assertFalse(state1.hasLabel('a'));
+        assertFalse(state1.hasLabel("a"));
     }
 
     // tests if hasLabel returns fasle if labelToCheck is 'p' and state has 'a' and 'b'
@@ -361,7 +361,7 @@ public class StateTest {
         labels.add(char1);
         labels.add(char2);
         state1.setLabels(labels);
-        assertFalse(state1.hasLabel('p'));
+        assertFalse(state1.hasLabel("p"));
     }
 
     // tests if hasLabel returns true if labelToCheck is 'p' and state has 'a' and 'p'
@@ -374,7 +374,7 @@ public class StateTest {
         labels.add(char1);
         labels.add(char2);
         state1.setLabels(labels);
-        assertTrue(state1.hasLabel('p'));
+        assertTrue(state1.hasLabel("p"));
     }
 
 

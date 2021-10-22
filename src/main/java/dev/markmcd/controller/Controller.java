@@ -363,6 +363,8 @@ public class Controller {
                         }
                     }
                 }
+                fromState = getState(fromNum,kripkeFileObj.getStates());
+                fromState.addTransition(newTransition);
                 kripkeFileObj.getTransitions().add(newTransition);
             }
         }
@@ -389,11 +391,12 @@ public class Controller {
             } else {
                 // read input stream line by line approach from https://stackoverflow.com/a/55420102, accessed 9/18/21
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-                    String rawLine = reader.readLine();
+                    // String rawLine = reader.readLine();
+                    String rawLine = "";
                     while ((rawLine = reader.readLine()) != null) {
                         String rawLineForStateToCheck = rawLine;
                         String[] lineArr = rawLineForStateToCheck.split(";",0);
-                        stateToCheck = lineArr[0];
+                        stateToCheck = lineArr[0].trim();
                         formula = lineArr[1];
                         expected = parseBoolean(lineArr[2]);
                         FormulaFileObj formulaFileObj = new FormulaFileObj(stateToCheck, formula, expected);
@@ -410,20 +413,26 @@ public class Controller {
         List kripkeFiles = testFilesObj.getKripkesValid();
         List formulaFiles = testFilesObj.getFormulas();
 
-        for (int i=0; i<kripkeFiles.size(); i++) {
-            Object kripkeFilenameObj = kripkeFiles.get(i);
+        // for (int i=0; i<kripkeFiles.size(); i++) {
+            Object kripkeFilenameObj = kripkeFiles.get(0);
+            // Object kripkeFilenameObj = kripkeFiles.get(i);
             String kripkeFilename = (String) kripkeFilenameObj;
-            Object formulaFilenameObj = formulaFiles.get(i);
+            // Object formulaFilenameObj = formulaFiles.get(i);
+            Object formulaFilenameObj = formulaFiles.get(0);
             String formulaFilename = (String) formulaFilenameObj;
             KripkeFileObj kripkeFileObj = getKripkeFileObj(kripkeFilename);
             List formulaFileObjList = getFormulaFileObjList(formulaFilename, options);
-            for (Object formulaFileObjObj : formulaFileObjList) {
-                FormulaFileObj formulaFileObj = (FormulaFileObj) formulaFileObjObj;
+            int numToTest = 1;
+            int numTested = 0;
+            // for (Object formulaFileObjObj : formulaFileObjList) {
+            if (numTested < numToTest) {
+                // FormulaFileObj formulaFileObj = (FormulaFileObj) formulaFileObjObj;
+                FormulaFileObj formulaFileObj = (FormulaFileObj) formulaFileObjList.get(0);
                 ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), formulaFileObj.getFormula());
                 Parser parser = new Parser(modelCheckInputs);
                 Set statesThatHold = parser.Parse();
                 Boolean actual = null;
-                if (statesThatHold.contains(formulaFileObj.getStateToTest())) {
+                if (containsStateName(statesThatHold,formulaFileObj.getStateToTest())) {
                     actual = true;
                 } else {
                     actual = false;
@@ -436,13 +445,14 @@ public class Controller {
                     }
                 } else {
                     if (formulaFileObj.getExpected()) {
-                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should hold hold for " + formulaFileObj.getStateToTest() + " but did not.");
+                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should hold hold for" + formulaFileObj.getStateToTest() + " but did not.");
                     } else {
-                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should hold not hold for " + formulaFileObj.getStateToTest() + " but did not.");
+                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should hold not hold for" + formulaFileObj.getStateToTest() + " but did not.");
                     }
                 }
+                numTested++;
             }
-        }
+        // }
 
 
 
