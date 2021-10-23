@@ -1,5 +1,7 @@
 package dev.markmcd.controller.types.kripke;
 
+import java.util.Set;
+
 /**
  * Class for the transition data type, representing a pair of states that are connected
  * by an arrow in a directed graph. There is always a from-state and a to-state.
@@ -127,6 +129,11 @@ public class Transition implements Comparable<Transition> {
     @Override
     public int compareTo(Transition t) {
       return getNumber().compareTo(t.getNumber());
+    }
+
+    public Transition copy() {
+        Transition transitionCopy = new Transition(this.number,this.from,this.to);
+        return transitionCopy;
     }
 
 }

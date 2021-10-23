@@ -1,4 +1,9 @@
-﻿s1;EGp and AGq;False
+﻿s3;AXq;False
+s1;EG(r->t);True
+s2;EG(r->t);True
+s3;EG(r->t);True
+s4;EG(r->t);True
+s1;EGp and AGq;False
 s2;EGp and AGq;False
 s3;EGp and AGq;False
 s4;EGp and AGq;False

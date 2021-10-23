@@ -14,8 +14,7 @@ import static dev.markmcd.controller.ctl.CtlUtils.statesWithLabel;
 import static dev.markmcd.controller.ctl.CtlUtils.union;
 import static dev.markmcd.controller.ctl.CtlUtils.intersection;
 import static dev.markmcd.controller.ctl.CtlUtils.subtract;
-import static dev.markmcd.utils.Utils.contains;
-import static dev.markmcd.utils.Utils.areEqual;
+import static dev.markmcd.utils.Utils.*;
 
 /* clt parser rules approach from https://github.com/pedrogongora/antelope/blob/master/AntelopeCore/src/antelope/ctl/parser/CTLParser.jj, accessed 9/20 */
 public class Parser implements ParserConstants {
@@ -43,12 +42,20 @@ public class Parser implements ParserConstants {
 
     // TODO this is totally untested so far
     public static Set EG(Set phi) throws IOException {
-        return not(AF(not(phi)));
+        Set notPhi = not(phi);
+        Set afNotPhi = AF(notPhi);
+        Set notAFNotPhi = not(afNotPhi);
+        return notAFNotPhi;
+        // return not(AF(not(phi)));
     }
 
     // TODO this is totally untested so far
     public static Set AX(Set states) throws IOException {
-        return not(EX(not(states)));
+        Set notStates = not(states);
+        Set EXNotsStates = EX(notStates);
+        Set notEXNotStates = not(EXNotsStates);
+        return notEXNotStates;
+        // return not(EX(not(states)));
     }
 
     public static Set AF(Set states) throws IOException {
@@ -114,21 +121,23 @@ public class Parser implements ParserConstants {
 
     /* TODO: function still untested */
     public static Set preA(Set states) throws IOException {
-        Set S = kripke.getStates();
+        Set S = copy(kripke.getStates());
         Set preA = new HashSet();
-        Set statesToCheck = subtract(S,states);
-        for (Object stateToCheckObj : statesToCheck) {
-            Boolean isPreA = true;
-            State stateToCheck = (State) stateToCheckObj;
-            for (Object transitionToCheckObj : stateToCheck.getTransitions()) {
-                Transition transitionToCheck = (Transition) transitionToCheckObj;
-                State toState = transitionToCheck.getTo();
-                if (!contains(states,toState)) {
-                    isPreA = false;
+        if (states.size() > 0) {
+            Set statesToCheck = subtract(S, states);
+            for (Object stateToCheckObj : statesToCheck) {
+                Boolean isPreA = true;
+                State stateToCheck = (State) stateToCheckObj;
+                for (Object transitionToCheckObj : stateToCheck.getTransitions()) {
+                    Transition transitionToCheck = (Transition) transitionToCheckObj;
+                    State toState = transitionToCheck.getTo();
+                    if (!contains(states, toState)) {
+                        isPreA = false;
+                    }
                 }
-            }
-            if (isPreA) {
-                preA.add(stateToCheck);
+                if (isPreA) {
+                    preA.add(stateToCheck);
+                }
             }
         }
         return preA;

@@ -308,6 +308,7 @@ public class Utils {
      */
     public static Boolean areEqual(Set setA, Set setB) {
         if (setA == null || setB == null) { throw new NullPointerException("areEqual param(s) is null."); }
+        if (setA.size() == 0 && setB.size() == 0) return true;
         if (setA.size() > 0 && setA.size() == setB.size()) {
             for (Object stateObj : setA) {
                 State state = (State) stateObj;
@@ -325,11 +326,23 @@ public class Utils {
         Set copy = new HashSet();
         for (Object stateObj : set) {
             State state = (State) stateObj;
-            State copyState = new State(state.getNumber());
+            Integer stateNum = state.getNumber();
+            Set copyLabels = state.getLabels();
+            State copyState = new State(stateNum);
+            Set stateTransitions = state.getTransitions();
+            Set copyTransitions = new HashSet();
+            for (Object transitionObj : stateTransitions) {
+                Transition transition = (Transition) transitionObj;
+                Transition transitionCopy = transition.copy();
+                copyTransitions.add(transitionCopy);
+            }
+            copyState.setTransitions(copyTransitions);
+            copyState.setLabels(copyLabels);
             copy.add(copyState);
         }
         return copy;
     }
+
 
 
 

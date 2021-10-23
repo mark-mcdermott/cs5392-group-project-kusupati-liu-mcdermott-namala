@@ -422,7 +422,7 @@ public class Controller {
             Object formulaFilenameObj = formulaFiles.get(0);
             String formulaFilename = (String) formulaFilenameObj;
             List formulaFileObjList = getFormulaFileObjList(formulaFilename, options);
-            int numToTest = 4;
+            int numToTest = 1;
             int numTested = 0;
             // for (Object formulaFileObjObj : formulaFileObjList) {
             while (numTested < numToTest) {
@@ -446,9 +446,9 @@ public class Controller {
                     }
                 } else {
                     if (formulaFileObj.getExpected()) {
-                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should hold hold for " + formulaFileObj.getStateToTest() + " but did not.");
+                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should hold for " + formulaFileObj.getStateToTest() + " but did not.");
                     } else {
-                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should hold not hold for " + formulaFileObj.getStateToTest() + " but did not.");
+                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should not hold for " + formulaFileObj.getStateToTest() + " but did");
                     }
                 }
                 numTested++;

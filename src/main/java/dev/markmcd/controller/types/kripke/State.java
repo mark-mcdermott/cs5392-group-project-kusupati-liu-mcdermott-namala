@@ -196,6 +196,10 @@ public class State implements Comparable<State> {
         return transitions;
     }
 
+    public void setTransitions(Set transitions) {
+        this.transitions = transitions;
+    }
+
     /**
      * This class implements Comparable so Utils.getStatesStr() can return the states in numerical order
      * @param s
