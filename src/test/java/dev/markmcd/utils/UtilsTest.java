@@ -430,7 +430,7 @@ public class UtilsTest {
         Set states = new HashSet();
         Set labels = new HashSet();
         State state1 = new State(1);
-        labels.add('p');
+        labels.add("p");
         state1.setLabels(labels);
         states.add(state1);
         String labelsStr = getLabelsStr(states);
@@ -443,8 +443,8 @@ public class UtilsTest {
         Set states = new HashSet();
         Set labels = new HashSet();
         State state1 = new State(1);
-        labels.add('p');
-        labels.add('q');
+        labels.add("p");
+        labels.add("q");
         state1.setLabels(labels);
         states.add(state1);
         String labelsStr = getLabelsStr(states);
@@ -459,10 +459,10 @@ public class UtilsTest {
         Set labels2 = new HashSet();
         State state1 = new State(1);
         State state2 = new State(2);
-        labels1.add('p');
-        labels1.add('q');
-        labels2.add('r');
-        labels2.add('s');
+        labels1.add("p");
+        labels1.add("q");
+        labels2.add("r");
+        labels2.add("s");
         state1.setLabels(labels1);
         state2.setLabels(labels2);
         states.add(state1);
@@ -479,8 +479,8 @@ public class UtilsTest {
         Set labels2 = new HashSet();
         State state1 = new State(1);
         State state2 = new State(2);
-        labels2.add('r');
-        labels2.add('s');
+        labels2.add("r");
+        labels2.add("s");
         state1.setLabels(labels1);
         state2.setLabels(labels2);
         states.add(state1);

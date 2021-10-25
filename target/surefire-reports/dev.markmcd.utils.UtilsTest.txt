@@ -1,4 +1,20 @@
 -------------------------------------------------------------------------------
 Test set: dev.markmcd.utils.UtilsTest
 -------------------------------------------------------------------------------
-Tests run: 36, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.062 s - in dev.markmcd.utils.UtilsTest
+Tests run: 65, Failures: 0, Errors: 4, Skipped: 0, Time elapsed: 0.058 s <<< FAILURE! - in dev.markmcd.utils.UtilsTest
+testGetLabelsStr1(dev.markmcd.utils.UtilsTest)  Time elapsed: 0.004 s  <<< ERROR!
+java.lang.ClassCastException: class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader 'bootstrap')
+	at dev.markmcd.utils.UtilsTest.testGetLabelsStr1(UtilsTest.java:436)
+
+testGetLabelsStr2(dev.markmcd.utils.UtilsTest)  Time elapsed: 0 s  <<< ERROR!
+java.lang.ClassCastException: class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader 'bootstrap')
+	at dev.markmcd.utils.UtilsTest.testGetLabelsStr2(UtilsTest.java:450)
+
+testGetLabelsStr3(dev.markmcd.utils.UtilsTest)  Time elapsed: 0 s  <<< ERROR!
+java.lang.ClassCastException: class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader 'bootstrap')
+	at dev.markmcd.utils.UtilsTest.testGetLabelsStr3(UtilsTest.java:470)
+
+testGetLabelsStr4(dev.markmcd.utils.UtilsTest)  Time elapsed: 0 s  <<< ERROR!
+java.lang.ClassCastException: class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader 'bootstrap')
+	at dev.markmcd.utils.UtilsTest.testGetLabelsStr4(UtilsTest.java:488)
+

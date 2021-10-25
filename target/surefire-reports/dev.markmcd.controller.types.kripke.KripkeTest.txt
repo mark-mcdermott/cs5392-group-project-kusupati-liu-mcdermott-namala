@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: dev.markmcd.controller.types.kripke.KripkeTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0 s <<< FAILURE! - in dev.markmcd.controller.types.kripke.KripkeTest
+testToString3(dev.markmcd.controller.types.kripke.KripkeTest)  Time elapsed: 0 s  <<< ERROR!
+java.lang.Exception: Unexpected exception, expected<java.lang.NullPointerException> but was<java.lang.ClassCastException>
+	at dev.markmcd.controller.types.kripke.KripkeTest.testToString3(KripkeTest.java:70)
+

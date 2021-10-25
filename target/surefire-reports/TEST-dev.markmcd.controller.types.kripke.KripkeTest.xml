@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="dev.markmcd.MainTest" time="0" tests="1" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="dev.markmcd.controller.types.kripke.KripkeTest" time="0" tests="3" errors="1" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="14"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -50,5 +50,11 @@
     <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
     <property name="java.class.version" value="58.0"/>
   </properties>
-  <testcase name="shouldAnswerWithTrue" classname="dev.markmcd.MainTest" time="0"/>
+  <testcase name="testToString1" classname="dev.markmcd.controller.types.kripke.KripkeTest" time="0"/>
+  <testcase name="testToString2" classname="dev.markmcd.controller.types.kripke.KripkeTest" time="0"/>
+  <testcase name="testToString3" classname="dev.markmcd.controller.types.kripke.KripkeTest" time="0">
+    <error message="Unexpected exception, expected&lt;java.lang.NullPointerException&gt; but was&lt;java.lang.ClassCastException&gt;" type="java.lang.Exception"><![CDATA[java.lang.Exception: Unexpected exception, expected<java.lang.NullPointerException> but was<java.lang.ClassCastException>
+	at dev.markmcd.controller.types.kripke.KripkeTest.testToString3(KripkeTest.java:70)
+]]></error>
+  </testcase>
 </testsuite>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="dev.markmcd.MainTest" time="0" tests="1" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="dev.markmcd.controller.ControllerTest" time="0.035" tests="10" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="14"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -50,5 +50,14 @@
     <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
     <property name="java.class.version" value="58.0"/>
   </properties>
-  <testcase name="shouldAnswerWithTrue" classname="dev.markmcd.MainTest" time="0"/>
+  <testcase name="testGetTestFiles1" classname="dev.markmcd.controller.ControllerTest" time="0"/>
+  <testcase name="testGetTestFiles2" classname="dev.markmcd.controller.ControllerTest" time="0"/>
+  <testcase name="testGetTestFiles4" classname="dev.markmcd.controller.ControllerTest" time="0.029"/>
+  <testcase name="testGetKripkeFromFile1" classname="dev.markmcd.controller.ControllerTest" time="0.001"/>
+  <testcase name="testGetKripkeFromFile2" classname="dev.markmcd.controller.ControllerTest" time="0.004"/>
+  <testcase name="testRunProgram1" classname="dev.markmcd.controller.ControllerTest" time="0"/>
+  <testcase name="testRunProgram2" classname="dev.markmcd.controller.ControllerTest" time="0"/>
+  <testcase name="testController1" classname="dev.markmcd.controller.ControllerTest" time="0"/>
+  <testcase name="testController2" classname="dev.markmcd.controller.ControllerTest" time="0"/>
+  <testcase name="testController3" classname="dev.markmcd.controller.ControllerTest" time="0"/>
 </testsuite>

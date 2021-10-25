@@ -46,12 +46,12 @@ public class KripkeTest {
         Set state2Labels = new HashSet();
         Set state3Labels = new HashSet();
         Set state4Labels = new HashSet();
-        state1Labels.add('p');
-        state1Labels.add('q');
-        state2Labels.add('q');
-        state2Labels.add('t');
-        state2Labels.add('r');
-        state4Labels.add('t');
+        state1Labels.add("p");
+        state1Labels.add("q");
+        state2Labels.add("q");
+        state2Labels.add("t");
+        state2Labels.add("r");
+        state4Labels.add("t");
         Set states = new HashSet();
         states.add(state1);
         states.add(state2);

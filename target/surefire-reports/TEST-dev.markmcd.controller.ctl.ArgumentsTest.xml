@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="dev.markmcd.MainTest" time="0" tests="1" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="dev.markmcd.controller.ctl.ArgumentsTest" time="0.008" tests="38" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="14"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -50,5 +50,42 @@
     <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
     <property name="java.class.version" value="58.0"/>
   </properties>
-  <testcase name="shouldAnswerWithTrue" classname="dev.markmcd.MainTest" time="0"/>
+  <testcase name="testArguments1" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments2" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments3" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments4" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments5" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments6" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments7" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments8" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments9" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments10" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments11" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0.001"/>
+  <testcase name="testArguments12" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments13" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments14" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments15" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments16" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments17" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments18" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments19" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments20" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0.001"/>
+  <testcase name="testArguments21" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments22" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments23" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments24" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments25" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0.001"/>
+  <testcase name="testArguments26" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments27" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments28" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments29" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments30" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments31" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments32" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0.001"/>
+  <testcase name="testArguments33" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments34" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments35" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments36" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments37" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
+  <testcase name="testArguments38" classname="dev.markmcd.controller.ctl.ArgumentsTest" time="0"/>
 </testsuite>

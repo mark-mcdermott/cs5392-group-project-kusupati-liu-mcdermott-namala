@@ -96,7 +96,7 @@ public class Controller {
         if (options.getRunEndToEndTests()) {
             runEndToEndTests(options);
         }
-        // runTests();
+
         // checkKripkeSyntax
         // checkModelSyntax
         // checkStateToCheck
@@ -434,9 +434,9 @@ public class Controller {
                 FormulaFileObj formulaFileObj = (FormulaFileObj) formulaFileObjList.get(numTested);
                 ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), formulaFileObj.getFormula(), formulaFileObj.getStateToTest());
                 Parser parser = new Parser(modelCheckInputs);
-                if (i==6) {
-                    int test = 1;
-                }
+//                if (i==6) {
+//                    int test = 1;
+//                }
                 Set statesThatHold = parser.Parse();
                 Boolean actual = null;
                 if (containsStateName(statesThatHold,formulaFileObj.getStateToTest())) {
