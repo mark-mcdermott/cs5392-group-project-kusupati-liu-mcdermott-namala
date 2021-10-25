@@ -415,7 +415,10 @@ public class Controller {
         List formulaFiles = testFilesObj.getFormulas();
 
         // for (int i=0; i<kripkeFiles.size(); i++) {
-        for (int i=0; i<4; i++) {
+        for (int i=0; i<5; i++) {
+//            if (i==3) {
+//                int test = 1;
+//            }
             // Object kripkeFilenameObj = kripkeFiles.get(0);
             Object kripkeFilenameObj = kripkeFiles.get(i);
             String kripkeFilename = (String) kripkeFilenameObj;

@@ -245,7 +245,7 @@ Set statesWithLabels = statesWithLabel(states, t);
       }
     case IMPLIES:{
       jj_consume_token(IMPLIES);
-      predicate = formula(subject);
+      predicate = formula(states);
 /* TODO: need to test this implies out a bunch - no idea if it's working right */
             {if ("" != null) return or(not(subject),predicate);}  /* (not subject or predicate) */
 
