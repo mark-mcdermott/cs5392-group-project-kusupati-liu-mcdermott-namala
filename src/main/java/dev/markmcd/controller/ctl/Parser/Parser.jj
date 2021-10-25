@@ -85,7 +85,12 @@ public class Parser {
 
     /* TODO: still needs heavy testing!! */
     public static Set AU(Set phi, Set psi) throws IOException {
-        return or(not(EU(not(psi),and(not(phi),not(psi)))),EG(not(psi)));
+        Set EGNotPsi = EG(not(psi));
+        Set notPhiAndNotPsi = and(not(phi),not(psi));
+        Set ENotPsiUNotPhiAndNotPsi = EU(not(psi),notPhiAndNotPsi);
+        Set ENotPsiUNotPhiAndNotPsiOrEGNotPsi = or(ENotPsiUNotPhiAndNotPsi,EGNotPsi);
+        Set notENotPsiUNotPhiAndNotPsiOrEGNotPsi = not(ENotPsiUNotPhiAndNotPsiOrEGNotPsi);
+        return notENotPsiUNotPhiAndNotPsiOrEGNotPsi;
     }
 
     public static Set or(Set a, Set b) throws IOException {

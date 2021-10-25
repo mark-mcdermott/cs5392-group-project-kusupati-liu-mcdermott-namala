@@ -434,7 +434,7 @@ public class Controller {
                 FormulaFileObj formulaFileObj = (FormulaFileObj) formulaFileObjList.get(numTested);
                 ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), formulaFileObj.getFormula(), formulaFileObj.getStateToTest());
                 Parser parser = new Parser(modelCheckInputs);
-                if (i==3) {
+                if (i==6) {
                     int test = 1;
                 }
                 Set statesThatHold = parser.Parse();
