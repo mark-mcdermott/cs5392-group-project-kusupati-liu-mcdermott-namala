@@ -422,7 +422,7 @@ public class Controller {
             Object formulaFilenameObj = formulaFiles.get(0);
             String formulaFilename = (String) formulaFilenameObj;
             List formulaFileObjList = getFormulaFileObjList(formulaFilename, options);
-            int numToTest = 1;
+            int numToTest = 89;
             int numTested = 0;
             // for (Object formulaFileObjObj : formulaFileObjList) {
             while (numTested < numToTest) {

@@ -14,7 +14,8 @@ import static dev.markmcd.controller.ctl.CtlUtils.statesWithLabel;
 import static dev.markmcd.controller.ctl.CtlUtils.union;
 import static dev.markmcd.controller.ctl.CtlUtils.intersection;
 import static dev.markmcd.controller.ctl.CtlUtils.subtract;
-import static dev.markmcd.utils.Utils.*;
+import static dev.markmcd.utils.Utils.contains;
+import static dev.markmcd.utils.Utils.areEqual;
 
 /* clt parser rules approach from https://github.com/pedrogongora/antelope/blob/master/AntelopeCore/src/antelope/ctl/parser/CTLParser.jj, accessed 9/20 */
 public class Parser implements ParserConstants {
@@ -41,21 +42,16 @@ public class Parser implements ParserConstants {
     }
 
     // TODO this is totally untested so far
-    public static Set EG(Set phi) throws IOException {
-        Set notPhi = not(phi);
-        Set afNotPhi = AF(notPhi);
-        Set notAFNotPhi = not(afNotPhi);
-        return notAFNotPhi;
-        // return not(AF(not(phi)));
+    public static Set EG(Set phi) throws IOException  {
+        return not(AF(not(phi)));
     }
 
     // TODO this is totally untested so far
     public static Set AX(Set states) throws IOException {
         Set notStates = not(states);
-        Set EXNotsStates = EX(notStates);
-        Set notEXNotStates = not(EXNotsStates);
+        Set EXNotStates = EX(notStates);
+        Set notEXNotStates = not(EXNotStates);
         return notEXNotStates;
-        // return not(EX(not(states)));
     }
 
     public static Set AF(Set states) throws IOException {
@@ -89,11 +85,11 @@ public class Parser implements ParserConstants {
         return or(not(EU(not(psi),and(not(phi),not(psi)))),EG(not(psi)));
     }
 
-    public static Set or(Set a, Set b) {
+    public static Set or(Set a, Set b) throws IOException {
         return union(a,b);
     }
 
-    public static Set and(Set a, Set b) {
+    public static Set and(Set a, Set b) throws IOException {
         return intersection(a,b);
     }
 
@@ -105,7 +101,8 @@ public class Parser implements ParserConstants {
     public static Set preE(Set states) throws IOException {
         Set S = kripke.getStates();
         Set preE = new HashSet();
-        Set statesToCheck = subtract(S,states);
+        // Set statesToCheck = subtract(S,states);
+        Set statesToCheck = S;
         for (Object stateToCheckObj : statesToCheck) {
             State stateToCheck = (State) stateToCheckObj;
             for (Object transitionToCheckObj : stateToCheck.getTransitions()) {
@@ -121,23 +118,22 @@ public class Parser implements ParserConstants {
 
     /* TODO: function still untested */
     public static Set preA(Set states) throws IOException {
-        Set S = copy(kripke.getStates());
+        Set S = kripke.getStates();
         Set preA = new HashSet();
-        if (states.size() > 0) {
-            Set statesToCheck = subtract(S, states);
-            for (Object stateToCheckObj : statesToCheck) {
-                Boolean isPreA = true;
-                State stateToCheck = (State) stateToCheckObj;
-                for (Object transitionToCheckObj : stateToCheck.getTransitions()) {
-                    Transition transitionToCheck = (Transition) transitionToCheckObj;
-                    State toState = transitionToCheck.getTo();
-                    if (!contains(states, toState)) {
-                        isPreA = false;
-                    }
+        // Set statesToCheck = subtract(S,states);
+        Set statesToCheck = S;
+        for (Object stateToCheckObj : statesToCheck) {
+            Boolean isPreA = true;
+            State stateToCheck = (State) stateToCheckObj;
+            for (Object transitionToCheckObj : stateToCheck.getTransitions()) {
+                Transition transitionToCheck = (Transition) transitionToCheckObj;
+                State toState = transitionToCheck.getTo();
+                if (!contains(states,toState)) {
+                    isPreA = false;
                 }
-                if (isPreA) {
-                    preA.add(stateToCheck);
-                }
+            }
+            if (isPreA) {
+                preA.add(stateToCheck);
             }
         }
         return preA;
@@ -153,62 +149,27 @@ public class Parser implements ParserConstants {
 
   final public Set formula(Set states) throws ParseException, ParseException, IOException {Set e;
     Set b = null;
+    e = expression(states);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case NOT:
-    case AX:
-    case AF:
-    case AG:
-    case EX:
-    case EF:
-    case EG:
-    case LPAREN:
-    case ATOM:{
-      e = expression(states);
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case AND:
-      case OR:
-      case IMPLIES:{
-        b = binaryOp(e,states);
-        break;
-        }
-      default:
-        jj_la1[0] = jj_gen;
-        ;
-      }
-if (b != null) { {if ("" != null) return b;} }
-            else { {if ("" != null) return e;} }
-      break;
-      }
-    case E:{
-      jj_consume_token(E);
-      jj_consume_token(LPAREN);
-      e = expression(states);
-      jj_consume_token(U);
-      b = expression(states);
-      jj_consume_token(RPAREN);
-{if ("" != null) return EU(e,b);}
-      break;
-      }
-    case A:{
-      jj_consume_token(A);
-      jj_consume_token(LPAREN);
-      e = expression(states);
-      jj_consume_token(U);
-      b = expression(states);
-      jj_consume_token(RPAREN);
-{if ("" != null) return AU(e,b);}
+    case AND:
+    case OR:
+    case IMPLIES:{
+      b = binaryOp(e,states);
       break;
       }
     default:
-      jj_la1[1] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+      jj_la1[0] = jj_gen;
+      ;
     }
+if (b != null) { {if ("" != null) return b;} }
+            else { {if ("" != null) return e;} }
     throw new Error("Missing return statement in function");
 }
 
   final public Set expression(Set states) throws ParseException, ParseException, IOException {Token t;
  Set f;
+ Set e;
+ Set b;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case ATOM:{
       t = jj_consume_token(ATOM);
@@ -240,8 +201,28 @@ Set statesWithLabels = statesWithLabel(states, t);
 {if ("" != null) return f;}
       break;
       }
+    case E:{
+      jj_consume_token(E);
+      jj_consume_token(LPAREN);
+      e = expression(states);
+      jj_consume_token(U);
+      b = expression(states);
+      jj_consume_token(RPAREN);
+{if ("" != null) return EU(e,b);}
+      break;
+      }
+    case A:{
+      jj_consume_token(A);
+      jj_consume_token(LPAREN);
+      e = expression(states);
+      jj_consume_token(U);
+      b = expression(states);
+      jj_consume_token(RPAREN);
+{if ("" != null) return AU(e,b);}
+      break;
+      }
     default:
-      jj_la1[2] = jj_gen;
+      jj_la1[1] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -271,53 +252,53 @@ Set statesWithLabels = statesWithLabel(states, t);
       break;
       }
     default:
-      jj_la1[3] = jj_gen;
+      jj_la1[2] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
 }
 
-  final public Set temporalExpression(Set s) throws ParseException, ParseException, IOException {Set f;
+  final public Set temporalExpression(Set s) throws ParseException, ParseException, IOException {Set e;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case AX:{
       jj_consume_token(AX);
-      f = formula(s);
-{if ("" != null) return AX(f);}
+      e = expression(s);
+{if ("" != null) return AX(e);}
       break;
       }
     case AF:{
       jj_consume_token(AF);
-      f = formula(s);
-{if ("" != null) return AF(f);}
+      e = expression(s);
+{if ("" != null) return AF(e);}
       break;
       }
     case AG:{
       jj_consume_token(AG);
-      f = formula(s);
-{if ("" != null) return AG(f);}
+      e = expression(s);
+{if ("" != null) return AG(e);}
       break;
       }
     case EX:{
       jj_consume_token(EX);
-      f = formula(s);
-{if ("" != null) return EX(f);}
+      e = expression(s);
+{if ("" != null) return EX(e);}
       break;
       }
     case EF:{
       jj_consume_token(EF);
-      f = formula(s);
-{if ("" != null) return EF(f);}
+      e = expression(s);
+{if ("" != null) return EF(e);}
       break;
       }
     case EG:{
       jj_consume_token(EG);
-      f = formula(s);
-{if ("" != null) return EG(f);}
+      e = expression(s);
+{if ("" != null) return EG(e);}
       break;
       }
     default:
-      jj_la1[4] = jj_gen;
+      jj_la1[3] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -333,13 +314,13 @@ Set statesWithLabels = statesWithLabel(states, t);
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[5];
+  final private int[] jj_la1 = new int[4];
   static private int[] jj_la1_0;
   static {
 	   jj_la1_init_0();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x1c0,0x15fe20,0x147e20,0x1c0,0x7e00,};
+	   jj_la1_0 = new int[] {0x1c0,0x15fe20,0x1c0,0x7e00,};
 	}
 
   /** Constructor with InputStream. */
@@ -353,7 +334,7 @@ Set statesWithLabels = statesWithLabel(states, t);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -367,7 +348,7 @@ Set statesWithLabels = statesWithLabel(states, t);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -377,7 +358,7 @@ Set statesWithLabels = statesWithLabel(states, t);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -395,7 +376,7 @@ Set statesWithLabels = statesWithLabel(states, t);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -404,7 +385,7 @@ Set statesWithLabels = statesWithLabel(states, t);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -413,7 +394,7 @@ Set statesWithLabels = statesWithLabel(states, t);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -469,7 +450,7 @@ Set statesWithLabels = statesWithLabel(states, t);
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 5; i++) {
+	 for (int i = 0; i < 4; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {

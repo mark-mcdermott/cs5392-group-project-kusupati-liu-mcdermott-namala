@@ -1,4 +1,4 @@
-﻿s3;AXq;False
+﻿s4;AXq and A(pUq);False
 s1;EG(r->t);True
 s2;EG(r->t);True
 s3;EG(r->t);True

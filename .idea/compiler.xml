@@ -6,8 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="cs5392-group-project-maven" />
         <module name="modelCheckingCTL" />
+        <module name="cs5392-group-project-maven" />
       </profile>
     </annotationProcessing>
   </component>

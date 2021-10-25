@@ -35,26 +35,29 @@ public class Parser {
 
     /* these algos are from p. 227 of pdf Logic In CS textbook */
 
-    public static Set EX(Set states) {
+    public static Set EX(Set states) throws IOException {
         return preE(states);
     }
 
-    public static Set EF(Set phi) {
+    public static Set EF(Set phi) throws IOException {
         Set tautology = S;
         return EU(tautology,phi);
     }
 
     // TODO this is totally untested so far
-    public static Set EG(Set phi) {
+    public static Set EG(Set phi) throws IOException  {
         return not(AF(not(phi)));
     }
 
     // TODO this is totally untested so far
-    public static Set AX(Set states) {
-        return not(EX(not(states)));
+    public static Set AX(Set states) throws IOException {
+        Set notStates = not(states);
+        Set EXNotStates = EX(notStates);
+        Set notEXNotStates = not(EXNotStates);
+        return notEXNotStates;
     }
 
-    public static Set AF(Set states) {
+    public static Set AF(Set states) throws IOException {
         Set X = S;
         Set Y = states;
         while (!areEqual(X,Y)) {
@@ -65,11 +68,11 @@ public class Parser {
     }
 
     // TODO this is totally untested so far
-    public static Set AG(Set states) {
+    public static Set AG(Set states) throws IOException {
         return not(EF(not(states)));
     }
 
-    public static Set EU(Set phi, Set psi) {
+    public static Set EU(Set phi, Set psi) throws IOException {
         Set W = phi;
         Set X = S;
         Set Y = psi;
@@ -81,27 +84,28 @@ public class Parser {
     }
 
     /* TODO: still needs heavy testing!! */
-    public static Set AU(Set phi, Set psi) {
+    public static Set AU(Set phi, Set psi) throws IOException {
         return or(not(EU(not(psi),and(not(phi),not(psi)))),EG(not(psi)));
     }
 
-    public static Set or(Set a, Set b) {
+    public static Set or(Set a, Set b) throws IOException {
         return union(a,b);
     }
 
-    public static Set and(Set a, Set b) {
+    public static Set and(Set a, Set b) throws IOException {
         return intersection(a,b);
     }
 
-    public static Set not(Set a) {
+    public static Set not(Set a) throws IOException {
         return subtract(S,a);
     }
 
     /* TODO: function still untested */
-    public static Set preE(Set states) {
+    public static Set preE(Set states) throws IOException {
         Set S = kripke.getStates();
         Set preE = new HashSet();
-        Set statesToCheck = subtract(S,states);
+        // Set statesToCheck = subtract(S,states);
+        Set statesToCheck = S;
         for (Object stateToCheckObj : statesToCheck) {
             State stateToCheck = (State) stateToCheckObj;
             for (Object transitionToCheckObj : stateToCheck.getTransitions()) {
@@ -116,10 +120,11 @@ public class Parser {
     }
 
     /* TODO: function still untested */
-    public static Set preA(Set states) {
+    public static Set preA(Set states) throws IOException {
         Set S = kripke.getStates();
         Set preA = new HashSet();
-        Set statesToCheck = subtract(S,states);
+        // Set statesToCheck = subtract(S,states);
+        Set statesToCheck = S;
         for (Object stateToCheckObj : statesToCheck) {
             Boolean isPreA = true;
             State stateToCheck = (State) stateToCheckObj;
@@ -191,16 +196,15 @@ Set formula(Set states) throws ParseException, IOException :
             if (b != null) { return b; }
             else { return e; }
         }
-    | <E> <LPAREN> e = expression(states) <U> b = expression(states) <RPAREN>
-      { return EU(e,b); }
-    | "A" <LPAREN> e = expression(states) <U> b = expression(states) <RPAREN>
-      { return AU(e,b); }
+
 }
 
 Set expression(Set states) throws ParseException, IOException :
 {
  Token t;
  Set f;
+ Set e;
+ Set b;
 }
 {
         t = <ATOM>
@@ -217,6 +221,10 @@ Set expression(Set states) throws ParseException, IOException :
         { return f; }
     |   f = temporalExpression(states)
         { return f; }
+    | <E> <LPAREN> e = expression(states) <U> b = expression(states) <RPAREN>
+      { return EU(e,b); }
+    | "A" <LPAREN> e = expression(states) <U> b = expression(states) <RPAREN>
+      { return AU(e,b); }
 }
 
 Set binaryOp(Set subject, Set states) throws ParseException, IOException :
@@ -234,18 +242,18 @@ Set binaryOp(Set subject, Set states) throws ParseException, IOException :
 }
 
 Set temporalExpression(Set s) throws ParseException, IOException :
-{ Set f; }
+{ Set e; }
 {
-      <AX> f = formula(s)
-      { return AX(f); }
-    | <AF> f = formula(s)
-      { return AF(f); }
-    | <AG> f = formula(s)
-      { return AG(f); }
-    | <EX> f = formula(s)
-      { return EX(f); }
-    | <EF> f = formula(s)
-      { return EF(f); }
-    | <EG> f = formula(s)
-      { return EG(f); }
+     <AX> e = expression(s)
+      { return AX(e); }
+    |<AF> e = expression(s)
+      { return AF(e); }
+    | <AG> e = expression(s)
+      { return AG(e); }
+    | <EX> e = expression(s)
+      { return EX(e); }
+    | <EF> e = expression(s)
+      { return EF(e); }
+    | <EG> e = expression(s)
+      { return EG(e); }
 }
