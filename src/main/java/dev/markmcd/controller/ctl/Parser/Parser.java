@@ -125,12 +125,16 @@ public class Parser implements ParserConstants {
         for (Object stateToCheckObj : statesToCheck) {
             Boolean isPreA = true;
             State stateToCheck = (State) stateToCheckObj;
-            for (Object transitionToCheckObj : stateToCheck.getTransitions()) {
-                Transition transitionToCheck = (Transition) transitionToCheckObj;
-                State toState = transitionToCheck.getTo();
-                if (!contains(states,toState)) {
-                    isPreA = false;
+            if (stateToCheck.getTransitions().size() > 0) {
+                for (Object transitionToCheckObj : stateToCheck.getTransitions()) {
+                    Transition transitionToCheck = (Transition) transitionToCheckObj;
+                    State toState = transitionToCheck.getTo();
+                    if (!contains(states,toState)) {
+                        isPreA = false;
+                    }
                 }
+            } else {
+                isPreA = false;
             }
             if (isPreA) {
                 preA.add(stateToCheck);
@@ -245,7 +249,7 @@ Set statesWithLabels = statesWithLabel(states, t);
       }
     case IMPLIES:{
       jj_consume_token(IMPLIES);
-      predicate = formula(states);
+      predicate = formula(subject);
 /* TODO: need to test this implies out a bunch - no idea if it's working right */
             {if ("" != null) return or(not(subject),predicate);}  /* (not subject or predicate) */
 

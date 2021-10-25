@@ -128,12 +128,16 @@ public class Parser {
         for (Object stateToCheckObj : statesToCheck) {
             Boolean isPreA = true;
             State stateToCheck = (State) stateToCheckObj;
-            for (Object transitionToCheckObj : stateToCheck.getTransitions()) {
-                Transition transitionToCheck = (Transition) transitionToCheckObj;
-                State toState = transitionToCheck.getTo();
-                if (!contains(states,toState)) {
-                    isPreA = false;
+            if (stateToCheck.getTransitions() > 0) {
+                for (Object transitionToCheckObj : stateToCheck.getTransitions()) {
+                    Transition transitionToCheck = (Transition) transitionToCheckObj;
+                    State toState = transitionToCheck.getTo();
+                    if (!contains(states,toState)) {
+                        isPreA = false;
+                    }
                 }
+            } else {
+                isPreA = false;
             }
             if (isPreA) {
                 preA.add(stateToCheck);
