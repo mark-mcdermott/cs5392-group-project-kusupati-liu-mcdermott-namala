@@ -415,14 +415,16 @@ public class Controller {
         List formulaFiles = testFilesObj.getFormulas();
 
         // for (int i=0; i<kripkeFiles.size(); i++) {
-            Object kripkeFilenameObj = kripkeFiles.get(0);
-            // Object kripkeFilenameObj = kripkeFiles.get(i);
+        for (int i=0; i<4; i++) {
+            // Object kripkeFilenameObj = kripkeFiles.get(0);
+            Object kripkeFilenameObj = kripkeFiles.get(i);
             String kripkeFilename = (String) kripkeFilenameObj;
-            // Object formulaFilenameObj = formulaFiles.get(i);
-            Object formulaFilenameObj = formulaFiles.get(0);
+            Object formulaFilenameObj = formulaFiles.get(i);
+            // Object formulaFilenameObj = formulaFiles.get(0);
             String formulaFilename = (String) formulaFilenameObj;
+            System.out.println("\n" + formulaFilename);
             List formulaFileObjList = getFormulaFileObjList(formulaFilename, options);
-            int numToTest = 89;
+            int numToTest = formulaFileObjList.size();
             int numTested = 0;
             // for (Object formulaFileObjObj : formulaFileObjList) {
             while (numTested < numToTest) {
@@ -453,12 +455,7 @@ public class Controller {
                 }
                 numTested++;
             }
-        // }
-
-
-
-
-
+        }
     }
 
     private void validateEndToEndFormulas(Options options) throws IOException, ParseException {
