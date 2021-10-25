@@ -414,11 +414,8 @@ public class Controller {
         List kripkeFiles = testFilesObj.getKripkesValid();
         List formulaFiles = testFilesObj.getFormulas();
 
-        // for (int i=0; i<kripkeFiles.size(); i++) {
-        for (int i=0; i<6; i++) {
-            if (i==5) {
-                int test = 1;
-            }
+        for (int i=0; i<kripkeFiles.size(); i++) {
+        // for (int i=0; i<6; i++) {
             // Object kripkeFilenameObj = kripkeFiles.get(0);
             Object kripkeFilenameObj = kripkeFiles.get(i);
             String kripkeFilename = (String) kripkeFilenameObj;
@@ -437,6 +434,9 @@ public class Controller {
                 FormulaFileObj formulaFileObj = (FormulaFileObj) formulaFileObjList.get(numTested);
                 ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), formulaFileObj.getFormula(), formulaFileObj.getStateToTest());
                 Parser parser = new Parser(modelCheckInputs);
+                if (i==3) {
+                    int test = 1;
+                }
                 Set statesThatHold = parser.Parse();
                 Boolean actual = null;
                 if (containsStateName(statesThatHold,formulaFileObj.getStateToTest())) {
