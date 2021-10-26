@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="dev.markmcd.controller.types.kripke.KripkeTest" time="0" tests="3" errors="1" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="dev.markmcd.controller.types.kripke.KripkeTest" time="0.001" tests="3" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="14"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,8 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/Users/markmcdermott/Library/Java/JavaVirtualMachines/openjdk-14.0.1/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/markmcdermott/Desktop/cs5392-group-project-maven/target/surefire/surefirebooter683365263091443316.jar /Users/markmcdermott/Desktop/cs5392-group-project-maven/target/surefire 2021-10-25T14-40-41_275-jvmRun1 surefire9494346118334552753tmp surefire_04643115904240720193tmp"/>
+    <property name="sun.java.command" value="/Users/markmcdermott/Desktop/cs5392-group-project-maven/target/surefire/surefirebooter12255582741440079231.jar /Users/markmcdermott/Desktop/cs5392-group-project-maven/target/surefire 2021-10-26T13-22-21_525-jvmRun1 surefire15537838341453755615tmp surefire_011773580891573272798tmp"/>
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/markmcdermott/Desktop/cs5392-group-project-maven/target/test-classes:/Users/markmcdermott/Desktop/cs5392-group-project-maven/target/classes:/Users/markmcdermott/.m2/repository/junit/junit/4.11/junit-4.11.jar:/Users/markmcdermott/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -25,10 +26,11 @@
     <property name="basedir" value="/Users/markmcdermott/Desktop/cs5392-group-project-maven"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="line.separator" value="&#10;"/>
-    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="/Users/markmcdermott/Desktop/cs5392-group-project-maven/target/surefire/surefirebooter683365263091443316.jar"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="surefire.real.class.path" value="/Users/markmcdermott/Desktop/cs5392-group-project-maven/target/surefire/surefirebooter12255582741440079231.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="14.0.1+7"/>
     <property name="user.name" value="markmcdermott"/>
     <property name="path.separator" value=":"/>
@@ -48,13 +50,10 @@
     <property name="java.vendor" value="Oracle Corporation"/>
     <property name="java.vm.version" value="14.0.1+7"/>
     <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="58.0"/>
   </properties>
   <testcase name="testToString1" classname="dev.markmcd.controller.types.kripke.KripkeTest" time="0"/>
   <testcase name="testToString2" classname="dev.markmcd.controller.types.kripke.KripkeTest" time="0"/>
-  <testcase name="testToString3" classname="dev.markmcd.controller.types.kripke.KripkeTest" time="0">
-    <error message="Unexpected exception, expected&lt;java.lang.NullPointerException&gt; but was&lt;java.lang.ClassCastException&gt;" type="java.lang.Exception"><![CDATA[java.lang.Exception: Unexpected exception, expected<java.lang.NullPointerException> but was<java.lang.ClassCastException>
-	at dev.markmcd.controller.types.kripke.KripkeTest.testToString3(KripkeTest.java:70)
-]]></error>
-  </testcase>
+  <testcase name="testToString3" classname="dev.markmcd.controller.types.kripke.KripkeTest" time="0"/>
 </testsuite>

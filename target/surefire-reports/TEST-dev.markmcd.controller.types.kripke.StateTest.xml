@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="dev.markmcd.controller.types.kripke.StateTest" time="0.001" tests="35" errors="5" skipped="0" failures="4">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="dev.markmcd.controller.types.kripke.StateTest" time="0.002" tests="31" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="14"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,8 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/Users/markmcdermott/Library/Java/JavaVirtualMachines/openjdk-14.0.1/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/markmcdermott/Desktop/cs5392-group-project-maven/target/surefire/surefirebooter683365263091443316.jar /Users/markmcdermott/Desktop/cs5392-group-project-maven/target/surefire 2021-10-25T14-40-41_275-jvmRun1 surefire9494346118334552753tmp surefire_04643115904240720193tmp"/>
+    <property name="sun.java.command" value="/Users/markmcdermott/Desktop/cs5392-group-project-maven/target/surefire/surefirebooter12255582741440079231.jar /Users/markmcdermott/Desktop/cs5392-group-project-maven/target/surefire 2021-10-26T13-22-21_525-jvmRun1 surefire15537838341453755615tmp surefire_011773580891573272798tmp"/>
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/markmcdermott/Desktop/cs5392-group-project-maven/target/test-classes:/Users/markmcdermott/Desktop/cs5392-group-project-maven/target/classes:/Users/markmcdermott/.m2/repository/junit/junit/4.11/junit-4.11.jar:/Users/markmcdermott/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -25,10 +26,11 @@
     <property name="basedir" value="/Users/markmcdermott/Desktop/cs5392-group-project-maven"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="line.separator" value="&#10;"/>
-    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="/Users/markmcdermott/Desktop/cs5392-group-project-maven/target/surefire/surefirebooter683365263091443316.jar"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="surefire.real.class.path" value="/Users/markmcdermott/Desktop/cs5392-group-project-maven/target/surefire/surefirebooter12255582741440079231.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="14.0.1+7"/>
     <property name="user.name" value="markmcdermott"/>
     <property name="path.separator" value=":"/>
@@ -48,6 +50,7 @@
     <property name="java.vendor" value="Oracle Corporation"/>
     <property name="java.vm.version" value="14.0.1+7"/>
     <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="58.0"/>
   </properties>
   <testcase name="testaddTransition1" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
@@ -67,23 +70,7 @@
   <testcase name="testHasTransitionTo7" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
   <testcase name="testHasTransitionTo8" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
   <testcase name="testHasTransitionTo9" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
-  <testcase name="hasLabel1" classname="dev.markmcd.controller.types.kripke.StateTest" time="0.001"/>
-  <testcase name="hasLabel2" classname="dev.markmcd.controller.types.kripke.StateTest" time="0">
-    <failure message="Expected exception: java.io.IOException" type="java.lang.AssertionError">java.lang.AssertionError: Expected exception: java.io.IOException
-</failure>
-  </testcase>
-  <testcase name="hasLabel3" classname="dev.markmcd.controller.types.kripke.StateTest" time="0">
-    <failure message="Expected exception: java.io.IOException" type="java.lang.AssertionError">java.lang.AssertionError: Expected exception: java.io.IOException
-</failure>
-  </testcase>
-  <testcase name="hasLabel4" classname="dev.markmcd.controller.types.kripke.StateTest" time="0">
-    <failure message="Expected exception: java.io.IOException" type="java.lang.AssertionError">java.lang.AssertionError: Expected exception: java.io.IOException
-</failure>
-  </testcase>
-  <testcase name="hasLabel5" classname="dev.markmcd.controller.types.kripke.StateTest" time="0">
-    <failure message="Expected exception: java.io.IOException" type="java.lang.AssertionError">java.lang.AssertionError: Expected exception: java.io.IOException
-</failure>
-  </testcase>
+  <testcase name="hasLabel1" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
   <testcase name="hasLabel6" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
   <testcase name="hasLabel7" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
   <testcase name="hasLabel8" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
@@ -92,29 +79,9 @@
   <testcase name="testaddTransition11" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
   <testcase name="testaddTransition12" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
   <testcase name="testToStringDetailed1" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
-  <testcase name="testToStringDetailed2" classname="dev.markmcd.controller.types.kripke.StateTest" time="0">
-    <error message="class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader &apos;bootstrap&apos;)" type="java.lang.ClassCastException">java.lang.ClassCastException: class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader 'bootstrap')
-	at dev.markmcd.controller.types.kripke.StateTest.testToStringDetailed2(StateTest.java:242)
-</error>
-  </testcase>
-  <testcase name="testToStringDetailed3" classname="dev.markmcd.controller.types.kripke.StateTest" time="0">
-    <error message="class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader &apos;bootstrap&apos;)" type="java.lang.ClassCastException">java.lang.ClassCastException: class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader 'bootstrap')
-	at dev.markmcd.controller.types.kripke.StateTest.testToStringDetailed3(StateTest.java:254)
-</error>
-  </testcase>
-  <testcase name="testToStringDetailed4" classname="dev.markmcd.controller.types.kripke.StateTest" time="0">
-    <error message="class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader &apos;bootstrap&apos;)" type="java.lang.ClassCastException">java.lang.ClassCastException: class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader 'bootstrap')
-	at dev.markmcd.controller.types.kripke.StateTest.testToStringDetailed4(StateTest.java:266)
-</error>
-  </testcase>
-  <testcase name="hasLabel10" classname="dev.markmcd.controller.types.kripke.StateTest" time="0">
-    <error message="class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader &apos;bootstrap&apos;)" type="java.lang.ClassCastException">java.lang.ClassCastException: class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader 'bootstrap')
-	at dev.markmcd.controller.types.kripke.StateTest.hasLabel10(StateTest.java:364)
-</error>
-  </testcase>
-  <testcase name="hasLabel11" classname="dev.markmcd.controller.types.kripke.StateTest" time="0">
-    <error message="class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader &apos;bootstrap&apos;)" type="java.lang.ClassCastException">java.lang.ClassCastException: class java.lang.Character cannot be cast to class java.lang.String (java.lang.Character and java.lang.String are in module java.base of loader 'bootstrap')
-	at dev.markmcd.controller.types.kripke.StateTest.hasLabel11(StateTest.java:377)
-</error>
-  </testcase>
+  <testcase name="testToStringDetailed2" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
+  <testcase name="testToStringDetailed3" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
+  <testcase name="testToStringDetailed4" classname="dev.markmcd.controller.types.kripke.StateTest" time="0.001"/>
+  <testcase name="hasLabel10" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
+  <testcase name="hasLabel11" classname="dev.markmcd.controller.types.kripke.StateTest" time="0"/>
 </testsuite>

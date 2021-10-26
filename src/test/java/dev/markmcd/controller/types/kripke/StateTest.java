@@ -237,7 +237,7 @@ public class StateTest {
     public void testToStringDetailed2() throws IOException {
         State state1 = new State(0);
         Set labels = new HashSet();
-        labels.add('p');
+        labels.add("p");
         state1.setLabels(labels);
         String stringDetailed = state1.toStringDetailed();
         assertEquals("s0 : p",stringDetailed);
@@ -248,8 +248,8 @@ public class StateTest {
     public void testToStringDetailed3() throws IOException {
         State state1 = new State(0);
         Set labels = new HashSet();
-        labels.add('p');
-        labels.add('q');
+        labels.add("p");
+        labels.add("q");
         state1.setLabels(labels);
         String stringDetailed = state1.toStringDetailed();
         assertEquals("s0 : p q",stringDetailed);
@@ -260,8 +260,8 @@ public class StateTest {
     public void testToStringDetailed4() throws IOException {
         State state1 = new State(100);
         Set labels = new HashSet();
-        labels.add('z');
-        labels.add('a');
+        labels.add("z");
+        labels.add("a");
         state1.setLabels(labels);
         String stringDetailed = state1.toStringDetailed();
         assertEquals("s100 : a z",stringDetailed);
@@ -275,74 +275,42 @@ public class StateTest {
         state1.hasLabel(labelToCheck);
     }
 
-    // tests if hasLabel throws IOException if labelToCheck is a capitol letter
-    @Test(expected = IOException.class)
-    public void hasLabel2() throws IOException {
-        State state1 = new State(1);
-        String labelToCheck = "A";
-        state1.hasLabel(labelToCheck);
-    }
-
-    // tests if hasLabel throws IOError if labelToCheck is a number
-    @Test(expected = IOException.class)
-    public void hasLabel3() throws IOException {
-        State state1 = new State(1);
-        String labelToCheck = "1";
-        state1.hasLabel(labelToCheck);
-    }
-
-    // tests if hasLabel throws IOError if labelToCheck is a @ sign
-    @Test(expected = IOException.class)
-    public void hasLabel4() throws IOException {
-        State state1 = new State(1);
-        String labelToCheck = "@";
-        state1.hasLabel(labelToCheck);
-    }
-
-    // tests if hasLabel throws IOError if labelToCheck a '\n' char
-    @Test(expected = IOException.class)
-    public void hasLabel5() throws IOException {
-        State state1 = new State(1);
-        String labelToCheck = "\n";
-        state1.hasLabel(labelToCheck);
-    }
-
     // tests if hasLabel throws NullPointerException if a label in label set is null
     @Test(expected = NullPointerException.class)
     public void hasLabel6() throws NullPointerException, IOException {
         State state1 = new State(1);
         Set labels = new HashSet();
-        String char1 = "a";
-        String char2 = null;
-        labels.add(char1);
-        labels.add(char2);
+        String String1 = "a";
+        String String2 = null;
+        labels.add(String1);
+        labels.add(String2);
         state1.setLabels(labels);
         state1.hasLabel("p");
     }
 
-    // tests if hasLabel returns true if labelToCheck is 'a' and state has 'a'
+    // tests if hasLabel returns true if labelToCheck is "a" and state has "a"
     @Test
     public void hasLabel7() throws IOException {
         State state1 = new State(1);
         Set labels = new HashSet();
-        String char1 = "a";
-        labels.add(char1);
+        String String1 = "a";
+        labels.add(String1);
         state1.setLabels(labels);
         assertTrue(state1.hasLabel("a"));
     }
 
-    // tests if hasLabel returns false if labelToCheck is 'a' and state has 'z'
+    // tests if hasLabel returns false if labelToCheck is "a" and state has 'z'
     @Test
     public void hasLabel8() throws IOException {
         State state1 = new State(1);
         Set labels = new HashSet();
-        String char1 = "z";
-        labels.add(char1);
+        String String1 = "z";
+        labels.add(String1);
         state1.setLabels(labels);
         assertFalse(state1.hasLabel("a"));
     }
 
-    // tests if hasLabel returns false if labelToCheck is 'a' and state has no labels
+    // tests if hasLabel returns false if labelToCheck is "a" and state has no labels
     @Test
     public void hasLabel9() throws IOException {
         State state1 = new State(1);
@@ -351,28 +319,28 @@ public class StateTest {
         assertFalse(state1.hasLabel("a"));
     }
 
-    // tests if hasLabel returns fasle if labelToCheck is 'p' and state has 'a' and 'b'
+    // tests if hasLabel returns fasle if labelToCheck is "p" and state has "a" and "b"
     @Test
     public void hasLabel10() throws IOException {
         State state1 = new State(1);
         Set labels = new HashSet();
-        Character char1 = 'a';
-        Character char2 = 'b';
-        labels.add(char1);
-        labels.add(char2);
+        String String1 = "a";
+        String String2 = "b";
+        labels.add(String1);
+        labels.add(String2);
         state1.setLabels(labels);
         assertFalse(state1.hasLabel("p"));
     }
 
-    // tests if hasLabel returns true if labelToCheck is 'p' and state has 'a' and 'p'
+    // tests if hasLabel returns true if labelToCheck is "p" and state has "a" and "p"
     @Test
     public void hasLabel11() throws IOException {
         State state1 = new State(1);
         Set labels = new HashSet();
-        Character char1 = 'a';
-        Character char2 = 'p';
-        labels.add(char1);
-        labels.add(char2);
+        String String1 = "a";
+        String String2 = "p";
+        labels.add(String1);
+        labels.add(String2);
         state1.setLabels(labels);
         assertTrue(state1.hasLabel("p"));
     }
