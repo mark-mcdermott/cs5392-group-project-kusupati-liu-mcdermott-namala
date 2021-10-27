@@ -26,8 +26,8 @@ CTL model checker written in Java and using a JavaCC parser.
     - The model flag takes either `-a` for specifying the formula in directly in the argument (inside quotes) or `-f` for specifying a file which contains the formula. `-e` is to specify to run the end to end tests 
     - The `-s` argument for state to check is optional. If omitted, all states are checked.
     - Some command line examples:
-        - `java -jar modelCheckingCTL -k kripke.txt s0 -a "EXp" -e`
-        - `java -jar modelCheckingCTL -k kripke.txt s13 -f model.txt` 
+        - `java -jar modelCheckingCTL -k kripke.txt -s s0 -a "EXp" -e`
+        - `java -jar modelCheckingCTL -k kripke.txt -s s13 -f model.txt` 
  5) Run the unit tests
     - `mvn test`
     

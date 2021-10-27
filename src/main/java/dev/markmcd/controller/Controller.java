@@ -83,6 +83,40 @@ public class Controller {
         runProgram(options);
     }
 
+    public String getKripkeFilepath(String kripkeFile, Boolean runEndToEndTests) {
+        if (runEndToEndTests) {
+            return testFilesDir + "/" + kripkeFile;
+        } else {
+            return kripkeFile;
+        }
+    }
+
+    public void validateModel(Options options) throws Exception {
+        KripkeFileObj kripkeFileObj = getKripkeFileObj(options.getKripkeFilepath());
+        if (kripkeFileObj.getErrorMessage() != null) {
+            String origErrorMessage = kripkeFileObj.getErrorMessage();
+            String newErrorMessage = "❌ failed parsing - " + origErrorMessage;
+            handleError(newErrorMessage,true);
+        } else {
+            System.out.println("✅ model passed parsing - no syntax errors in " + options.getKripkeFilepath());
+        }
+    }
+
+    public void validateFormula(String formula) throws UnsupportedEncodingException, ParseException {
+        InputStream stringStream = new ByteArrayInputStream(formula.getBytes("UTF-8"));
+        Validator validator = new Validator(stringStream);
+        System.out.println("✅ formula passed parsing - \"" + formula + "\" is well formed");
+        validator.Validate();
+    }
+
+    public void validateStateToCheck(String stateToCheck, Set statesInModel) {
+        if (containsStateName(statesInModel, stateToCheck)) {
+            System.out.println("✅ state to check " + stateToCheck + " is in the model");
+        } else {
+            System.out.println("❌ state to check " + stateToCheck + " is not in the model");
+        }
+    }
+
     /**
      * This is the meat and potatoes of the program - all the major function calls are here. Proecesses the arguments, runs tests, runs the model checking
      * @param options Two command line arguments are mandatory: -k <kripke file> specifying the Kripke filename and then either -a <formula> or -f <formula filename>. There is an optional -s <state name> argument specifying a state to check.
@@ -97,11 +131,17 @@ public class Controller {
             runEndToEndTests(options);
         }
 
+        // TODO these lines are totally untested!
+        validateModel(options);
+        validateFormula(options.getFormula());
+        // validateStateToCheck(options.getStateToCheckStr(), );
+        Set statesThatHold = modelCheck(options.getKripkeFilepath(), options.getFormula());
+        printModelCheckResults(statesThatHold, options.getStateToCheckStr(), options.getFormula());
+
         // checkKripkeSyntax
         // checkModelSyntax
         // checkStateToCheck
-        // checkModel(args, modelInputSource);
-        // updateView();
+
 
     }
 
@@ -155,7 +195,7 @@ public class Controller {
 
         for (Object testFilesObj : testFiles.getKripkesValid()) {
             String testFile = (String) testFilesObj;
-            KripkeFileObj kripkeFileObj = getKripkeFileObj(testFile);
+            KripkeFileObj kripkeFileObj = getKripkeFileObj(testFilesDir + "/" + testFile);
             if (kripkeFileObj.getErrorMessage() != null) {
                 String origErrorMessage = kripkeFileObj.getErrorMessage();
                 String newErrorMessage = "❌ failed parsing - " + origErrorMessage;
@@ -163,6 +203,8 @@ public class Controller {
             } else {
                 System.out.println("✅ passed parsing - " + testFile);
             }
+
+            // TODO can probably replace these lines with modelCheck(kripkeFileObj.getKripke(), testFormula)
             ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), testFormula);
             Parser parser = new Parser(modelCheckInputs);
             parser.Parse();
@@ -171,7 +213,7 @@ public class Controller {
         for (Object testFilesObj : testFiles.getKripkesInvalid()) {
             String testFile = (String) testFilesObj;
             // System.out.println(testFile);
-            KripkeFileObj kripkeFileObj = getKripkeFileObj(testFile);
+            KripkeFileObj kripkeFileObj = getKripkeFileObj(testFilesDir + "/" + testFile);
             if (kripkeFileObj.getErrorMessage() != null) {
                 String origErrorMessage = kripkeFileObj.getErrorMessage();
                 String newErrorMessage = "❌ failed parsing - " + origErrorMessage;
@@ -184,6 +226,14 @@ public class Controller {
             parser.Parse();
         }
 
+    }
+
+    public String getResourceFilePath(String fileDir, Boolean isEndToEndTest) {
+        if (isEndToEndTest) {
+            return testFilesDir + "/" + fileDir;
+        } else {
+            return fileDir;
+        }
     }
 
     /**
@@ -199,19 +249,25 @@ public class Controller {
      * s2 : q t r,
      * s3 : , (i.e. set of propositional atoms for state s3 is empty)
      * s4 : t;
-     * @param kripkeFile {@link String} filename of a kripke text file
+     * @param kripkeFilepath {@link String} filename of a kripke text file
      * @return A {@link Kripke} object
      * @throws IOException
      */
-    public KripkeFileObj getKripkeFileObj(String kripkeFile) throws IOException {
+    public KripkeFileObj getKripkeFileObj(String kripkeFilepath) throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream(testFilesDir + "/" + kripkeFile);
+        InputStream inputStream = null;
+        inputStream = classLoader.getResourceAsStream(kripkeFilepath);
+//        if (isEndToEndTest) {
+//            inputStream = classLoader.getResourceAsStream(testFilesDir + "/" + kripkeFile);
+//        } else {
+//            inputStream = classLoader.getResourceAsStream(kripkeFile);
+//        }
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
         Set states = new HashSet<State>();
         Set transitions  = new HashSet<Transition>();
         Boolean parsedKripkeLabelsLine = false;
         KripkeFileObj kripkeFileObj = new KripkeFileObj();
-        kripkeFileObj.setKripkeFilename(kripkeFile);
+        kripkeFileObj.setKripkeFilepath(kripkeFilepath);
         kripkeFileObj.setStates(states);
         kripkeFileObj.setTransitions(transitions);
         kripkeFileObj.setLineNum(1);
@@ -227,7 +283,7 @@ public class Controller {
             // after first line, if it starts with a "t", it's a transition line
             else if (firstChar == 't') {
                 // kripkeFileObj.setLineNum(krip);
-                if (kripkeFileObj.getKripkeFilename().equals("Broken Model 4.txt")) {
+                if (kripkeFileObj.getKripkeFilepath().equals("Broken Model 4.txt")) {
                     int i=0;
                 }
                 if (kripkeFileObj.getErrorMessage() == null) {
@@ -245,7 +301,7 @@ public class Controller {
         }
         Kripke kripke = new Kripke(kripkeFileObj.getStates(), kripkeFileObj.getTransitions());
         if (parsedKripkeLabelsLine == false) {
-            kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilename() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": no labels line found (a label line example could be: \"s1 : p;\").");
+            kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilepath() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": no labels line found (a label line example could be: \"s1 : p;\").");
         }
         kripkeFileObj.setKripke(kripke);
         return kripkeFileObj;
@@ -266,14 +322,14 @@ public class Controller {
         String stateName = lineArr[0];
         stateName = stateName.replace(",","");
         Integer stateNum = parseInt(stateName.replace("s",""));
-        if (!contains(kripkeFileObj.getStates(),new State(stateNum))) { kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilename() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": state \"" + stateName + "\" not found in kripke states."); }
+        if (!contains(kripkeFileObj.getStates(),new State(stateNum))) { kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilepath() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": state \"" + stateName + "\" not found in kripke states."); }
         // char secondChar = line.charAt(1);
         // Integer stateNum = Character.getNumericValue(secondChar);
         Set labels = new HashSet<Character>();
         // line = line.substring(5); // remove everything in the front (ie, "s1 : ") so only the labels are left (ie, "q t r,")
         // line = line.substring(0, line.length() - 1); // remove trailing comma or semicolon
-        lineArr[lineArr.length - 1].replace(",","");
-        lineArr[lineArr.length - 1].replace(";","");
+        lineArr[lineArr.length - 1] = lineArr[lineArr.length - 1].replace(",","");
+        lineArr[lineArr.length - 1] = lineArr[lineArr.length - 1].replace(";","");
         int lineArrElemNum = 0;
         for (Object lineArrElemObj : lineArr) {
             String lineArrElem = (String) lineArrElemObj;
@@ -282,7 +338,7 @@ public class Controller {
                 String label = lineArrElem;
                 label = label.replace(",","");
                 label = label.replace(";","");
-                if (labels.contains(label)) { kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilename() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": label \"" + label + "\" already exists in state \"" + stateName + "\"."); }
+                if (labels.contains(label)) { kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilepath() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": label \"" + label + "\" already exists in state \"" + stateName + "\"."); }
                 labels.add(label);
 //                if (line.length() > 2) {
 //                    line = line.substring(2); // remove first char and the space after it
@@ -316,7 +372,7 @@ public class Controller {
             Integer stateInt = parseInt(stateStr);
             State newState = new State(stateInt);
             if (contains(states, newState)) {
-                kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilename() + ": Syntax error on line 1: duplicate state \"" + newState.toString() + "\" found.");
+                kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilepath() + ": Syntax error on line 1: duplicate state \"" + newState.toString() + "\" found.");
             }
             states.add(newState);
         }
@@ -335,13 +391,13 @@ public class Controller {
         String transitionName = transitionLineArr[0];
         if (transitionLineArr.length > 1) {
             if (!transitionLineArr[1].equals(":")) {
-                kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilename() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": no colon found in transition line (a correct transition line example could be: \"t1 : s1 – s2;\").");
+                kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilepath() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": no colon found in transition line (a correct transition line example could be: \"t1 : s1 – s2;\").");
             }
         }
         if (kripkeFileObj.getErrorMessage() == null) {
             String fromName = transitionLineArr[2];
             if (transitionLineArr.length < 4) {
-                kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilename() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": no destination state found in transition line (a correct transition line example could be: \"t1 : s1 – s2;\").");
+                kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilepath() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": no destination state found in transition line (a correct transition line example could be: \"t1 : s1 – s2;\").");
             }
             if (kripkeFileObj.getErrorMessage() == null) {
                 String toName = transitionLineArr[4];
@@ -351,15 +407,15 @@ public class Controller {
                 Integer fromNum = parseInt(fromName.replace("s", ""));
                 Integer toNum = parseInt(toName.replace("s", ""));
                 State fromState = new State(fromNum);
-                if (!contains(kripkeFileObj.getStates(),fromState)) { kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilename() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": transition from state (\"" + fromName + "\") not found in kripke states."); }
+                if (!contains(kripkeFileObj.getStates(),fromState)) { kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilepath() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": transition from state (\"" + fromName + "\") not found in kripke states."); }
                 State toState = new State(toNum);
-                if (!contains(kripkeFileObj.getStates(),toState)) { kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilename() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": transition to state (\"" + toName + "\") not found in kripke states."); }
+                if (!contains(kripkeFileObj.getStates(),toState)) { kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilepath() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": transition to state (\"" + toName + "\") not found in kripke states."); }
                 Transition newTransition = new Transition(transitionNum, fromState, toState);
                 for (int i = 1; i <= kripkeFileObj.getTransitions().size(); i++) {
                     Transition thisTransition = getTransition(i, kripkeFileObj.getTransitions());
                     if (thisTransition.getFrom().getNumber() == newTransition.getFrom().getNumber()) {
                         if (thisTransition.getTo().getNumber() == newTransition.getTo().getNumber()) {
-                            kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilename() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": duplicate transition found (\"" + thisTransition.toStringDetailed() + "\" and \"" + newTransition.toStringDetailed() + "\").");
+                            kripkeFileObj.setErrorMessage(kripkeFileObj.getKripkeFilepath() + ": Syntax error on line " + kripkeFileObj.getLineNum() + ": duplicate transition found (\"" + thisTransition.toStringDetailed() + "\" and \"" + newTransition.toStringDetailed() + "\").");
                         }
                     }
                 }
@@ -409,6 +465,22 @@ public class Controller {
         }
     }
 
+    public Set modelCheck(String kripkeFilepath, String formula) throws IOException, dev.markmcd.controller.ctl.Parser.ParseException {
+        KripkeFileObj kripkeFileObj = getKripkeFileObj(kripkeFilepath);
+        ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), formula);
+        Parser parser = new Parser(modelCheckInputs);
+        Set statesThatHold = parser.Parse();
+        return statesThatHold;
+    }
+
+    public void printModelCheckResults(Set statesThatHold, String stateToCheck, String formula) {
+        if (containsStateName(statesThatHold,stateToCheck)) {
+            System.out.println("✅ " + stateToCheck + " holds for " + formula);
+        } else {
+            System.out.println("❌ " + stateToCheck + " does not hold for " + formula);
+        }
+    }
+
     private void modelCheckEndToEndTests(Options options) throws IOException, dev.markmcd.controller.ctl.Parser.ParseException {
         TestFiles testFilesObj = getTestFiles(testFilesDir);
         List kripkeFiles = testFilesObj.getKripkesValid();
@@ -429,14 +501,14 @@ public class Controller {
             int numTested = 0;
             // for (Object formulaFileObjObj : formulaFileObjList) {
             while (numTested < numToTest) {
-                KripkeFileObj kripkeFileObj = getKripkeFileObj(kripkeFilename);
+                if (i==1) {
+                    int test = 1;
+                }
+                KripkeFileObj kripkeFileObj = getKripkeFileObj(testFilesDir + "/" + kripkeFilename);
                 // FormulaFileObj formulaFileObj = (FormulaFileObj) formulaFileObjObj;
                 FormulaFileObj formulaFileObj = (FormulaFileObj) formulaFileObjList.get(numTested);
                 ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), formulaFileObj.getFormula(), formulaFileObj.getStateToTest());
                 Parser parser = new Parser(modelCheckInputs);
-//                if (i==6) {
-//                    int test = 1;
-//                }
                 Set statesThatHold = parser.Parse();
                 Boolean actual = null;
                 if (containsStateName(statesThatHold,formulaFileObj.getStateToTest())) {

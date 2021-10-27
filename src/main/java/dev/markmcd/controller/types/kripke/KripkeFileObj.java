@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class KripkeFileObj {
 
-    String kripkeFilename;
+    String kripkeFilepath;
     Kripke kripke;
     Set states;
     Set transitions;
@@ -43,12 +43,12 @@ public class KripkeFileObj {
         return errorMessage;
     }
 
-    public String getKripkeFilename() {
-        return kripkeFilename;
+    public String getKripkeFilepath() {
+        return kripkeFilepath;
     }
 
-    public void setKripkeFilename(String kripkeFilename) {
-        this.kripkeFilename = kripkeFilename;
+    public void setKripkeFilepath(String kripkeFilepath) {
+        this.kripkeFilepath = kripkeFilepath;
     }
 
     public int getLineNum() {

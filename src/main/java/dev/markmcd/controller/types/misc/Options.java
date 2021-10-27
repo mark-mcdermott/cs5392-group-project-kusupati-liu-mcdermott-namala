@@ -17,7 +17,7 @@ public class Options {
     /**
      * {@link String} Filename of .txt file containing the kripke structure. Don't include the full path, just the filename. The file needs to be in the src/main/resources directory.
      */
-    private String kripkeFilename;
+    private String kripkeFilepath;
 
     /**
      * {@link String} name of the state to check, like "s0" or "s13". Constructor checks to ensure stateToCheckStr starts with lowercase "s" and next has an integer after that.
@@ -62,7 +62,9 @@ public class Options {
 
         // parse command line arguments and set the options found there
         Arguments arguments = parseArgs(args);
-        this.kripkeFilename = arguments.getKripkeFilename();
+        String kripkeFileName = arguments.getKripkeFilename();
+        // this.kripkeFilepath = (arguments.runEndToEndTests) ? testFilesDir + "/" + kripkeFileName : kripkeFileName;
+        this.kripkeFilepath = kripkeFileName;
         this.stateToCheckStr = arguments.getStateToCheckStr();
         this.formulaInputSource = arguments.getFormulaInputSource();
         if (arguments.getModelFilename() != null) {
@@ -160,8 +162,8 @@ public class Options {
         return stateToCheckStr;
     }
 
-    public String getKripkeFilename() {
-        return kripkeFilename;
+    public String getKripkeFilepath() {
+        return kripkeFilepath;
     }
 
     public FormulaInputSource getFormulaInputSource() {
