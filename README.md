@@ -3,13 +3,13 @@
 CTL model checker written in Java and using a JavaCC parser.
 
 ## Items Left 
-<input type="checkbox" /> get user models/formulas working<br>
-<input type="checkbox" /> descriptive error if state to check isn't in model<br>
-<input type="checkbox" /> code up the microwave example (mchPeled.zip)<br>
-<input type="checkbox" /> description of acceptance testcases <br>
-<input type="checkbox" /> description of execution of acceptancve testcases illustrated with screenshots of all windows/popups of system and console output along testcase <br>
-<input type="checkbox" /> UML class diagram for the software system<br>
-<input type="checkbox" /> everyone: double check / study Model 4 for presentation<br>
+- [x] get user models/formulas working<br>
+- [x] descriptive error if state to check isn't in model<br>
+- [ ] code up the microwave example (mchPeled.zip)<br>
+- [ ] description of acceptance testcases <br>
+- [ ] description of execution of acceptancve testcases illustrated with screenshots of all windows/popups of system and console output along testcase <br>
+- [ ] UML class diagram for the software system<br>
+- [ ] everyone: double check / study Model 4 for presentation<br>
 
 ## How To Run 
  1) Prerequisites to run this:
