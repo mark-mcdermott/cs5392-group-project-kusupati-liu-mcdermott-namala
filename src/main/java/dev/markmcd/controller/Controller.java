@@ -83,14 +83,6 @@ public class Controller {
         runProgram(options);
     }
 
-    public String getKripkeFilepath(String kripkeFile, Boolean runEndToEndTests) {
-        if (runEndToEndTests) {
-            return testFilesDir + "/" + kripkeFile;
-        } else {
-            return kripkeFile;
-        }
-    }
-
     public void validateModel(Options options) throws Exception {
         KripkeFileObj kripkeFileObj = getKripkeFileObj(options.getKripkeFilepath());
         if (kripkeFileObj.getErrorMessage() != null) {
@@ -134,8 +126,8 @@ public class Controller {
         // TODO these lines are totally untested!
         validateModel(options);
         validateFormula(options.getFormula());
-        // validateStateToCheck(options.getStateToCheckStr(), );
         Set statesThatHold = modelCheck(options.getKripkeFilepath(), options.getFormula());
+        validateStateToCheck(options.getStateToCheckStr(), getKripkeFileObj(options.getKripkeFilepath()).getStates());
         printModelCheckResults(statesThatHold, options.getStateToCheckStr(), options.getFormula());
 
         // checkKripkeSyntax
@@ -431,7 +423,7 @@ public class Controller {
         validateEndToEndTestModels(options.getTestFilesDir(), true);
         validateEndToEndFormulas(options);
         modelCheckEndToEndTests(options);
-           // run dr. p test files and check results are correct
+        System.out.println("-- end to end tests done --\n");
     }
 
     public List getFormulaFileObjList(String formulasFilename, Options options) throws IOException {
