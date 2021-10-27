@@ -80,7 +80,7 @@ public class ControllerTest {
     public void testGetTestFiles4() throws Exception {
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;
-        String[] args = {"-k","kripke.txt","-f","model.txt"};
+        String[] args = {"-k","kripke.txt","-f", "formula.txt"};
         Options options = new Options(args, testFilesDir);
         Controller controller = new Controller(new Model(), new View(), options);
         TestFiles testFiles = controller.getTestFiles(options.getTestFilesDir());
@@ -98,7 +98,7 @@ public class ControllerTest {
     // tests getKripkeFromFile throws NullPointerException when kripkeFile para is null
     @Test(expected = NullPointerException.class)
     public void testGetKripkeFromFile1() throws Exception {
-        String[] args = {"-k","kripke.txt","-f","model.txt"};
+        String[] args = {"-k","kripke.txt","-f", "formula.txt"};
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;
         Options options = new Options(args, testFilesDir);
@@ -115,7 +115,7 @@ public class ControllerTest {
     // tests getKripkeFromFile gets correct Kripke info
     @Test
     public void testGetKripkeFromFile2() throws Exception {
-        String[] args = {"-k","kripke.txt","-f","model.txt"};
+        String[] args = {"-k","kripke.txt","-f", "formula.txt"};
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;
         Options options = new Options(args, testFilesDir);

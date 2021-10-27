@@ -156,10 +156,10 @@ public class UtilsTest {
         assertTrue(isTxtFile(str));
     }
 
-    // tests if isTxtFile returns true if param is "model.txt"
+    // tests if isTxtFile returns true if param is "formula.txt"
     @Test
     public void testIsTxtFile7() throws IOException {
-        String str = "model.txt";
+        String str = "formula.txt";
         assertTrue(isTxtFile(str));
     }
 

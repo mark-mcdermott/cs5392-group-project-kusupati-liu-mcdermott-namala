@@ -67,11 +67,12 @@ public class Options {
         this.kripkeFilepath = kripkeFileName;
         this.stateToCheckStr = arguments.getStateToCheckStr();
         this.formulaInputSource = arguments.getFormulaInputSource();
-        if (arguments.getModelFilename() != null) {
+        if (arguments.getFormulaFilename() != null) {
+            this.formulaInputFilename = arguments.getFormulaFilename();
             this.formulaInputSource = arguments.getFormulaInputSource();
         }
-        if (arguments.getModel() != null) {
-            this.formula = arguments.getModel();
+        if (arguments.getFormula() != null) {
+            this.formula = arguments.getFormula();
         }
         this.runEndToEndTests = arguments.runEndToEndTests;
 

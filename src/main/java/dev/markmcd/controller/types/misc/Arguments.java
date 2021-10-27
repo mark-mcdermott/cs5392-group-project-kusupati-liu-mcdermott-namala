@@ -53,7 +53,7 @@ public class Arguments {
      * But when the file is read and the model is parsed, the model will have to use the following flavor of CTL operators:
      * not, and, or, ->, EX, AX, EF, AF, EG, AG, E[ p U q ], A[ p U q ]].
      */
-    String modelFilename;
+    String formulaFilename;
 
     /**
      * {@link String} specifying the CTL model property to check.
@@ -61,7 +61,7 @@ public class Arguments {
      * But when the model is parsed, it will have to use the following flavor of CTL operators:
      * not, and, or, ->, EX, AX, EF, AF, EG, AG, E[ p U q ], A[ p U q ]].
      */
-    String model;
+    String formula;
 
     /**
      * {@Boolean} specifying that the end to end tests should be run
@@ -95,12 +95,12 @@ public class Arguments {
             if (!isTxtFile(modelInputStr)) {
                 throw new IOException("modelInputStr filename in Arguments isn't a .txt filename.");
             }
-            this.modelFilename = modelInputStr;
-            this.model = null;
+            this.formulaFilename = modelInputStr;
+            this.formula = null;
         } else if (formulaInputSource == ARGUMENT){
             if (isTxtFile(modelInputStr)) { throw new IOException("Arguments specified ARGUMENT model input, but modelInputStr is a .txt filename"); }
-            this.model = modelInputStr;
-            this.modelFilename = null;
+            this.formula = modelInputStr;
+            this.formulaFilename = null;
         }
         this.runEndToEndTests = runEndToEndTests;
     }
@@ -127,18 +127,18 @@ public class Arguments {
             if (!isTxtFile(modelInputStr)) {
                 throw new IOException("modelInputStr filename in Arguments isn't a .txt filename.");
             }
-            this.modelFilename = modelInputStr;
-            this.model = null;
+            this.formulaFilename = modelInputStr;
+            this.formula = null;
         } else if (formulaInputSource == ARGUMENT){
             if (isTxtFile(modelInputStr)) { throw new IOException("Arguments specified ARGUMENT model input, but modelInputStr is a .txt filename"); }
-            this.model = modelInputStr;
-            this.modelFilename = null;
+            this.formula = modelInputStr;
+            this.formulaFilename = null;
         }
         this.runEndToEndTests = runEndToEndTests;
     }
 
-    public String getModel() {
-        return model;
+    public String getFormula() {
+        return formula;
     }
 
     public FormulaInputSource getFormulaInputSource() {
@@ -149,8 +149,8 @@ public class Arguments {
         return kripkeFilename;
     }
 
-    public String getModelFilename() {
-        return modelFilename;
+    public String getFormulaFilename() {
+        return formulaFilename;
     }
 
     public String getStateToCheckStr() {

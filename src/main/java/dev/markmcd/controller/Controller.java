@@ -109,7 +109,47 @@ public class Controller {
         }
     }
 
-    /**
+    public String getFormula(Options options) throws IOException {
+        String formula = "";
+        if (options.getFormulaInputSource() == FILE) {
+            formula = getFormulaFromUserFile(options.getFormulaInputFilename());
+        } else if (options.getFormulaInputSource() == ARGUMENT) {
+            formula = options.getFormula();
+        }
+        if (formula.equals("")) {
+            throw new IOException("formula in getFormula() appears blank");
+        }
+        return formula;
+    }
+
+    public String getFormulaFromUserFile(String filename) throws IOException {
+        String formula = "";
+        ClassLoader classLoader = getClass().getClassLoader();
+        try (InputStream inputStream = classLoader.getResourceAsStream(filename)) {
+            String stateToCheck = "";
+            Boolean expected = null;
+            if (inputStream == null) {
+                throw new IllegalArgumentException("file not found! " + filename);
+            } else {
+                // read input stream line by line approach from https://stackoverflow.com/a/55420102, accessed 9/18/21
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                    // String rawLine = reader.readLine();
+                    String rawLine = "";
+                    while ((rawLine = reader.readLine()) != null) {
+                        formula = rawLine;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (formula.equals("")) {
+            throw new IOException("formula in " + filename + " appears blank (getFormulaFromUserFile())");
+        }
+        return formula;
+    }
+
+        /**
      * This is the meat and potatoes of the program - all the major function calls are here. Proecesses the arguments, runs tests, runs the model checking
      * @param options Two command line arguments are mandatory: -k <kripke file> specifying the Kripke filename and then either -a <formula> or -f <formula filename>. There is an optional -s <state name> argument specifying a state to check.
      * @throws IOException
@@ -123,18 +163,12 @@ public class Controller {
             runEndToEndTests(options);
         }
 
-        // TODO these lines are totally untested!
         validateModel(options);
-        validateFormula(options.getFormula());
-        Set statesThatHold = modelCheck(options.getKripkeFilepath(), options.getFormula());
+        validateFormula(getFormula(options));
+        Set statesThatHold = modelCheck(options.getKripkeFilepath(), getFormula(options));
         validateStateToCheck(options.getStateToCheckStr(), getKripkeFileObj(options.getKripkeFilepath()).getStates());
-        printModelCheckResults(statesThatHold, options.getStateToCheckStr(), options.getFormula());
-
-        // checkKripkeSyntax
-        // checkModelSyntax
-        // checkStateToCheck
-
-
+        printModelCheckResults(statesThatHold, options.getStateToCheckStr(), getFormula(options));
+        
     }
 
 
