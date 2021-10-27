@@ -168,7 +168,7 @@ public class Controller {
         Set statesThatHold = modelCheck(options.getKripkeFilepath(), getFormula(options));
         validateStateToCheck(options.getStateToCheckStr(), getKripkeFileObj(options.getKripkeFilepath()).getStates());
         printModelCheckResults(statesThatHold, options.getStateToCheckStr(), getFormula(options));
-        
+
     }
 
 
