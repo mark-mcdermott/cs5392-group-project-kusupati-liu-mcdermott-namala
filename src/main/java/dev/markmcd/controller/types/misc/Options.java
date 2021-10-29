@@ -35,6 +35,7 @@ public class Options {
      * {@Boolean} specifying that the end to end tests should be run
      */
     Boolean runEndToEndTests;
+    Boolean runOnlyEndToEndTests;
 
     /**
      * {@Boolean} true for printing exceptions to console and not halting program, false for throwing exceptions which halt program
@@ -78,6 +79,15 @@ public class Options {
             this.formula = arguments.getFormula();
         }
         this.runEndToEndTests = arguments.runEndToEndTests;
+        if (this.runEndToEndTests) {
+            if (this.kripkeFilepath == null) {
+                this.runOnlyEndToEndTests = true;
+            } else {
+                this.runOnlyEndToEndTests = false;
+            }
+        } else {
+            this.runOnlyEndToEndTests = false;
+        }
 
     }
 
@@ -155,7 +165,11 @@ public class Options {
         if (i != args.length)
             System.err.println("Usage: java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <formula> -e");
         else if (stateToCheckStr == null) {
-            return new Arguments(kripkeFilename,formulaInputSource,formulaInputStr,runEndToEndTests);
+            if (kripkeFilename.equals("")) {
+                return new Arguments(runEndToEndTests);
+            } else {
+                return new Arguments(kripkeFilename, formulaInputSource, formulaInputStr, runEndToEndTests);
+            }
         } else if (stateToCheckStr != null) {
             return new Arguments(kripkeFilename,stateToCheckStr,formulaInputSource,formulaInputStr,runEndToEndTests);
         }
@@ -194,4 +208,7 @@ public class Options {
         return printExceptions;
     }
 
+    public Boolean getRunOnlyEndToEndTests() {
+        return runOnlyEndToEndTests;
+    }
 }

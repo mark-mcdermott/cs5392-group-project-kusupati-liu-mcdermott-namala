@@ -33,6 +33,10 @@ public class View {
         printModelCheckResults(modelCheckResults);
     }
 
+    public void updateView(AllEndToEndTestResults allEndToEndTestResults) throws Exception {
+        printEndToEndTestResults(allEndToEndTestResults);
+    }
+
     public void printEndToEndTestResults(AllEndToEndTestResults allEndToEndTestResults) throws Exception {
         List validateModelResultsList = allEndToEndTestResults.getValidateModelResultsList();
         List validateFormulaResultsList = allEndToEndTestResults.getValidateFormulaResultList();
@@ -100,9 +104,13 @@ public class View {
         Boolean formulaPassValidation = validateFormulaResults.getPassValidation();
         String formula = validateFormulaResults.getFormula();
 
+        Boolean stateToCheckPassValidation = null;
+        String stateToCheck = null;
         // state to check validation vars
-        Boolean stateToCheckPassValidation = validateStateToCheckResults.getStateToCheckPass();
-        String stateToCheck = validateStateToCheckResults.getStateToCheck();
+        if (options.getStateToCheckStr() != null && !options.getStateToCheckStr().equals("")) {
+            stateToCheckPassValidation = validateStateToCheckResults.getStateToCheckPass();
+            stateToCheck = validateStateToCheckResults.getStateToCheck();
+        }
 
         // print model validation results
         if (modelPassValidation) {
@@ -120,10 +128,12 @@ public class View {
         }
 
         // print state to check validation results
-        if (stateToCheckPassValidation) {
-            System.out.println("✅ state to check " + stateToCheck + " is in the model");
-        } else {
-            System.out.println("❌ state to check " + stateToCheck + " is not in the model");
+        if (options.getStateToCheckStr() != null && !options.getStateToCheckStr().equals("")) {
+            if (stateToCheckPassValidation) {
+                System.out.println("✅ state to check " + stateToCheck + " is in the model");
+            } else {
+                System.out.println("❌ state to check " + stateToCheck + " is not in the model");
+            }
         }
     }
 

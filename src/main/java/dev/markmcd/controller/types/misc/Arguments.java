@@ -68,6 +68,10 @@ public class Arguments {
      */
     Boolean runEndToEndTests;
 
+    public Arguments(Boolean runEndToEndTests) throws IOException {
+        this.runEndToEndTests = runEndToEndTests;
+    }
+
     /**
      * Constructor including state to check (the other constructor omits the state to check), the kripke file name,the model input source and the model input string.
      * @param kripkeFilename {@link String} Filename of .txt file containing the kripke structure. Don't include the full path, just the filename. The file needs to be in the src/main/resources directory.

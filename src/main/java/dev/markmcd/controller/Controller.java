@@ -100,8 +100,10 @@ public class Controller {
 
         // declare vars
         Boolean runEndToEndTests = options.getRunEndToEndTests();
+        Boolean runOnlyEndToEndTests = options.getRunOnlyEndToEndTests();
         Set statesThatHold = null;
-        Set allStates = getKripkeFileObj(options.getKripkeFilepath()).getStates();
+        Set allStates = null;
+        if (!runOnlyEndToEndTests) { allStates = getKripkeFileObj(options.getKripkeFilepath()).getStates(); }
         String stateToCheck = options.getStateToCheckStr();
         String formula = options.getFormula();
 
@@ -112,20 +114,26 @@ public class Controller {
             model.setAllEndToEndTestResults(allEndToEndTestResults);
         }
 
-        // run validation (validate the model, the formula and the state to check)
-        ValidationResults validationResults = validateModelFormulaAndStateToCheck(options);
-        model.setValidationResults(validationResults);
+        if (!options.getRunOnlyEndToEndTests()) {
+            // run validation (validate the model, the formula and the state to check)
+            ValidationResults validationResults = validateModelFormulaAndStateToCheck(options);
+            model.setValidationResults(validationResults);
 
-        // run model checking
-        statesThatHold = modelCheck(options.getKripkeFilepath(), getFormula(options));
-        ModelCheckResults modelCheckResults = new ModelCheckResults(statesThatHold, allStates, stateToCheck, formula);
-        model.setModelCheckResults(modelCheckResults);
+            // run model checking
+            statesThatHold = modelCheck(options.getKripkeFilepath(), getFormula(options));
+            ModelCheckResults modelCheckResults = new ModelCheckResults(statesThatHold, allStates, stateToCheck, formula);
+            model.setModelCheckResults(modelCheckResults);
+        }
 
         // update view
-        if (runEndToEndTests) {
-            view.updateView(model.getValidationResults(), model.getModelCheckResults(), model.getAllEndToEndTestResults());
+        if (runOnlyEndToEndTests) {
+            view.updateView(model.getAllEndToEndTestResults());
         } else {
-            view.updateView(model.getValidationResults(), model.getModelCheckResults());
+            if (runEndToEndTests) {
+                view.updateView(model.getValidationResults(), model.getModelCheckResults(), model.getAllEndToEndTestResults());
+            } else {
+                view.updateView(model.getValidationResults(), model.getModelCheckResults());
+            }
         }
 
     }
