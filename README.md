@@ -5,11 +5,12 @@ CTL model checker written in Java and using a JavaCC parser.
 ## Items Left 
 - [x] get user models/formulas working<br>
 - [x] descriptive error if state to check isn't in model<br>
-- [ ] code up the microwave example (mchPeled.zip)<br>
-- [ ] description of acceptance testcases <br>
-- [ ] description of execution of acceptancve testcases illustrated with screenshots of all windows/popups of system and console output along testcase <br>
-- [ ] UML class diagram for the software system<br>
+- [ ] code up the microwave example (mchPeled.zip) (lanlan)<br>
+- [ ] description of acceptance testcases (lanlan)<br>
+- [ ] description of execution of acceptancve testcases illustrated with screenshots of all windows/popups of system and console output along testcase (divitha)<br>
+- [ ] UML class diagram for the software system (shravanthi)<br>
 - [ ] everyone: double check / study Model 4 for presentation<br>
+- [ ] powerpoint (divitha)
 
 ## How To Run 
  1) Prerequisites to run this:
