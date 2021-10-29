@@ -28,21 +28,37 @@ public class Options {
      * Simple {@link FormulaInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the model is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the model itself is hardcoded in the command line argument after the -a flag.
      */
     private FormulaInputSource formulaInputSource;
+
+    /**
+     * A {@link String} for the formula input file, if one exists. Ie, formula.txt
+     */
     private String formulaInputFilename;
+
+    /**
+     * A {@link String} of the CTL formula, if specified directly in the command line arguments. Ie, EXp
+     */
     private String formula;
 
     /**
-     * {@Boolean} specifying that the end to end tests should be run
+     * {@link Boolean} specifying that the end to end tests should be run
      */
     Boolean runEndToEndTests;
+
+    /**
+     * {@link Boolean} specifying to only run the end to end tests and not model check any user inputted model/formula
+     */
     Boolean runOnlyEndToEndTests;
 
     /**
      * {@Boolean} true for printing exceptions to console and not halting program, false for throwing exceptions which halt program
+     * This is hardcoded at the top of Main.java
      */
     Boolean printExceptions;
 
-    // user set options from the top of Main
+    /**
+     * {@link String} name of the test file directory inside the resources folder, ie. end-to-end-tests
+     * This is hardcoded at the top of Main.java
+     */
     private String testFilesDir;
 
 
@@ -53,7 +69,7 @@ public class Options {
     public Options() { }
 
     /**
-     * Main constructor
+     * The sole Options constructor. Sets the two properties hardcoded at the top of Main.java and then parses the args param, pulling out any specified arguments. Includes some simple logic around determining if the formula is specified as an argument directly or is in an file specified as an argument as well as determining if only the end to end tests are meant to be run.
      * @param args
      * @param testFilesDir
      * @throws IOException

@@ -1,15 +1,39 @@
 package dev.markmcd.controller.types.modelCheckRelated;
 
+import dev.markmcd.controller.types.kripke.State;
+
 import java.util.Set;
 
 import static dev.markmcd.utils.Utils.containsStateName;
 
+/**
+ * The results of a single model check run. Contains the necessary details about how the model check went and what was checked exactly.
+ */
 public class ModelCheckResults {
 
+    /**
+     * {@link Set} of {@link State}s that held for the formula
+     */
     Set statesThatHold;
+
+    /**
+     * {@link Set} of all {@link State}s in the model
+     */
     Set allStates;
+
+    /**
+     * {@link State} specified to check if it holds for the model. This is optional. If omitted, all states are checked. All the end to end tests contain a state to check, but for user inputted models/formulas, the state to check is optional. Will be null if omitted.
+     */
     String stateToCheck;
+
+    /**
+     * {@link String} of the CTL formula checked. If the program got this far, the formula was validated and should be well formed.
+     */
     String formula;
+
+    /**
+     * {@link Boolean} for whether the state to check actually held for the formula. Will be null if the state to check was omitted
+     */
     Boolean stateToCheckHold;
 
     public ModelCheckResults(Set statesThatHold, Set allStates, String stateToCheck, String formula) {

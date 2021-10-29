@@ -1,5 +1,9 @@
 package dev.markmcd.controller.types.modelCheckRelated;
 
+/**
+ * Data structure containing bookkeeping info on the results of validating a CTL formula (checking whether it is well formed. That is, checking whether it has any syntax errors)
+ * This class is odd because as currently implemented, if the fomula validation fails, the program throws and exception and halts. So this class is only instantiated when validation succeeds, so the error property here will always be null. I  
+ */
 public class ValidateFormulaResults {
 
     Boolean passValidation;

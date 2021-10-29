@@ -5,6 +5,9 @@ import java.util.Set;
 
 import static dev.markmcd.utils.Utils.*;
 
+/**
+ * A data structure representing a Kripke structure. Has a states property and a transitions property. It also contains labels (as a Kripke structure must), but they are properties on the {@link State} objects
+ */
 public class Kripke {
     private Set states;
     private Set transitions;
