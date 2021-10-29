@@ -13,11 +13,12 @@ public class Main {
 
         // options set here
         String testFilesDir = "end-to-end-tests";
+        Boolean printExceptions = true;
 
         // setup main program (MVC structure based off https://www.edureka.co/blog/mvc-architecture-in-java/)
-        Options options = new Options(args, testFilesDir);
+        Options options = new Options(args, testFilesDir, printExceptions);
         Model model = new Model();
-        View view = new View();
+        View view = new View(options);
         new Controller(model, view, options);
 
     }

@@ -1,13 +1,13 @@
 package dev.markmcd.controller.ctl;
 
 import dev.markmcd.controller.types.misc.Arguments;
-import dev.markmcd.controller.types.modelRelated.FormulaInputSource;
+import dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.ARGUMENT;
-import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.FILE;
+import static dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource.ARGUMENT;
+import static dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource.FILE;
 
 public class ArgumentsTest {
 

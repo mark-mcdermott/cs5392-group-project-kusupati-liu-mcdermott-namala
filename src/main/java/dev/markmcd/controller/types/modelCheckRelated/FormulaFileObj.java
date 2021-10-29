@@ -1,4 +1,4 @@
-package dev.markmcd.controller.types.modelRelated;
+package dev.markmcd.controller.types.modelCheckRelated;
 
 public class FormulaFileObj {
     String stateToTest;

@@ -1,4 +1,4 @@
-package dev.markmcd.controller.types.modelRelated;
+package dev.markmcd.controller.types.modelCheckRelated;
 
 import dev.markmcd.controller.types.kripke.Kripke;
 import dev.markmcd.controller.types.kripke.State;

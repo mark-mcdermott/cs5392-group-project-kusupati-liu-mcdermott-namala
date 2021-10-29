@@ -18,8 +18,8 @@ public class ControllerTest {
     @Test(expected = NullPointerException.class)
     public void testController1() throws Exception {
         Model model = null;
-        View view = new View();
         Options options = new Options();
+        View view = new View(options);
         new Controller(model,view,options);
     }
 
@@ -27,8 +27,8 @@ public class ControllerTest {
     @Test(expected = NullPointerException.class)
     public void testController2() throws Exception {
         Model model = new Model();
-        View view = null;
         Options options = new Options();
+        View view = null;
         new Controller(model,view,options);
     }
 
@@ -36,24 +36,24 @@ public class ControllerTest {
     @Test(expected = NullPointerException.class)
     public void testController3() throws Exception {
         Model model = new Model();
-        View view = new View();
         Options options = new Options();
+        View view = new View(options);
         new Controller(model,view,options);
     }
 
     // test if runProgram throws NullException if args param is null
     @Test(expected = NullPointerException.class)
     public void testRunProgram1() throws Exception {
-        Controller controller = new Controller(new Model(), new View(), new Options());
         Options options = new Options();
+        Controller controller = new Controller(new Model(), new View(options), new Options());
         controller.runProgram(options);
     }
 
     // test if runProgram throws NullException if options param is null
     @Test(expected = NullPointerException.class)
     public void testRunProgram2() throws Exception {
-        Controller controller = new Controller(new Model(), new View(), new Options());
         Options options = null;
+        Controller controller = new Controller(new Model(), new View(options), new Options());
         controller.runProgram(options);
     }
 
@@ -62,7 +62,8 @@ public class ControllerTest {
     // tests if getTestFiles throws NullPointerException if testFilesDir param is null
     @Test(expected = NullPointerException.class)
     public void testGetTestFiles1() throws Exception {
-        Controller controller = new Controller(new Model(), new View(), new Options());
+        Options options = new Options();
+        Controller controller = new Controller(new Model(), new View(options), new Options());
         String testFilesDir = null;
         controller.getTestFiles(testFilesDir);
     }
@@ -70,7 +71,8 @@ public class ControllerTest {
     // tests if getTestFiles throws NullPointerException if testFilesDir not the name of an actual directory
     @Test(expected = NullPointerException.class)
     public void testGetTestFiles2() throws Exception {
-        Controller controller = new Controller(new Model(), new View(), new Options());
+        Options options = new Options();
+        Controller controller = new Controller(new Model(), new View(options),options);
         String testFilesDir = "test";
         controller.getTestFiles(testFilesDir);
     }
@@ -81,8 +83,10 @@ public class ControllerTest {
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;
         String[] args = {"-k","kripke.txt","-f", "formula.txt"};
-        Options options = new Options(args, testFilesDir);
-        Controller controller = new Controller(new Model(), new View(), options);
+        Options options = new Options(args, testFilesDir,true);
+        Model model = new Model();
+        View view = new View(options);
+        Controller controller = new Controller(model, view, options);
         TestFiles testFiles = controller.getTestFiles(options.getTestFilesDir());
         List kripkesInvalidActual = testFiles.getKripkesInvalid();
         List kripkesValidActual = testFiles.getKripkesValid();
@@ -101,8 +105,8 @@ public class ControllerTest {
         String[] args = {"-k","kripke.txt","-f", "formula.txt"};
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;
-        Options options = new Options(args, testFilesDir);
-        Controller controller = new Controller(new Model(), new View(), options);
+        Options options = new Options(args, testFilesDir,true);
+        Controller controller = new Controller(new Model(), new View(options), options);
         String nullStr = null;
         try {
             KripkeFileObj kripkeFileObj = controller.getKripkeFileObj(nullStr);
@@ -118,10 +122,10 @@ public class ControllerTest {
         String[] args = {"-k","kripke.txt","-f", "formula.txt"};
         String testFilesDir = "end-to-end-tests";
         Boolean runEndToEndTests = true;
-        Options options = new Options(args, testFilesDir);
-        Controller controller = new Controller(new Model(), new View(), options);
-        String modelFilename = "Model 1.txt";
-        KripkeFileObj kripkeFileObj = controller.getKripkeFileObj(modelFilename);
+        Options options = new Options(args, testFilesDir,true);
+        Controller controller = new Controller(new Model(), new View(options), options);
+        String modelFilepath = testFilesDir + "/Model 1.txt";
+        KripkeFileObj kripkeFileObj = controller.getKripkeFileObj(modelFilepath);
         String kripkeStr = kripkeFileObj.getKripke().toString();
     }
 

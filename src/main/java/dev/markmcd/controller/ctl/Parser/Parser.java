@@ -5,7 +5,7 @@ package dev.markmcd.controller.ctl.Parser;
 import java.io.IOException;
 import java.util.Set;
 import java.util.HashSet;
-import dev.markmcd.controller.types.modelRelated.ModelCheckInputs;
+import dev.markmcd.controller.types.modelCheckRelated.ModelCheckInputs;
 import dev.markmcd.controller.types.kripke.Kripke;
 import dev.markmcd.controller.types.kripke.State;
 import dev.markmcd.controller.types.kripke.Transition;

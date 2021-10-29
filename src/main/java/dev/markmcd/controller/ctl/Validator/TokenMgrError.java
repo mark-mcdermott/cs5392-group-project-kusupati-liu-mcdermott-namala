@@ -104,7 +104,8 @@ public class TokenMgrError extends Error
    */
   protected static String LexicalErr(boolean EOFSeen, int lexState, int errorLine, int errorColumn, String errorAfter, int curChar) {
     char curChar1 = (char)curChar;
-    return("Lexical error at line " +
+    // return("Lexical error at line " +
+    return("Lexical error while validating the formula at line " +
           errorLine + ", column " +
           errorColumn + ".  Encountered: " +
           (EOFSeen ? "<EOF> " : ("\"" + addEscapes(String.valueOf(curChar1)) + "\"") + " (" + curChar + "), ") +

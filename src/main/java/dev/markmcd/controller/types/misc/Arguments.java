@@ -1,11 +1,11 @@
 package dev.markmcd.controller.types.misc;
 
-import dev.markmcd.controller.types.modelRelated.FormulaInputSource;
+import dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource;
 
 import java.io.IOException;
 
-import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.FILE;
-import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.ARGUMENT;
+import static dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource.FILE;
+import static dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource.ARGUMENT;
 import static dev.markmcd.utils.Utils.isStateName;
 import static dev.markmcd.utils.Utils.isTxtFile;
 

@@ -4,10 +4,8 @@ import dev.markmcd.controller.ctl.Validator.ParseException;
 import dev.markmcd.controller.ctl.Validator.Validator;
 import dev.markmcd.controller.types.kripke.KripkeFileObj;
 import dev.markmcd.controller.types.misc.Options;
-import dev.markmcd.controller.types.modelRelated.FormulaFileObj;
-import dev.markmcd.controller.types.modelRelated.FormulaInputSource;
+import dev.markmcd.controller.types.modelCheckRelated.*;
 import dev.markmcd.controller.types.misc.TestFiles;
-import dev.markmcd.controller.types.modelRelated.ModelCheckInputs;
 import dev.markmcd.model.Model;
 import dev.markmcd.controller.types.kripke.Kripke;
 import dev.markmcd.controller.types.kripke.State;
@@ -19,13 +17,12 @@ import dev.markmcd.controller.ctl.Parser.Parser;
 import java.io.*;
 import java.util.*;
 
-import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.ARGUMENT;
-import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.FILE;
+import static dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource.ARGUMENT;
+import static dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource.FILE;
 import static dev.markmcd.utils.Utils.*;
 import static dev.markmcd.utils.Utils.contains;
 import static java.lang.Boolean.parseBoolean;
-import static java.lang.Integer.parseInt;
-import static java.lang.Integer.valueOf;
+import static java.lang.Integer.*;
 
 /**
  * Reads input files, validates the model, runs the tests, and then runs the model checker
@@ -83,30 +80,89 @@ public class Controller {
         runProgram(options);
     }
 
-    public void validateModel(Options options) throws Exception {
-        KripkeFileObj kripkeFileObj = getKripkeFileObj(options.getKripkeFilepath());
-        if (kripkeFileObj.getErrorMessage() != null) {
-            String origErrorMessage = kripkeFileObj.getErrorMessage();
-            String newErrorMessage = "❌ failed parsing - " + origErrorMessage;
-            handleError(newErrorMessage,true);
-        } else {
-            System.out.println("✅ model passed parsing - no syntax errors in " + options.getKripkeFilepath());
+    public ValidationResults validateModelFormulaAndStateToCheck(Options options) throws Exception {
+        ValidateModelResults validateModelResults = validateModel(options);
+        ValidateFormulaResults validateFormulaResults = validateFormula(options.getFormula());
+        ValidateStateToCheckResults validateStateToCheckResults = null;
+        if (options.getStateToCheckStr() != null) {
+            validateStateToCheckResults = validateStateToCheck(options.getStateToCheckStr(), getKripkeFileObj(options.getKripkeFilepath()).getStates());
         }
+        ValidationResults validationResults = new ValidationResults(validateModelResults,validateFormulaResults,validateStateToCheckResults);
+        return validationResults;
     }
 
-    public void validateFormula(String formula) throws UnsupportedEncodingException, ParseException {
+    /**
+     * This is the meat and potatoes of the program - all the major function calls are here. Proecesses the arguments, runs tests, runs the model checking
+     * @param options Two command line arguments are mandatory: -k <kripke file> specifying the Kripke filename and then either -a <formula> or -f <formula filename>. There is an optional -s <state name> argument specifying a state to check.
+     * @throws IOException
+     */
+    public void runProgram(Options options) throws Exception {
+
+        // declare vars
+        Boolean runEndToEndTests = options.getRunEndToEndTests();
+        Set statesThatHold = null;
+        Set allStates = getKripkeFileObj(options.getKripkeFilepath()).getStates();
+        String stateToCheck = options.getStateToCheckStr();
+        String formula = options.getFormula();
+
+        // check for null options param and run end to end tests, if specified
+        if (options == null) { throw new NullPointerException("runProgram options param is null"); }
+        if (runEndToEndTests) {
+            AllEndToEndTestResults allEndToEndTestResults = runEndToEndTests(options);
+            model.setAllEndToEndTestResults(allEndToEndTestResults);
+        }
+
+        // run validation (validate the model, the formula and the state to check)
+        ValidationResults validationResults = validateModelFormulaAndStateToCheck(options);
+        model.setValidationResults(validationResults);
+
+        // run model checking
+        statesThatHold = modelCheck(options.getKripkeFilepath(), getFormula(options));
+        ModelCheckResults modelCheckResults = new ModelCheckResults(statesThatHold, allStates, stateToCheck, formula);
+        model.setModelCheckResults(modelCheckResults);
+
+        // update view
+        if (runEndToEndTests) {
+            view.updateView(model.getValidationResults(), model.getModelCheckResults(), model.getAllEndToEndTestResults());
+        } else {
+            view.updateView(model.getValidationResults(), model.getModelCheckResults());
+        }
+
+    }
+
+    public ValidateModelResults validateModel(Options options) throws Exception {
+        Boolean passValidation = null;
+        String originalErrorMessage = "";
+        String kripkeFilePath = options.getKripkeFilepath();
+        KripkeFileObj kripkeFileObj = getKripkeFileObj(kripkeFilePath);
+        if (kripkeFileObj.getErrorMessage() != null) {
+            passValidation = false;
+            originalErrorMessage = kripkeFileObj.getErrorMessage();
+        } else {
+            passValidation = true;
+        }
+        ValidateModelResults validateModelResults = new ValidateModelResults(passValidation,originalErrorMessage,kripkeFilePath);
+        return validateModelResults;
+    }
+
+    public ValidateFormulaResults validateFormula(String formula) throws UnsupportedEncodingException, ParseException {
+        Boolean passValidation = null;
+        String error = "";
         InputStream stringStream = new ByteArrayInputStream(formula.getBytes("UTF-8"));
         Validator validator = new Validator(stringStream);
-        System.out.println("✅ formula passed parsing - \"" + formula + "\" is well formed");
         validator.Validate();
+        passValidation = true;
+        return new ValidateFormulaResults(passValidation,formula,error);
     }
 
-    public void validateStateToCheck(String stateToCheck, Set statesInModel) {
+    public ValidateStateToCheckResults validateStateToCheck(String stateToCheck, Set statesInModel) {
+        Boolean stateToCheckPass = null;
         if (containsStateName(statesInModel, stateToCheck)) {
-            System.out.println("✅ state to check " + stateToCheck + " is in the model");
+            stateToCheckPass = true;
         } else {
-            System.out.println("❌ state to check " + stateToCheck + " is not in the model");
+            stateToCheckPass = false;
         }
+        return new ValidateStateToCheckResults(stateToCheckPass, stateToCheck);
     }
 
     public String getFormula(Options options) throws IOException {
@@ -148,29 +204,6 @@ public class Controller {
         }
         return formula;
     }
-
-        /**
-     * This is the meat and potatoes of the program - all the major function calls are here. Proecesses the arguments, runs tests, runs the model checking
-     * @param options Two command line arguments are mandatory: -k <kripke file> specifying the Kripke filename and then either -a <formula> or -f <formula filename>. There is an optional -s <state name> argument specifying a state to check.
-     * @throws IOException
-     */
-    public void runProgram(Options options) throws Exception {
-        if (options == null) {
-            throw new NullPointerException("runProgram options param is null");
-        }
-
-        if (options.getRunEndToEndTests()) {
-            runEndToEndTests(options);
-        }
-
-        validateModel(options);
-        validateFormula(getFormula(options));
-        Set statesThatHold = modelCheck(options.getKripkeFilepath(), getFormula(options));
-        validateStateToCheck(options.getStateToCheckStr(), getKripkeFileObj(options.getKripkeFilepath()).getStates());
-        printModelCheckResults(statesThatHold, options.getStateToCheckStr(), getFormula(options));
-
-    }
-
 
     /**
      * Goes through the files in the testFileDir inside the resources folder and returns a {@link TestFiles} object of the end to end tests, which is just an object with three array lists - kripkesValid, kripkesInvalid and models.
@@ -215,43 +248,54 @@ public class Controller {
      * @param testFilesDir A {@link String} of the folder inside the resources folder that has all the end to end test files
      * @throws IOException
      */
-    public void validateEndToEndTestModels(String testFilesDir, Boolean printExceptions) throws Exception {
+    public List validateEndToEndTestModels(String testFilesDir, Boolean printExceptions) throws Exception {
         TestFiles testFiles = getTestFiles(testFilesDir);
         String testFormula = "p";
+        List validateModelResultsList = new ArrayList();
 
         for (Object testFilesObj : testFiles.getKripkesValid()) {
             String testFile = (String) testFilesObj;
+            String kripkeFilepath = testFilesDir + "/" + testFile;
+            Boolean modelValidationPass = null;
+            String originalErrorMessage = "";
             KripkeFileObj kripkeFileObj = getKripkeFileObj(testFilesDir + "/" + testFile);
-            if (kripkeFileObj.getErrorMessage() != null) {
-                String origErrorMessage = kripkeFileObj.getErrorMessage();
-                String newErrorMessage = "❌ failed parsing - " + origErrorMessage;
-                handleError(newErrorMessage,printExceptions);
-            } else {
-                System.out.println("✅ passed parsing - " + testFile);
-            }
 
-            // TODO can probably replace these lines with modelCheck(kripkeFileObj.getKripke(), testFormula)
-            ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), testFormula);
-            Parser parser = new Parser(modelCheckInputs);
-            parser.Parse();
+            if (kripkeFileObj.getErrorMessage() != null) {
+                modelValidationPass = false;
+                originalErrorMessage = kripkeFileObj.getErrorMessage();
+                // String newErrorMessage = "❌ failed parsing - " + originalErrorMessage;
+                // handleError(newErrorMessage,printExceptions);
+            } else {
+                modelValidationPass = true;
+                // System.out.println("✅ passed parsing - " + testFile);
+            }
+            ValidateModelResults validateModelResults = new ValidateModelResults(modelValidationPass,originalErrorMessage,kripkeFilepath);
+            validateModelResultsList.add(validateModelResults);
+            // modelCheck(kripkeFilepath, testFormula);
         }
 
         for (Object testFilesObj : testFiles.getKripkesInvalid()) {
             String testFile = (String) testFilesObj;
-            // System.out.println(testFile);
-            KripkeFileObj kripkeFileObj = getKripkeFileObj(testFilesDir + "/" + testFile);
+            String kripkeFilepath = testFilesDir + "/" + testFile;
+            KripkeFileObj kripkeFileObj = getKripkeFileObj(kripkeFilepath);
+            Boolean modelValidationPass = null;
+            String originalErrorMessage = "";
             if (kripkeFileObj.getErrorMessage() != null) {
-                String origErrorMessage = kripkeFileObj.getErrorMessage();
-                String newErrorMessage = "❌ failed parsing - " + origErrorMessage;
-                handleError(newErrorMessage,printExceptions);
+                modelValidationPass = false;
+                originalErrorMessage = kripkeFileObj.getErrorMessage();
+                // String newErrorMessage = "❌ failed parsing - " + originalErrorMessage;
+                // handleError(newErrorMessage,printExceptions);
             } else {
-                System.out.println("✅ passed parsing - " + testFile);
+                modelValidationPass = true;
+                // System.out.println("✅ passed parsing - " + testFile);
             }
-            ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), testFormula);
-            Parser parser = new Parser(modelCheckInputs);
-            parser.Parse();
+            ValidateModelResults validateModelResults = new ValidateModelResults(modelValidationPass,originalErrorMessage,kripkeFilepath);
+            validateModelResultsList.add(validateModelResults);
+//            ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), testFormula);
+//            Parser parser = new Parser(modelCheckInputs);
+//            parser.Parse();
         }
-
+        return validateModelResultsList;
     }
 
     public String getResourceFilePath(String fileDir, Boolean isEndToEndTest) {
@@ -453,11 +497,12 @@ public class Controller {
         return kripkeFileObj;
     }
 
-    private void runEndToEndTests(Options options) throws Exception {
-        validateEndToEndTestModels(options.getTestFilesDir(), true);
-        validateEndToEndFormulas(options);
-        modelCheckEndToEndTests(options);
-        System.out.println("-- end to end tests done --\n");
+    private AllEndToEndTestResults runEndToEndTests(Options options) throws Exception {
+        List validateModelResultsList = validateEndToEndTestModels(options.getTestFilesDir(), true);
+        List validateFormulaResultList = validateEndToEndFormulas(options);
+        List endToEndTestResultsList = modelCheckEndToEndTests(options);
+        AllEndToEndTestResults allEndToEndTestResults = new AllEndToEndTestResults(validateModelResultsList, validateFormulaResultList, endToEndTestResultsList);
+        return allEndToEndTestResults;
     }
 
     public List getFormulaFileObjList(String formulasFilename, Options options) throws IOException {
@@ -499,15 +544,28 @@ public class Controller {
         return statesThatHold;
     }
 
-    public void printModelCheckResults(Set statesThatHold, String stateToCheck, String formula) {
-        if (containsStateName(statesThatHold,stateToCheck)) {
-            System.out.println("✅ " + stateToCheck + " holds for " + formula);
-        } else {
-            System.out.println("❌ " + stateToCheck + " does not hold for " + formula);
-        }
-    }
+//    public void printModelCheckResults(Set statesThatHold, Set allStates, String stateToCheck, String formula) {
+//        if (stateToCheck != null) {
+//            if (containsStateName(statesThatHold, stateToCheck)) {
+//                System.out.println("✅ " + stateToCheck + " holds for " + formula);
+//            } else {
+//                System.out.println("❌ " + stateToCheck + " does not hold for " + formula);
+//            }
+//        } else {
+//            for (Object stateObj : allStates) {
+//                State state = (State) stateObj;
+//                String stateStr = state.toString();
+//                if (containsStateName(statesThatHold,stateStr)) {
+//                   System.out.println("✅ " + stateStr + " holds for " + formula);
+//                } else {
+//                    System.out.println("❌ " + stateStr + " does not hold for " + formula);
+//                }
+//            }
+//        }
+//    }
 
-    private void modelCheckEndToEndTests(Options options) throws IOException, dev.markmcd.controller.ctl.Parser.ParseException {
+    private List modelCheckEndToEndTests(Options options) throws IOException, dev.markmcd.controller.ctl.Parser.ParseException {
+        List endToEndTestResultsList = new ArrayList();
         TestFiles testFilesObj = getTestFiles(testFilesDir);
         List kripkeFiles = testFilesObj.getKripkesValid();
         List formulaFiles = testFilesObj.getFormulas();
@@ -520,55 +578,80 @@ public class Controller {
             Object formulaFilenameObj = formulaFiles.get(i);
             // Object formulaFilenameObj = formulaFiles.get(0);
             String formulaFilename = (String) formulaFilenameObj;
-            System.out.println("\n" + formulaFilename);
+            // System.out.println("\n" + formulaFilename);
             List formulaFileObjList = getFormulaFileObjList(formulaFilename, options);
             int numToTest = formulaFileObjList.size();
             // int numToTest = 1;
             int numTested = 0;
             // for (Object formulaFileObjObj : formulaFileObjList) {
             while (numTested < numToTest) {
-                if (i==1) {
-                    int test = 1;
-                }
-                KripkeFileObj kripkeFileObj = getKripkeFileObj(testFilesDir + "/" + kripkeFilename);
+                Set statesThatHold = null;
+                Set allStates = null;
+                String stateToCheck = "";
+                String formula = "";
+                Boolean stateToCheckHold = null;
+                Boolean expectedResult = null;
+                Boolean actualResult = null;
+                Boolean testPass = null;
+                ModelCheckResults modelCheckResults;
+                EndToEndTestResult endToEndTestResult;
+                String kripkeFilepath = testFilesDir + "/" + kripkeFilename;
+                KripkeFileObj kripkeFileObj = getKripkeFileObj(kripkeFilepath);
                 // FormulaFileObj formulaFileObj = (FormulaFileObj) formulaFileObjObj;
                 FormulaFileObj formulaFileObj = (FormulaFileObj) formulaFileObjList.get(numTested);
-                ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), formulaFileObj.getFormula(), formulaFileObj.getStateToTest());
-                Parser parser = new Parser(modelCheckInputs);
-                Set statesThatHold = parser.Parse();
-                Boolean actual = null;
+                Kripke kripke = kripkeFileObj.getKripke();
+                allStates = kripke.getStates();
+                formula = formulaFileObj.getFormula();
+                stateToCheck = formulaFileObj.getStateToTest();
+                expectedResult = formulaFileObj.getExpected();
+                // ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripke, formula, stateToCheck);
+                statesThatHold = modelCheck(kripkeFilepath, formula);
+                modelCheckResults = new ModelCheckResults(statesThatHold, allStates, stateToCheck, formula);
+                // Parser parser = new Parser(modelCheckInputs);
+                // statesThatHold = parser.Parse();
+                actualResult = null;
                 if (containsStateName(statesThatHold,formulaFileObj.getStateToTest())) {
-                    actual = true;
+                    stateToCheckHold = true;
+                    actualResult = true;
                 } else {
-                    actual = false;
+                    stateToCheckHold = false;
+                    actualResult = false;
                 }
-                if (actual == formulaFileObj.getExpected()) {
-                    if (actual) {
-                        System.out.println("✅ passed model checking - " + formulaFileObj.getFormula() + " holds for " + formulaFileObj.getStateToTest());
-                    } else if (!actual) {
-                        System.out.println("✅ passed model checking - " + formulaFileObj.getFormula() + " does not hold for " + formulaFileObj.getStateToTest());
-                    }
+                if (actualResult == expectedResult) {
+                    testPass = true;
+//                    if (actualResult) {
+//                        System.out.println("✅ passed model checking - " + formulaFileObj.getFormula() + " holds for " + formulaFileObj.getStateToTest());
+//                    } else if (!actualResult) {
+//                        System.out.println("✅ passed model checking - " + formulaFileObj.getFormula() + " does not hold for " + formulaFileObj.getStateToTest());
+//                    }
                 } else {
-                    if (formulaFileObj.getExpected()) {
-                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should hold for " + formulaFileObj.getStateToTest() + " but did not.");
-                    } else {
-                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should not hold for " + formulaFileObj.getStateToTest() + " but did");
-                    }
+                    testPass = false;
+//                    if (formulaFileObj.getExpected()) {
+//                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should hold for " + formulaFileObj.getStateToTest() + " but did not.");
+//                    } else {
+//                        System.out.println("❌ failed model checking - " + formulaFileObj.getFormula() + " should not hold for " + formulaFileObj.getStateToTest() + " but did");
+//                    }
                 }
+                endToEndTestResult = new EndToEndTestResult(modelCheckResults,expectedResult,actualResult,testPass,formula, stateToCheck);
+                endToEndTestResultsList.add(endToEndTestResult);
                 numTested++;
             }
         }
+        return endToEndTestResultsList;
     }
 
-    private void validateEndToEndFormulas(Options options) throws IOException, ParseException {
+    private List validateEndToEndFormulas(Options options) throws IOException, ParseException {
         TestFiles testFilesObj = getTestFiles(testFilesDir);
+        List validateFormulaResultList = new ArrayList();
         for (Object formulasFileObj : testFilesObj.getFormulas()) {
             String formulasFilename = (String) formulasFileObj;
             ClassLoader classLoader = getClass().getClassLoader();
             List passedFormulas = new ArrayList();
+            Boolean validateFormulaPass = null;
+            String ctlFormula = "";
+            String error = "";
 
             try (InputStream inputStream = classLoader.getResourceAsStream(options.getTestFilesDir() + "/" + formulasFilename)) {
-                String ctlFormula = "";
                 if (inputStream == null) {
                     throw new IllegalArgumentException("file not found! " + formulasFilename);
                 } else {
@@ -584,9 +667,12 @@ public class Controller {
                             if (!passedFormulas.contains(ctlFormula)) {
                                 InputStream stringStream = new ByteArrayInputStream(ctlFormula.getBytes("UTF-8"));
                                 Validator validator = new Validator(stringStream);
-                                System.out.println("✅ passed parsing - Formula \"" + ctlFormula + "\" is well formed (\"" + formulasFilename + "\")");
+                                validateFormulaPass = true;
+                                // System.out.println("✅ passed parsing - Formula \"" + ctlFormula + "\" is well formed (\"" + formulasFilename + "\")");
                                 validator.Validate();
                                 passedFormulas.add(ctlFormula);
+                                ValidateFormulaResults validateFormulaResults = new ValidateFormulaResults(validateFormulaPass,ctlFormula,error,formulasFilename);
+                                validateFormulaResultList.add(validateFormulaResults);
                             }
                         }
 
@@ -595,7 +681,10 @@ public class Controller {
                     }
                 }
             }
+//            ValidateFormulaResults validateFormulaResults = new ValidateFormulaResults(validateFormulaPass,ctlFormula,error,formulasFilename);
+//            validateFormulaResultList.add(validateFormulaResults);
         }
+        return validateFormulaResultList;
     }
 
     private void validateFormula(String formula, FormulaInputSource formulaInputSource) throws IOException, ParseException {

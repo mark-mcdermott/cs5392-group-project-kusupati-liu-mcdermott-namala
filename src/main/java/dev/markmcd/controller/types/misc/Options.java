@@ -1,11 +1,11 @@
 package dev.markmcd.controller.types.misc;
 
-import dev.markmcd.controller.types.modelRelated.FormulaInputSource;
+import dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource;
 
 import java.io.IOException;
 
-import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.ARGUMENT;
-import static dev.markmcd.controller.types.modelRelated.FormulaInputSource.FILE;
+import static dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource.ARGUMENT;
+import static dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource.FILE;
 
 /**
  * Class with user set options. Some of these options get set at the top of Main. The args come into Main as command line arguments, which are parsed and processed here.
@@ -44,6 +44,8 @@ public class Options {
     // user set options from the top of Main
     private String testFilesDir;
 
+
+
     /**
      * Empty constructor - for unit testing only
      */
@@ -55,10 +57,11 @@ public class Options {
      * @param testFilesDir
      * @throws IOException
      */
-    public Options(String[] args, String testFilesDir) throws IOException {
+    public Options(String[] args, String testFilesDir, Boolean printExceptions) throws IOException {
 
         // set user set options
         this.testFilesDir = testFilesDir;
+        this.printExceptions = printExceptions;
 
         // parse command line arguments and set the options found there
         Arguments arguments = parseArgs(args);
@@ -186,4 +189,9 @@ public class Options {
     public String getTestFilesDir() {
         return testFilesDir;
     }
+
+    public Boolean getPrintExceptions() {
+        return printExceptions;
+    }
+
 }
