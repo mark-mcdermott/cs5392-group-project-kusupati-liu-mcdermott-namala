@@ -4,15 +4,25 @@ package dev.markmcd.controller.ctl.Validator;
 
 import dev.markmcd.controller.ctl.Validator.ParseException;
 
-/* clt parser rules approach from https://github.com/pedrogongora/antelope/blob/master/AntelopeCore/src/antelope/ctl/parser/CTLParser.jj, accessed 9/20 */
+/**
+* The Validator class checks the syntax of the CTL formulas and makes sure they are well formed (contain no syntax errors). This Validator.java file is automatically generated from the Validator.jj file using JavaCC (using the terminal line `javacc Validator.jj`) inside this folder. That line also generates all the other files in this directory.
+* The CTL parser rules approach from https://github.com/pedrogongora/antelope/blob/master/AntelopeCore/src/antelope/ctl/parser/CTLParser.jj, accessed 9/20
+* The Validator class is like an extremely lightweight version of the Parser.java class - it runs through the SAT algorithms, but only through their structure, not their internal logic.
+* A compiler was used (the javaCC compiler specifically) so infinitely nested CTL formulas could be parsed correctly.
+*/
 public class Validator implements ValidatorConstants {
 
-/** Root production. */
+/**
+* Root production. This is the method called to kick off the formula validation
+*/
   final public void Validate() throws ParseException {
     formula();
     jj_consume_token(0);
 }
 
+/**
+* A formula can be an expression or an expression with a binary operator
+*/
   final public void formula() throws ParseException {
     expression();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -28,6 +38,9 @@ public class Validator implements ValidatorConstants {
     }
 }
 
+/**
+* An expression can be: an atom, a not operation, a formula with parentheses around it or a temporal expression
+*/
   final public void expression() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case ATOM:{
@@ -63,6 +76,9 @@ public class Validator implements ValidatorConstants {
     }
 }
 
+/**
+* A binary predicate can be: an and operation, an or operation or an implies operation
+*/
   final public void binaryPredicate() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case AND:{
@@ -87,6 +103,9 @@ public class Validator implements ValidatorConstants {
     }
 }
 
+/**
+* A temporal expression can be the following operations: AX, AF, AG, EX, EF, EG, EU or AU
+*/
   final public void temporalExpression() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case AX:{

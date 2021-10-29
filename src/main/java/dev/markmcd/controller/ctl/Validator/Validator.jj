@@ -7,7 +7,12 @@ package dev.markmcd.controller.ctl.Validator;
 
 import dev.markmcd.controller.ctl.Validator.ParseException;
 
-/* clt parser rules approach from https://github.com/pedrogongora/antelope/blob/master/AntelopeCore/src/antelope/ctl/parser/CTLParser.jj, accessed 9/20 */
+/**
+* The Validator class checks the syntax of the CTL formulas and makes sure they are well formed (contain no syntax errors). This Validator.java file is automatically generated from the Validator.jj file using JavaCC (using the terminal line `javacc Validator.jj`) inside this folder. That line also generates all the other files in this directory.
+* The CTL parser rules approach from https://github.com/pedrogongora/antelope/blob/master/AntelopeCore/src/antelope/ctl/parser/CTLParser.jj, accessed 9/20
+* The Validator class is like an extremely lightweight version of the Parser.java class - it runs through the SAT algorithms, but only through their structure, not their internal logic.
+* A compiler was used (the javaCC compiler specifically) so infinitely nested CTL formulas could be parsed correctly.
+*/
 public class Validator {
 
 }
@@ -42,19 +47,27 @@ TOKEN :
     | <ATOM: ["a"-"z"](["0"-"9"])*>
 }
 
-/** Root production. */
+/**
+* Root production. This is the method called to kick off the formula validation
+*/
 void Validate():
 {}
 {
     formula() <EOF>
 }
 
+/**
+* A formula can be an expression or an expression with a binary operator
+*/
 void formula():
 {}
 {
     expression() [ binaryPredicate() ]
 }
 
+/**
+* An expression can be: an atom, a not operation, a formula with parentheses around it or a temporal expression
+*/
 void expression():
 {}
 {
@@ -64,6 +77,9 @@ void expression():
     |   temporalExpression()
 }
 
+/**
+* A binary predicate can be: an and operation, an or operation or an implies operation
+*/
 void binaryPredicate():
 {}
 {
@@ -72,6 +88,9 @@ void binaryPredicate():
     |   <IMPLIES> formula()
 }
 
+/**
+* A temporal expression can be the following operations: AX, AF, AG, EX, EF, EG, EU or AU
+*/
 void temporalExpression():
 {}
 {
