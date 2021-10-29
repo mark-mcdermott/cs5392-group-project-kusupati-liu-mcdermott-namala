@@ -271,15 +271,11 @@ public class Controller {
             if (kripkeFileObj.getErrorMessage() != null) {
                 modelValidationPass = false;
                 originalErrorMessage = kripkeFileObj.getErrorMessage();
-                // String newErrorMessage = "❌ failed parsing - " + originalErrorMessage;
-                // handleError(newErrorMessage,printExceptions);
             } else {
                 modelValidationPass = true;
-                // System.out.println("✅ passed parsing - " + testFile);
             }
             ValidateModelResults validateModelResults = new ValidateModelResults(modelValidationPass,originalErrorMessage,kripkeFilepath);
             validateModelResultsList.add(validateModelResults);
-            // modelCheck(kripkeFilepath, testFormula);
         }
 
         for (Object testFilesObj : testFiles.getKripkesInvalid()) {
@@ -291,17 +287,11 @@ public class Controller {
             if (kripkeFileObj.getErrorMessage() != null) {
                 modelValidationPass = false;
                 originalErrorMessage = kripkeFileObj.getErrorMessage();
-                // String newErrorMessage = "❌ failed parsing - " + originalErrorMessage;
-                // handleError(newErrorMessage,printExceptions);
             } else {
                 modelValidationPass = true;
-                // System.out.println("✅ passed parsing - " + testFile);
             }
             ValidateModelResults validateModelResults = new ValidateModelResults(modelValidationPass,originalErrorMessage,kripkeFilepath);
             validateModelResultsList.add(validateModelResults);
-//            ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), testFormula);
-//            Parser parser = new Parser(modelCheckInputs);
-//            parser.Parse();
         }
         return validateModelResultsList;
     }
