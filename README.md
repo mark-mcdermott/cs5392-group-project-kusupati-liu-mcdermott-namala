@@ -1,6 +1,6 @@
 # CTL Model Checker 
 
-CTL model checker written in Java and using a JavaCC parser.
+CTL model checker written in Java and using a JavaCC parser for Texas State CS 5392 Formal Methods Fall '21, taught by Dr. Podorozhny.
 
 ## Items Left 
 - [x] get user models/formulas working<br>
@@ -17,9 +17,9 @@ CTL model checker written in Java and using a JavaCC parser.
     - Java 14
     - Maven
  2) Clone the repo  
-    - `git clone cs5392-group-project`
+    - `git clone cs5392-group-project-kusupati-liu-mcdermott-namala`
  3) Cd into project
-    - `cd cs5392-group-project`
+    - `cd cs5392-group-project-kusupati-liu-mcdermott-namala`
  4) Run the program
     - `java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <formula> -e`
     - The arguments in `[ ]` are optional
