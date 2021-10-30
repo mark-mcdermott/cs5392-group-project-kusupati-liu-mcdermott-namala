@@ -1,8 +1,18 @@
 package dev.markmcd.controller.types.modelCheckRelated;
 
+/**
+ * Data structure holding the results of validating a state to check (checking if the state to check is in the model)
+ */
 public class ValidateStateToCheckResults {
 
+    /**
+     * {@link Boolean} of whether the state to check is in the model or not
+     */
     Boolean stateToCheckPass;
+
+    /**
+     * {@link String} of the state to check
+     */
     String stateToCheck;
 
     public ValidateStateToCheckResults(Boolean stateToCheckPass, String stateToCheck) {

@@ -83,7 +83,6 @@ public class Options {
         // parse command line arguments and set the options found there
         Arguments arguments = parseArgs(args);
         String kripkeFileName = arguments.getKripkeFilename();
-        // this.kripkeFilepath = (arguments.runEndToEndTests) ? testFilesDir + "/" + kripkeFileName : kripkeFileName;
         this.kripkeFilepath = kripkeFileName;
         this.stateToCheckStr = arguments.getStateToCheckStr();
         this.formulaInputSource = arguments.getFormulaInputSource();

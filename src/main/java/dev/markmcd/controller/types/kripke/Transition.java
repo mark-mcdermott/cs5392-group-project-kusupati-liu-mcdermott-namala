@@ -1,7 +1,5 @@
 package dev.markmcd.controller.types.kripke;
 
-import java.util.Set;
-
 /**
  * Class for the transition data type, representing a pair of states that are connected
  * by an arrow in a directed graph. There is always a from-state and a to-state.

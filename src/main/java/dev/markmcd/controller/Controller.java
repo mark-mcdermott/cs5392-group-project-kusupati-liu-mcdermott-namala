@@ -13,7 +13,6 @@ import dev.markmcd.controller.types.kripke.Transition;
 import dev.markmcd.view.View;
 import dev.markmcd.controller.ctl.Parser.Parser;
 
-
 import java.io.*;
 import java.util.*;
 
@@ -115,8 +114,6 @@ public class Controller {
 
 
 
-
-
     // MODEL CHECKING
 
     public Set modelCheck(String kripkeFilepath, String formula) throws IOException, dev.markmcd.controller.ctl.Parser.ParseException {
@@ -129,7 +126,8 @@ public class Controller {
 
 
 
-    // VALIDATION (OF INDIVIDUAL MODEL/FORMULA/STATES, NOT THE END TO END TEST SETS)
+
+    // VALIDATION (OF INDIVIDUAL MODEL/FORMULA/STATES, NOT VALIDATION OF THE END TO END TESTS)
 
     public ValidationResults validateModelFormulaAndStateToCheck(Options options) throws Exception {
         ValidateModelResults validateModelResults = validateModel(options);
@@ -176,7 +174,6 @@ public class Controller {
         }
         return new ValidateStateToCheckResults(stateToCheckPass, stateToCheck);
     }
-
 
 
 
@@ -301,9 +298,6 @@ public class Controller {
                 kripkeFileObj = parseKripkeStates(kripkeFileObj, line); }
             // after first line, if it starts with a "t", it's a transition line
             else if (firstChar == 't') {
-                if (kripkeFileObj.getKripkeFilepath().equals("Broken Model 4.txt")) {
-                    int i=0;
-                }
                 if (kripkeFileObj.getErrorMessage() == null) {
                     kripkeFileObj = parseKripkeTransitionLine(kripkeFileObj, line);
                 }
@@ -434,7 +428,6 @@ public class Controller {
         }
         return kripkeFileObj;
     }
-
 
 
 
@@ -612,7 +605,6 @@ public class Controller {
                                 InputStream stringStream = new ByteArrayInputStream(ctlFormula.getBytes("UTF-8"));
                                 Validator validator = new Validator(stringStream);
                                 validateFormulaPass = true;
-                                // System.out.println("✅ passed parsing - Formula \"" + ctlFormula + "\" is well formed (\"" + formulasFilename + "\")");
                                 validator.Validate();
                                 passedFormulas.add(ctlFormula);
                                 ValidateFormulaResults validateFormulaResults = new ValidateFormulaResults(validateFormulaPass,ctlFormula,error,formulasFilename);
@@ -625,64 +617,9 @@ public class Controller {
                     }
                 }
             }
-//            ValidateFormulaResults validateFormulaResults = new ValidateFormulaResults(validateFormulaPass,ctlFormula,error,formulasFilename);
-//            validateFormulaResultList.add(validateFormulaResults);
+
         }
         return validateFormulaResultList;
     }
 
-    private void validateFormula(String formula, FormulaInputSource formulaInputSource) throws IOException, ParseException {
-
-        // use this to use 2nd argument as filename where formula to test is located
-        if (formulaInputSource == FILE) {
-            String ctlFormula = parseCtlFormulaFile(formula);
-            InputStream inputStream = new ByteArrayInputStream(ctlFormula.getBytes("UTF-8"));
-            Validator validator = new Validator(inputStream);
-            validator.Validate();
-            System.out.println("✅ Formula " + ctlFormula + " is well formed (" + formula + ")");
-
-        // use this to use 2nd argument as formula string to test
-        } else if (formulaInputSource == ARGUMENT) {
-            String ctlFormula = formula;
-            InputStream stringStream = new ByteArrayInputStream(ctlFormula.getBytes("UTF-8"));
-            Validator validator = new Validator(stringStream);
-            validator.Validate();
-            System.out.println("✅ Formula " + ctlFormula + " is well formed (command line argument)");
-        }
-
-    }
-
-    public String parseCtlFormulaFile(String filename) throws IOException {
-
-           // read resource file from class loader approach from https://mkyong.com/java/java-read-a-file-from-resources-folder/, accessed 9/18/21
-           ClassLoader classLoader = getClass().getClassLoader();
-           InputStream inputStream = classLoader.getResourceAsStream(filename);
-           String ctlFormula = "";
-           if (inputStream == null) {
-               throw new IllegalArgumentException("file not found! " + filename);
-           } else {
-               // read input stream line by line approach from https://stackoverflow.com/a/55420102, accessed 9/18/21
-               try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-                   ctlFormula = reader.readLine();
-               }
-           }
-           return ctlFormula;
-       }
-
-    private void checkKripkeSyntax() {
-
-    }
-
-    private void checkModelSyntax() {
-
-    }
-
-    // checks if the state specified to check exists
-    private void checkStateToCheck() {
-
-    }
-
-    private void checkModel() {
-
-    }
 }

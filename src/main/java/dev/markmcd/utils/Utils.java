@@ -1,13 +1,11 @@
 package dev.markmcd.utils;
 
+import dev.markmcd.controller.ctl.Parser.Token;
 import dev.markmcd.controller.types.kripke.State;
 import dev.markmcd.controller.types.kripke.Transition;
-import dev.markmcd.controller.types.misc.Options;
 
 import java.io.IOException;
 import java.util.*;
-
-import static java.lang.Integer.parseInt;
 
 /**
  * Generic utility methods for dealing with {@link State}s, {@link Transition}s, CTL labels and {@link Set}s.
@@ -46,24 +44,6 @@ public class Utils {
     }
 
     /**
-     * Checks if {@link String} ends in .txt and has at least one character before the period.
-     * Throws NullPointerException if {@link String} is null.
-     * @param str The {@link String} one wants to check if it ends in .txt
-     * @return false if string doesn't match the conditions above, otherwise returns true.
-     * @throws IOException
-     */
-    public static Boolean isTxtFile(String str) throws IOException {
-        if (str == null) { throw new NullPointerException("isTextFile param is null"); }
-        int indexOfPeriod = str.lastIndexOf(".");
-        if (indexOfPeriod == -1 || indexOfPeriod == 0) { return false; }
-        String extension = str.substring(indexOfPeriod);
-        if (!extension.equals(".txt")) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Gets the names of states in a Set and returns them in a comma separated string with a colon at the end."
      * The states are sorted ascending by each state's number.
      * This is used for printing out Kripke contents and also for just printing out state set contents.
@@ -91,16 +71,6 @@ public class Utils {
     }
 
     /**
-     * prints the states in a set in numerical order in a format like "s1, s2, s3;"
-     * This is used for debugging mostly
-     * @param states {@link Set} of {@link State}s one wants to print in a format like "s1, s2, s3;"
-     */
-    public static void printStatesStr(Set states) throws IOException {
-        String statesStr = getStatesStr(states);
-        System.out.println(statesStr);
-    }
-
-    /**
      * Gets a state from a state set, given its state number.
      * Throws IOExceptionError if state is not found. Throws NullPointerError if either param is null.
      * @param stateNum {@link Integer} of state needed from state set
@@ -121,6 +91,28 @@ public class Utils {
     }
 
     /**
+     * Takes a JavaCC {@link Token} of a CTL label and searches through a {@link Set} of {@link State}s for any states with that label
+     * @param states is a {@link Set} of {@link State}s of which we want to know if any of the states contain the specified label
+     * @param t {@link Token} of a label of which we want to know which states have it
+     * @return the {@link Set} of {@link State}s which contain the specified label
+     * @throws IOException
+     */
+    public static Set statesWithLabel(Set states, Token t) throws IOException {
+       Set statesWithLabel = new HashSet();
+       String label = t.toString();
+       for (Object stateObj : states) {
+           State state = (State) stateObj;
+           if (state.hasLabel(label)) {
+               statesWithLabel.add(state);
+           }
+       }
+       return statesWithLabel;
+    }
+
+
+    // Transitions Utils
+
+    /**
      * Gets a transition from a transition set, given its transition number.
      * Throws IOExceptionError if state is not found. Throws NullPointerError if either param is null.
      * @param transitionNum {@link Integer} of state needed from state set
@@ -139,9 +131,6 @@ public class Utils {
         }
         throw new IOException("transition number " + transitionNum + " not found in state set in getState");
     }
-
-
-    // Transitions Utils
 
     /**
      * Gets the names of transitions in a Set and returns them in a multiline format like:
@@ -171,17 +160,6 @@ public class Utils {
         return transitionsStr;
     }
 
-    /**
-     * Prints transitions in transition set in format like:
-     * t1 : s1 - s2,
-     * t2 : s1 - s3;
-     * Used for testing.
-     * @param transitions {@link Set} of {@link Transition}s
-     */
-    public static void printTransitions(Set transitions) throws IOException {
-        String transitionsStr = getTransitionsStr(transitions);
-        System.out.println(transitionsStr);
-    }
 
     // Label Utils
 
@@ -217,10 +195,11 @@ public class Utils {
         return labelsStr;
     }
 
+
     // Set Utils
 
     /**
-     * Checks if a set of {@link State}s has a certain state in it.
+     * Checks if a set of {@link State}s has a certain state in it. Takes the "needle" state and uses the number field and searches for that number in the "haystack" states of the set.
      * Note that only a state of the same state number is checked for. ie, 1 for s1. So this is not checking for the exact state by memory address. This is a loose implementation - might have to change this when I add Jung GUI back in
      * @param states set of {@link State}s to be searched for the state
      * @param state a {@link State} to be checked if it is in the set of states
@@ -239,47 +218,13 @@ public class Utils {
         return false;
     }
 
-    public static void removeState(Set states, State state) {
-        Integer stateNum = state.getNumber();
-        for (Object stateObj : states) {
-            State thisState = (State) stateObj;
-            if (thisState.getNumber() == stateNum) {
-                states.remove(thisState);
-            }
-        }
-    }
-
-    // from https://stackoverflow.com/a/31624585
-    public static String trimAdvanced(String value) {
-
-        Objects.requireNonNull(value);
-
-        int strLength = value.length();
-        int len = value.length();
-        int st = 0;
-        char[] val = value.toCharArray();
-
-        if (strLength == 0) {
-            return "";
-        }
-
-        while ((st < len) && (val[st] <= ' ') || (val[st] == '\u00A0')) {
-            st++;
-            if (st == strLength) {
-                break;
-            }
-        }
-        while ((st < len) && (val[len - 1] <= ' ') || (val[len - 1] == '\u00A0')) {
-            len--;
-            if (len == 0) {
-                break;
-            }
-        }
-
-
-        return (st > len) ? "" : ((st > 0) || (len < strLength)) ? value.substring(st, len) : value;
-    }
-
+    /**
+     * Checks if a set of {@link State}s has a certain state in it by using the supplied state name as the "needle" and searching for that name field on all the "haystack" states of the set
+     * Note that only a state of the same state name is checked for. ie, "s1". So this is not checking for the exact state by memory address. This is a loose implementation - might have to change this when I add Jung GUI back in
+     * @param states set of {@link State}s to be searched for the state
+     * @param stateName a {@link String} to be checked if it is in the set of states' name fields
+     * @return true if state is in set, false otherwise
+     */
     public static Boolean containsStateName(Set states, String stateName) {
         if (states == null) { throw new NullPointerException("States param in contains is null"); }
         String stateNumStr = stateName.replace("s","");
@@ -297,7 +242,6 @@ public class Utils {
         }
         return false;
     }
-
 
     /**
      * Tests if two sets of states are "equal", ie. do they each have the same number of states and does the second set have a state with the same num as a state in the first set
@@ -322,6 +266,11 @@ public class Utils {
         }
     }
 
+    /**
+     * Copies a {@link Set} of {@link State}s. Iterates through the set and instantiates an new state for each state found. The instantiated state has the same number value, name value, but obviously has a new memory address. The same goes for all the transitions - they are re-instantiated one by one using the same number value, from value and to value, but the transition has a different memory address than the original. The copied labels, on the other hand, have the same memory address.
+     * @param set is a {@link Set} of {@link State}s to be copied
+     * @return a {@link Set} of {@link State}s with the same number, name, labels and transitions. The state itself as well as the {@link Transition}s all have different memory addresses than the originals. The copied labels on the states have the same memory addresses as the original labels.
+     */
     public static Set copy(Set set) {
         Set copy = new HashSet();
         for (Object stateObj : set) {
@@ -343,10 +292,70 @@ public class Utils {
         return copy;
     }
 
+    /**
+     * Set intersection operation. Takes two {@link Set}s of {@link State}s and returns the states in both. If set a is {1,2,3} and set b is {2,3,4} the intersection of a and b returns {2,3}.
+     * @param a first {@link Set} of {@link State}s for the intersection operation
+     * @param b second {@link Set} of {@link State}s for the intersection operation
+     * @return the {@link Set} of {@link State}s which are in both supplied sets. If set a is {1,2,3} and set b is {2,3,4} the intersection of a and b returns {2,3}.
+     */
+    public static Set intersection(Set a, Set b) {
+        Set intersection = new HashSet();
+        for (Object stateObj : a) {
+            State state = (State) stateObj;
+            if (contains(b,state)) {
+                intersection.add(state);
+            }
+        }
+        return intersection;
+    }
+
+    /**
+     * Set union operation. Takes two {@link Set}s of {@link State}s and returns one set with all the states in either set. If set a is {1,2,3} and set b is {2,3,4} the union of a and b returns {1,2,3,4}.
+     * @param a first {@link Set} of {@link State}s for the union operation
+     * @param b second {@link Set} of {@link State}s for the union operation
+     * @return the {@link Set} of {@link State}s which in either set. If set a is {1,2,3} and set b is {2,3,4} the union of a and b returns {1,2,3,4}.
+     */
+    public static Set union(Set a, Set b) {
+        Set union = new HashSet();
+        for (Object stateObj : a) {
+            union.add((State) stateObj);
+        }
+        for (Object stateObj : b) {
+            State state = (State) stateObj;
+            if (!contains(union,state)) {
+                union.add(state);
+            }
+        }
+        return union;
+    }
+
+    /**
+     * Set subtraction operation. Takes two {@link Set}s of {@link State}s and returns all the states in the second set which are not in the first. If set a is {1,2,3} and set b is {2,3,4} then a subtract b returns {4}.
+     * @param a first {@link Set} of {@link State}s for the subtraction operation
+     * @param b second {@link Set} of {@link State}s for the subtraction operation
+     * @return the {@link Set} of {@link State}s of all the states in the second set which are not in the first. If set a is {1,2,3} and set b is {2,3,4} then a subtract b returns {4}.
+     */
+    public static Set subtract(Set a, Set b) throws IOException {
+        Set aCopy = copy(a);
+        for (Object stateObj : b) {
+            State thisState = (State) stateObj;
+            Integer stateNumToRemove = thisState.getNumber();
+            State stateToRemove = getState(stateNumToRemove,aCopy);
+            aCopy.remove(stateToRemove);
+        }
+        return aCopy;
+    }
 
 
+    // Misc Utils
 
-    // remove byte order mark https://www.postgresql.org/message-id/20180717101246.GA41457%40elch.exwg.net
+    /**
+     * This removes an invisible "byte order mark" from a string. I believe some of the test files have this byte order mark, which was manifesting as a space character or something. The only way to remove the space was by using this code to remove the byte order mark.
+     * See https://en.wikipedia.org/wiki/Byte_order_mark for more details on the byte order mark
+     * This code approach to removing byte order marks from https://www.postgresql.org/message-id/20180717101246.GA41457%40elch.exwg.net
+     * @param str {@link String} to remove the byte order mark from
+     * @return the same {@link String} as the param, but with the byte order mark removed
+     */
     public static String removeByteOrderMark(String str) {
         char firstChar = str.toCharArray()[0];
         int asciiNum = (int) firstChar;
@@ -358,8 +367,8 @@ public class Utils {
 
     /**
      * For debugging vs production. For debugging, we want to throw exception and halt program. For production, we want to print the error and keep going
-     * @param errorMessage
-     * @param printExceptions
+     * @param errorMessage is a {@link String} of the message we want to throw/print
+     * @param printExceptions {@link Boolean} of whether to print the exceptions to the console and not stop the program (true) or if we want to throw an exception and stop the program there (false)
      * @throws Exception
      */
     public static void handleError(String errorMessage, Boolean printExceptions) throws Exception {
@@ -370,9 +379,22 @@ public class Utils {
         }
     }
 
-
-
-
-
+    /**
+     *  Checks if {@link String} ends in .txt and has at least one character before the period.
+     * Throws NullPointerException if {@link String} is null.
+     * @param str The {@link String} one wants to check if it ends in .txt
+     * @return false if string doesn't match the conditions above, otherwise returns true.
+     * @throws IOException
+     */
+    public static Boolean isTxtFile(String str) throws IOException {
+        if (str == null) { throw new NullPointerException("isTextFile param is null"); }
+        int indexOfPeriod = str.lastIndexOf(".");
+        if (indexOfPeriod == -1 || indexOfPeriod == 0) { return false; }
+        String extension = str.substring(indexOfPeriod);
+        if (!extension.equals(".txt")) {
+            return false;
+        }
+        return true;
+    }
 
 }

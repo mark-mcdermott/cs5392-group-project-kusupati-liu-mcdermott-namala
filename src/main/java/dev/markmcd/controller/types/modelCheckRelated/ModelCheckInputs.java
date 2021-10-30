@@ -41,38 +41,6 @@ public class ModelCheckInputs {
     private InputStream formulaStream;
 
     /**
-     * Constructor specifying kripke, formula and state to check. None can be null. If omitting state to check, use the constructor with just kripke and formula. The formula stream is created from the model here.
-     * @param kripke must be fully populated with {@link State}s and {@link Transition}s when passed as an argument. Any labels must be already attached to the states. Some error checking is done here to avoid null values, incorrect transitions (ie a state may only have transitions that start at that state), etc
-     * @param formula well formed CTL formula. Ie, "EXp", "AG(AF(p and q))", etc. Nested operators in nested operators are fine here, infinite up to the limits of hardware memory, probably. This is run through the ctlValidator to ensure its well formed and an IOException is thrown if it's not.
-     * @param stateToCheck {@link State} to see if it holds on the model for specified proerties. If omitted, all states are checked. This will be null until a {@link State} is supplied
-     * @throws UnsupportedEncodingException
-     */
-    public ModelCheckInputs(Kripke kripke, String formula, State stateToCheck) throws IOException {
-        if (kripke == null) { throw new NullPointerException("kripke is null in ModelCheckInputs call"); }
-        kripke.checkKripkeForNulls(); // check kripke for null states, transitions or labels and throws exception if found
-        if (formula == null) { throw new NullPointerException("formula is null in ModelCheckInputs call"); }
-        if (stateToCheck == null) { throw new NullPointerException("stateToCheck is null in ModelCheckInputs call"); }
-        // set properties
-        this.kripke = kripke;
-        this.formula = formula;
-        this.stateToCheck = stateToCheck;
-        this.formulaStream = new ByteArrayInputStream(formula.getBytes("UTF-8"));
-    }
-
-    public ModelCheckInputs(Kripke kripke, String formula, String stateToCheckName) throws IOException {
-        if (kripke == null) { throw new NullPointerException("kripke is null in ModelCheckInputs call"); }
-        kripke.checkKripkeForNulls(); // check kripke for null states, transitions or labels and throws exception if found
-        if (formula == null) { throw new NullPointerException("formula is null in ModelCheckInputs call"); }
-        if (stateToCheckName == null) { throw new NullPointerException("stateToCheck is null in ModelCheckInputs call"); }
-        // set properties
-        this.kripke = kripke;
-        this.formula = formula;
-        Integer stateToCheckNum = parseInt(stateToCheckName.replace("s",""));
-        this.stateToCheck = new State(stateToCheckNum);
-        this.formulaStream = new ByteArrayInputStream(formula.getBytes("UTF-8"));
-    }
-
-    /**
      * The constructor to use when omitting the optional state to check. Since state to check is omitted, all states will be checked. This constructor only specifies the Kripke and the model and state to check and neither can be null. The model stream is created from the model here.
      * @param kripke must be fully populated with {@link State}s and {@link Transition}s when passed as an argument. Any labels must be already attached to the states. Some error checking is done here to avoid null values, incorrect transitions (ie a state may only have transitions that start at that state), etc
      * @param formula well formed CTL formula. Ie, "EXp", "AG(AF(p and q))", etc. Nested operators in nested operators are fine here, infinite up to the limits of hardware memory, probably. This is run through the ctlValidator to ensure its well formed and an IOException is thrown if it's not.
