@@ -8,14 +8,18 @@ import dev.markmcd.view.View;
 
 import java.io.IOException;
 
+/**
+ * Entry point for the whole program. The options are entered here as command line arguments.
+ * The MVC structure of the program is based off https://www.edureka.co/blog/mvc-architecture-in-java/, accessed around 10/21
+ */
 public class Main {
     public static void main(String[] args) throws Exception {
 
         // options set here
-        String testFilesDir = "end-to-end-tests";
-        Boolean printExceptions = true;
+        String testFilesDir = "end-to-end-tests";   // this is a subfolder under /resources
+        Boolean printExceptions = true;             // this is whether to print error messages and continue the program (good for prod) or to throw an exception and halt the program there (good for debugging)
 
-        // setup main program (MVC structure based off https://www.edureka.co/blog/mvc-architecture-in-java/)
+        // setup main program
         Options options = new Options(args, testFilesDir, printExceptions);
         Model model = new Model();
         View view = new View(options);

@@ -16,7 +16,6 @@ CTL model checker written in Java and using a JavaCC parser.
  1) Prerequisites to run this:
     - Java 14
     - Maven
-     
  2) Clone the repo  
     - `git clone cs5392-group-project`
  3) Cd into project
@@ -26,9 +25,11 @@ CTL model checker written in Java and using a JavaCC parser.
     - The arguments in `[ ]` are optional
     - The model flag takes either `-a` for specifying the formula in directly in the argument (inside quotes) or `-f` for specifying a file which contains the formula. `-e` is to specify to run the end to end tests 
     - The `-s` argument for state to check is optional. If omitted, all states are checked.
+    - An alternative way to run the program is to only run the end to end tests, which is specified by - `java -jar modelCheckingCTL -e`
     - Some command line examples:
         - `java -jar modelCheckingCTL -k kripke.txt -s s0 -a "EXp" -e`
         - `java -jar modelCheckingCTL -k kripke.txt -s s13 -f model.txt` 
+        - `java -jar modelCheckingCTL -e`
  5) Run the unit tests
     - `mvn test`
     

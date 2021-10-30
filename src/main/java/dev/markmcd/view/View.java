@@ -1,6 +1,5 @@
 package dev.markmcd.view;
 
-import dev.markmcd.controller.types.kripke.Kripke;
 import dev.markmcd.controller.types.kripke.State;
 import dev.markmcd.controller.types.misc.Options;
 import dev.markmcd.controller.types.modelCheckRelated.*;
@@ -22,21 +21,44 @@ public class View {
         this.options = options;
     }
 
+    /**
+     * First prints the validation results and then the model check results
+     * @param validationResults
+     * @param modelCheckResults
+     * @throws Exception
+     */
     public void updateView(ValidationResults validationResults, ModelCheckResults modelCheckResults) throws Exception {
         printValidationResults(validationResults);
         printModelCheckResults(modelCheckResults);
     }
 
+    /**
+     * First prints the end to end test results, then the validation results and then the model check results
+     * @param validationResults
+     * @param modelCheckResults
+     * @param allEndToEndTestResults
+     * @throws Exception
+     */
     public void updateView(ValidationResults validationResults, ModelCheckResults modelCheckResults, AllEndToEndTestResults allEndToEndTestResults) throws Exception {
         printEndToEndTestResults(allEndToEndTestResults);
         printValidationResults(validationResults);
         printModelCheckResults(modelCheckResults);
     }
 
+    /**
+     * Prints the end to end test results only
+     * @param allEndToEndTestResults
+     * @throws Exception
+     */
     public void updateView(AllEndToEndTestResults allEndToEndTestResults) throws Exception {
         printEndToEndTestResults(allEndToEndTestResults);
     }
 
+    /**
+     * Prints the end to end test results. There's a lot here and this output is quite long. First prints model validation results (with descriptive error messages with line numbers on failed model validations), then formula validation and then the results of the model checking.
+     * @param allEndToEndTestResults
+     * @throws Exception
+     */
     public void printEndToEndTestResults(AllEndToEndTestResults allEndToEndTestResults) throws Exception {
         List validateModelResultsList = allEndToEndTestResults.getValidateModelResultsList();
         List validateFormulaResultsList = allEndToEndTestResults.getValidateFormulaResultList();
@@ -90,6 +112,11 @@ public class View {
         System.out.println("-- end to end tests done --\n");
     }
 
+    /**
+     * Prints the results of validating an individual model/formula/state-to-check
+     * @param validationResults
+     * @throws Exception
+     */
     public void printValidationResults(ValidationResults validationResults) throws Exception {
         ValidateModelResults validateModelResults = validationResults.getValidateModelResults();
         ValidateFormulaResults validateFormulaResults = validationResults.getValidateFormulaResults();
@@ -137,6 +164,10 @@ public class View {
         }
     }
 
+    /**
+     * Prints the results of an individual model check
+     * @param modelCheckResults
+     */
     public void printModelCheckResults(ModelCheckResults modelCheckResults) {
         Set statesThatHold = modelCheckResults.getStatesThatHold();
         Set allStates = modelCheckResults.getAllStates();
