@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Generic utility methods for dealing with {@link State}s, {@link Transition}s, CTL labels and {@link Set}s.
- * String utility methods for used in printing a Kripke structure are here - getStatesStr, getTransitionsStr and getLabelsStr. These are called from model/kripke/Kripke.java.
- * The other State utilities here are 1) isStateName and 2) getState. 1) isStateName used parsing a Kripke text file when checking what a certain line in that file contains and 2) getState is for getting a certain state out of a state set
- * The {@link Set} utils here are contains and areEqual - for checking for states in a state set and for checking state set equality.
- * More specific CTL utils are in CtlUtils in the controller/ctl directory.
+ * Generic utility methods for dealing with {@link State}s, {@link Transition}s, CTL labels, {@link Set}s and some other miscellaneous items.
+ * The state utilities here are: isStateName, getStatesStr, getState and statesWithLabel.
+ * The transition utilities here are: getTransition and getTransitionsStr.
+ * The label utility here is: getLabelsStr
+ * The set utilities here are: contains, containsStateName, areEqual, copy, intersection, union and subtract.
+ * The miscellaneous utilities here are: removeByteOrderMark, handleError and isTxtFile
  */
 public class Utils {
-    public Boolean printExceptions;
 
     // States Utils
 

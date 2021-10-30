@@ -1,15 +1,10 @@
 package dev.markmcd.model;
 
-import dev.markmcd.controller.types.kripke.Kripke;
-import dev.markmcd.controller.types.kripke.State;
-import dev.markmcd.controller.types.misc.Options;
 import dev.markmcd.controller.types.modelCheckRelated.AllEndToEndTestResults;
 import dev.markmcd.controller.types.modelCheckRelated.ModelCheckResults;
 import dev.markmcd.controller.types.modelCheckRelated.ValidationResults;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Holds the validation results and model check results (both for individual user entered models/formulas) and end to end test results
