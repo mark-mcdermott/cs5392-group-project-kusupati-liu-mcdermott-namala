@@ -116,6 +116,14 @@ public class Controller {
 
     // MODEL CHECKING
 
+    /**
+     * Model checks a single supplied formula on a single supplied model. Returns the {@link Set} of {@link State}s which hold for the formula.
+     * @param kripkeFilepath {@link String} of the file/filepath of the kripke file. Will be like kripke.txt if the file is in /resources or like end-to-end-tests/kripe.txt if in a subfolder of /resources.
+     * @param formula {@link String} CTL formula to model check
+     * @return the {@link Set} of {@link State}s which hold for the formula.
+     * @throws IOException
+     * @throws dev.markmcd.controller.ctl.Parser.ParseException
+     */
     public Set modelCheck(String kripkeFilepath, String formula) throws IOException, dev.markmcd.controller.ctl.Parser.ParseException {
         KripkeFileObj kripkeFileObj = getKripkeFileObj(kripkeFilepath);
         ModelCheckInputs modelCheckInputs = new ModelCheckInputs(kripkeFileObj.getKripke(), formula);
@@ -129,6 +137,12 @@ public class Controller {
 
     // VALIDATION (OF INDIVIDUAL MODEL/FORMULA/STATES, NOT VALIDATION OF THE END TO END TESTS)
 
+    /**
+     * Validates an individual model, formula and state to check for syntax errors (in the case of model/formula) and checks if the state to check is in the model
+     * @param options {@link Options} object with options specified by user in the command line arguments as well as the hardcoded options at the top of Main.java
+     * @return A {@link ValidationResults} results object, which contains three custom results objects, one for the model validation results, one for the formula validation results and one for the state to check validation results
+     * @throws Exception
+     */
     public ValidationResults validateModelFormulaAndStateToCheck(Options options) throws Exception {
         ValidateModelResults validateModelResults = validateModel(options);
         ValidateFormulaResults validateFormulaResults = validateFormula(options.getFormula());
@@ -140,6 +154,12 @@ public class Controller {
         return validationResults;
     }
 
+    /**
+     * Validates an individual model to check for any syntax errors
+     * @param options {@link Options} object with options specified by user in the command line arguments as well as the hardcoded options at the top of Main.java
+     * @return A {@link ValidateModelResults} results object, which contains a Boolean for whether the model passed validation or not, the kripke filepath and any original error message which may have occurred in the original parsing of the kripke file
+     * @throws Exception
+     */
     public ValidateModelResults validateModel(Options options) throws Exception {
         Boolean passValidation = null;
         String originalErrorMessage = "";
@@ -155,6 +175,12 @@ public class Controller {
         return validateModelResults;
     }
 
+    /**
+     * Validates an individual formula to check for any syntax errors (ie, whether it is well formed)
+     * @param formula {@link String} the formula to check for syntax errors
+     * @return A {@link ValidateFormulaResults} results object, which contains a Boolean for whether the formula passed validation or not, the formula, the formula filename and an errors which occured during validation
+     * @throws Exception
+     */
     public ValidateFormulaResults validateFormula(String formula) throws UnsupportedEncodingException, ParseException {
         Boolean passValidation = null;
         String error = "";
@@ -165,6 +191,13 @@ public class Controller {
         return new ValidateFormulaResults(passValidation,formula,error);
     }
 
+    /**
+     * Checks whether the specified {@link State} to check is in the model
+     * @param {@link String} Name of the state to check (ie, s0)
+     * @param {@link Set} of all {@link State}s in the model
+     * @return A {@link ValidateStateToCheckResults} results object, which contains a Boolean for whether the state to check is in the model and also the name of the state to check
+     * @throws Exception
+     */
     public ValidateStateToCheckResults validateStateToCheck(String stateToCheck, Set statesInModel) {
         Boolean stateToCheckPass = null;
         if (containsStateName(statesInModel, stateToCheck)) {
@@ -180,6 +213,12 @@ public class Controller {
 
     // PARSING INPUT FILES
 
+    /**
+     * Gets the user inputted CTL formula, regardless if formula was supplied directly in the command line arguments or in a file containing just the formula
+     * @param options {@link Options} object with options specified by user in the command line arguments as well as the hardcoded options at the top of Main.java
+     * @return {@link String} CTL formula, ie. EXp
+     * @throws IOException
+     */
     public String getFormula(Options options) throws IOException {
         String formula = "";
         if (options.getFormulaInputSource() == FILE) {
@@ -193,6 +232,13 @@ public class Controller {
         return formula;
     }
 
+    /**
+     * Parses a specified text file (which only contains a CTL formula in the first line and has no additional lines) for a CTL formula and returns the formula. Does not check to make sure the formula is well formed (that happens later).
+     * Read input stream line by line with BufferedReader approach from https://stackoverflow.com/a/55420102, accessed 9/18/21
+     * @param filename {@link String} of filename to find the CTL formula. This file should be in /resources
+     * @return {@link String} of the CTL formula in the text file (ie, EXp)
+     * @throws IOException
+     */
     public String getFormulaFromUserFile(String filename) throws IOException {
         String formula = "";
         ClassLoader classLoader = getClass().getClassLoader();
@@ -202,7 +248,6 @@ public class Controller {
             if (inputStream == null) {
                 throw new IllegalArgumentException("file not found! " + filename);
             } else {
-                // read input stream line by line approach from https://stackoverflow.com/a/55420102, accessed 9/18/21
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                     String rawLine = "";
                     while ((rawLine = reader.readLine()) != null) {
@@ -221,6 +266,7 @@ public class Controller {
 
     /**
      * Goes through the files in the testFileDir inside the resources folder and returns a {@link TestFiles} object of the end to end tests, which is just an object with three array lists - kripkesValid, kripkesInvalid and models.
+     * Read input stream line by line with BufferedReader approach from https://stackoverflow.com/a/55420102, accessed 9/18/21
      * @param testFilesDir A {@link String} of the folder inside the resources folder that has all the end to end test files
      * @return a {@link TestFiles} object of the end to end tests, which is just an object with three array lists - kripkesValid, kripkesInvalid and models.
      * @throws IOException
@@ -235,7 +281,6 @@ public class Controller {
         if (inputStream == null) {
             throw new IllegalArgumentException("file not found!");
         } else {
-            // read input stream line by line approach from https://stackoverflow.com/a/55420102, accessed 9/18/21
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                 String filename;
                 while ((filename = reader.readLine()) != null) {
@@ -434,8 +479,14 @@ public class Controller {
 
     // END TO END TESTS
 
+    /**
+     * Runs all the end to end tests in the /resources/end-to-end-tests folder. Validates the models and formulas to make sure they don't contain syntax errors and checks if the states to check are in the models. Then model checks all the test files.
+     * @param {@link Option} object with options specified by user in the command line arguments as well as the hardcoded options at the top of Main.java
+     * @return {@link AllEndToEndTestResults} object which has three {@link List}s - one of the results of the model validations, one of the results of the formula validations and one with the results of the model checks
+     * @throws Exception
+     */
     private AllEndToEndTestResults runEndToEndTests(Options options) throws Exception {
-        List validateModelResultsList = validateEndToEndTestModels(options.getTestFilesDir(), true);
+        List validateModelResultsList = validateEndToEndTestModels(options.getTestFilesDir());
         List validateFormulaResultList = validateEndToEndFormulas(options);
         List endToEndTestResultsList = modelCheckEndToEndTests(options);
         AllEndToEndTestResults allEndToEndTestResults = new AllEndToEndTestResults(validateModelResultsList, validateFormulaResultList, endToEndTestResultsList);
@@ -447,7 +498,7 @@ public class Controller {
      * @param testFilesDir A {@link String} of the folder inside the resources folder that has all the end to end test files
      * @throws IOException
      */
-    public List validateEndToEndTestModels(String testFilesDir, Boolean printExceptions) throws Exception {
+    public List validateEndToEndTestModels(String testFilesDir) throws Exception {
         TestFiles testFiles = getTestFiles(testFilesDir);
         List validateModelResultsList = new ArrayList();
 
@@ -488,6 +539,7 @@ public class Controller {
 
     /**
      * This creates a {@link List} of {@link EndToEndFormulaFileObj}s for the end to end tests. Parses each test file and pulls out all the formulas, states to check and the expected result from each
+     * Read input stream line by line approach with the BufferedReader from https://stackoverflow.com/a/55420102, accessed 9/18/21
      * @param formulasFilename A {@link String} filename for formula files. Ie, "Model 1 - Test Formulas.txt"
      * @param {@link Option} object with options specified by user in the command line arguments as well as the hardcoded options at the top of Main.java
      * @return a {@link List} of {@link EndToEndFormulaFileObj}s with details from the test formula files (formulas, states to check and the expected result)
@@ -504,7 +556,6 @@ public class Controller {
             if (inputStream == null) {
                 throw new IllegalArgumentException("file not found! " + formulasFilename);
             } else {
-                // read input stream line by line approach from https://stackoverflow.com/a/55420102, accessed 9/18/21
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                     String rawLine = "";
                     while ((rawLine = reader.readLine()) != null) {
@@ -523,6 +574,64 @@ public class Controller {
         }
     }
 
+    /**
+     * Validates the formulas in the end to end tests (ie, checks to make sure they're well formed / do not contain syntax errors)
+     * Read input stream line by line approach with the BufferedReader from https://stackoverflow.com/a/55420102, accessed 9/18/21
+     * @param options (@link Options) object containing user entered options in command line arguments as well as the options hard coded at the top of Main.java
+     * @return a {@link List} of {@link ValidateFormulaResults} objects, each containing the results of one formula validation
+     * @throws IOException
+     * @throws ParseException
+     */
+    private List validateEndToEndFormulas(Options options) throws IOException, ParseException {
+        TestFiles testFilesObj = getTestFiles(testFilesDir);
+        List validateFormulaResultList = new ArrayList();
+        for (Object formulasFileObj : testFilesObj.getFormulas()) {
+            String formulasFilename = (String) formulasFileObj;
+            ClassLoader classLoader = getClass().getClassLoader();
+            List passedFormulas = new ArrayList();
+            Boolean validateFormulaPass = null;
+            String ctlFormula = "";
+            String error = "";
+
+            try (InputStream inputStream = classLoader.getResourceAsStream(options.getTestFilesDir() + "/" + formulasFilename)) {
+                if (inputStream == null) {
+                    throw new IllegalArgumentException("file not found! " + formulasFilename);
+                } else {
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                        String rawLine = reader.readLine();
+                        while ((rawLine = reader.readLine()) != null) {
+                            rawLine = rawLine.replaceAll("s\\d+;", "");
+                            rawLine = rawLine.replaceAll(";True", "");
+                            ctlFormula = rawLine.replaceAll(";False", "");
+                            ctlFormula = ctlFormula.replaceAll("\\ufeff", "");
+                            if (!passedFormulas.contains(ctlFormula)) {
+                                InputStream stringStream = new ByteArrayInputStream(ctlFormula.getBytes("UTF-8"));
+                                Validator validator = new Validator(stringStream);
+                                validateFormulaPass = true;
+                                validator.Validate();
+                                passedFormulas.add(ctlFormula);
+                                ValidateFormulaResults validateFormulaResults = new ValidateFormulaResults(validateFormulaPass,ctlFormula,error,formulasFilename);
+                                validateFormulaResultList.add(validateFormulaResults);
+                            }
+                        }
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }
+        return validateFormulaResultList;
+    }
+
+    /**
+     * Model checks all the end to end tests
+     * @param options (@link Options) object containing user entered options in command line arguments as well as the options hard coded at the top of Main.java
+     * @return a {@link List} of {@link EndToEndTestResult} objects, each containing the results of one model check test
+     * @throws IOException
+     * @throws ParseException
+     */
     private List modelCheckEndToEndTests(Options options) throws IOException, dev.markmcd.controller.ctl.Parser.ParseException {
         List endToEndTestResultsList = new ArrayList();
         TestFiles testFilesObj = getTestFiles(testFilesDir);
@@ -575,51 +684,6 @@ public class Controller {
             }
         }
         return endToEndTestResultsList;
-    }
-
-    private List validateEndToEndFormulas(Options options) throws IOException, ParseException {
-        TestFiles testFilesObj = getTestFiles(testFilesDir);
-        List validateFormulaResultList = new ArrayList();
-        for (Object formulasFileObj : testFilesObj.getFormulas()) {
-            String formulasFilename = (String) formulasFileObj;
-            ClassLoader classLoader = getClass().getClassLoader();
-            List passedFormulas = new ArrayList();
-            Boolean validateFormulaPass = null;
-            String ctlFormula = "";
-            String error = "";
-
-            try (InputStream inputStream = classLoader.getResourceAsStream(options.getTestFilesDir() + "/" + formulasFilename)) {
-                if (inputStream == null) {
-                    throw new IllegalArgumentException("file not found! " + formulasFilename);
-                } else {
-                    // read input stream line by line approach from https://stackoverflow.com/a/55420102, accessed 9/18/21
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-                        String rawLine = reader.readLine();
-                        while ((rawLine = reader.readLine()) != null) {
-                            // numTests++;
-                            rawLine = rawLine.replaceAll("s\\d+;", "");
-                            rawLine = rawLine.replaceAll(";True", "");
-                            ctlFormula = rawLine.replaceAll(";False", "");
-                            ctlFormula = ctlFormula.replaceAll("\\ufeff", "");
-                            if (!passedFormulas.contains(ctlFormula)) {
-                                InputStream stringStream = new ByteArrayInputStream(ctlFormula.getBytes("UTF-8"));
-                                Validator validator = new Validator(stringStream);
-                                validateFormulaPass = true;
-                                validator.Validate();
-                                passedFormulas.add(ctlFormula);
-                                ValidateFormulaResults validateFormulaResults = new ValidateFormulaResults(validateFormulaPass,ctlFormula,error,formulasFilename);
-                                validateFormulaResultList.add(validateFormulaResults);
-                            }
-                        }
-
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-        }
-        return validateFormulaResultList;
     }
 
 }
