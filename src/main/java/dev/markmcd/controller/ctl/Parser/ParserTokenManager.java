@@ -8,10 +8,6 @@ import dev.markmcd.controller.types.modelCheckRelated.ModelCheckInputs;
 import dev.markmcd.controller.types.kripke.Kripke;
 import dev.markmcd.controller.types.kripke.State;
 import dev.markmcd.controller.types.kripke.Transition;
-import static dev.markmcd.controller.ctl.CtlUtils.statesWithLabel;
-import static dev.markmcd.controller.ctl.CtlUtils.union;
-import static dev.markmcd.controller.ctl.CtlUtils.intersection;
-import static dev.markmcd.controller.ctl.CtlUtils.subtract;
 import static dev.markmcd.utils.Utils.contains;
 import static dev.markmcd.utils.Utils.areEqual;
 
