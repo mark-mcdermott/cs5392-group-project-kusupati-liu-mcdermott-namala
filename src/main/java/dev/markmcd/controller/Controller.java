@@ -145,7 +145,7 @@ public class Controller {
      */
     public ValidationResults validateModelFormulaAndStateToCheck(Options options) throws Exception {
         ValidateModelResults validateModelResults = validateModel(options);
-        ValidateFormulaResults validateFormulaResults = validateFormula(options.getFormula());
+        ValidateFormulaResults validateFormulaResults = validateFormula(getFormula(options));
         ValidateStateToCheckResults validateStateToCheckResults = null;
         if (options.getStateToCheckStr() != null) {
             validateStateToCheckResults = validateStateToCheck(options.getStateToCheckStr(), getKripkeFileObj(options.getKripkeFilepath()).getStates());
