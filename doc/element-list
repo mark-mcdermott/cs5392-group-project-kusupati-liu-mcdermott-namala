@@ -1,3 +1,11 @@
 dev.markmcd
+dev.markmcd.controller
+dev.markmcd.controller.ctl
+dev.markmcd.controller.ctl.Parser
+dev.markmcd.controller.ctl.Validator
 dev.markmcd.controller.types.kripke
+dev.markmcd.controller.types.misc
+dev.markmcd.controller.types.modelCheckRelated
+dev.markmcd.model
 dev.markmcd.utils
+dev.markmcd.view

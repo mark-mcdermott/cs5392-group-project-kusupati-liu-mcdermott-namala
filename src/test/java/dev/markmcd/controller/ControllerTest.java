@@ -12,6 +12,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Unit tests for Controller.java
+ */
 public class ControllerTest {
 
     // test if Controller throws NullPointerException if model param is null
