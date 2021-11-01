@@ -13,14 +13,32 @@ CTL model checker written in Java and using a JavaCC parser for Texas State CS 5
 - [ ] powerpoint (divitha)
 
 ## How To Run 
- 1) Prerequisites to run this:
-    - Java 14
-    - Maven
- 2) Clone the repo  
-    - `git clone cs5392-group-project-kusupati-liu-mcdermott-namala`
- 3) Cd into project
-    - `cd cs5392-group-project-kusupati-liu-mcdermott-namala`
- 4) Run the program
+1) Install Java 14 (if you have a higher version it probably works, but I haven't tried)
+    - Go to https://www.oracle.com/java/technologies/javase/jdk14-archive-downloads.html
+    - You will need to login with an oracle account and will need to create one if you don't have one already
+    - I downloaded the macOS Installer after logging in
+    - Double click the downloaded file and follow the prompts to install Java 14
+2) Install Maven (I think you only need this to run the unit tests)
+    - download the binary tar.gz archive from https://maven.apache.org/download.cgi
+    - in finder double click the downloaded file to unzip it
+    - in terminal cd to the folder the unzipped file
+    - `chown -R root:wheel ./apache-maven*`
+    - `sudo mv ./apache-maven* /opt/apache-maven` (you will have to enter your password for the sudo to work)
+    - Add mvn to your path. In Big Sur, this is done by:
+    - `cd ~`
+    - do `ls -la` and look for `.zshrc`
+    - if `.zshrc` isn't there, do `touch .zshrc`
+    - do `nano .zshrc`
+    - in nano add this line `export PATH=$PATH:/opt/apache-maven/bin`
+    - press control + x to exit and y and then enter to save
+    - quit (not close, but quit) terminal
+    - reopen terminal
+    - type `mvn -version` and if everything worked the response should start with something like `Apache Maven 3.8.3`
+3) Clone the repo  
+   - `git clone cs5392-group-project-kusupati-liu-mcdermott-namala`
+4) Cd into project
+5) `cd cs5392-group-project-kusupati-liu-mcdermott-namala`
+6) Run the program
     - `java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <formula> -e`
     - The arguments in `[ ]` are optional
     - The model flag takes either `-a` for specifying the formula in directly in the argument (inside quotes) or `-f` for specifying a file which contains the formula. `-e` is to specify to run the end to end tests 
@@ -30,10 +48,23 @@ CTL model checker written in Java and using a JavaCC parser for Texas State CS 5
         - `java -jar modelCheckingCTL -k kripke.txt -s s0 -a "EXp" -e`
         - `java -jar modelCheckingCTL -k kripke.txt -s s13 -f model.txt` 
         - `java -jar modelCheckingCTL -e`
- 5) Run the unit tests
-    - `mvn test`
+7) Run the unit tests
+   - `mvn test`
     
 ## Development Notes
+- To get this running in IntelliJ:
+    - Open IntelliJ
+    - Open the top level program folder `cs5392-group-project-kusupati-liu-mcdermott-namala`
+    - Set the project java SDK to java 14:
+    - file -> project structure -> project sdk on the right -> set to java 14.0.2 if not already set to that.
+    - Click the green hammer icon at the top to do the initial build
+    - Open src/main/java/dev.markmcd/Main
+    - Right click the word `Main` on line 15 and select "Run Main.main()"
+    - This throws a null pointer exception, which is fine right now
+    - Click "Main" at the top of the screen to the right of the green hammer
+    - Click Edit Configurations
+    - On the right side under "Build and run" in the Program Arguments field, enter `-k kripke.txt -a "EXp" -e` and click Apply and Ok.
+    - Click the green play icon to the right of the green hammer and the "Main" configuration.
 - JavaCC is used as a compiler/parser here in two instances - once for the validator and once for the parser
     - Validator
         - The validator just checks for well formed CTL models. It is like a much simplified version of the parser.
