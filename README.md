@@ -18,7 +18,7 @@ CTL model checker written in Java and using a JavaCC parser for Texas State CS 5
     - You will need to login with an oracle account and will need to create one if you don't have one already
     - I downloaded the macOS Installer after logging in
     - Double click the downloaded file and follow the prompts to install Java 14
-2) Install Maven (I think you only need this to run the unit tests)
+2) Install Maven (you can skip this if you only want to run the program and don't want to change the code and don't want to run the unit tests)
     - download the binary tar.gz archive from https://maven.apache.org/download.cgi
     - in finder double click the downloaded file to unzip it
     - in terminal cd to the folder the unzipped file
@@ -38,17 +38,20 @@ CTL model checker written in Java and using a JavaCC parser for Texas State CS 5
    - `git clone cs5392-group-project-kusupati-liu-mcdermott-namala`
 4) Cd into project
 5) `cd cs5392-group-project-kusupati-liu-mcdermott-namala`
-6) Run the program
-    - `java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <formula> -e`
+6) Cd into /out folder
+7) `cd out`
+8) Run the program
+    - `java -jar modelCheckingCTL.jar -k <kripke file> [-s <state to check>] -af <formula> [-e]` (note the "-af" flag is signifying that you must choose either -a or -f. `-af` does not actually work.)
     - The arguments in `[ ]` are optional
-    - The model flag takes either `-a` for specifying the formula in directly in the argument (inside quotes) or `-f` for specifying a file which contains the formula. `-e` is to specify to run the end to end tests 
+    - The model flag takes either `-a` for specifying the formula in directly in the argument (inside quotes) or `-f` for specifying a file which contains the formula. Can must choose either -f or -a, you cannot use both and you cannot do -af. `-e` is to specify to run the end to end tests 
     - The `-s` argument for state to check is optional. If omitted, all states are checked.
-    - An alternative way to run the program is to only run the end to end tests, which is specified by - `java -jar modelCheckingCTL -e`
+    - An alternative way to run the program is to only run the end to end tests, which is specified by - `java -jar modelCheckingCTL.jar -e`
     - Some command line examples:
-        - `java -jar modelCheckingCTL -k kripke.txt -s s0 -a "EXp" -e`
-        - `java -jar modelCheckingCTL -k kripke.txt -s s13 -f model.txt` 
-        - `java -jar modelCheckingCTL -e`
-7) Run the unit tests
+        - `java -jar modelCheckingCTL.jar -k kripke.txt -a "EXp"`
+        - `java -jar modelCheckingCTL.jar -k kripke.txt -s s0 -a "EXp" -e`
+        - `java -jar modelCheckingCTL.jar -k kripke.txt -s s13 -f model.txt` 
+        - `java -jar modelCheckingCTL.jar -e`
+9) Run the unit tests
    - `mvn test`
     
 ## Development Notes
@@ -85,6 +88,8 @@ CTL model checker written in Java and using a JavaCC parser for Texas State CS 5
             - All you modifications will happen only in this .jj file.
             - After you're done your changes, in terminal in the parser directory (the one containing Parser.jj), type `javacc Parser.jj`. This will generate about eight files in this same directory.
             - Since every time you regenerate your compiler files they overwrite the previously generated files, you can't make modifications in the generated files or they'll be overwritten the next time you regenerate them.  
-            
+- a few helpful maven commands after you make development changes:
+    - `mvn package` This creates the jar file in /out
+    - `mvn clean` This removes extra directories that get created like /target - so it's good to `mvn clean` before you commit
              
             
