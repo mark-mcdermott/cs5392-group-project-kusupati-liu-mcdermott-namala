@@ -55,6 +55,8 @@
             <filesets><fileset>
               <directory>${basedir}/dev</directory>
               <directory>${basedir}/resources</directory>
+              <directory>${basedir}/out</directory>
+              <directory>${basedir}/target</directory>
             </fileset></filesets>
           </configuration>
           <version>3.1.0</version>
@@ -75,6 +77,13 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
+          <configuration>
+            <outputDirectory>out</outputDirectory>
+            <finalName>modelCheckingCTL</finalName>
+            <archive>
+              <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+            </archive>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
