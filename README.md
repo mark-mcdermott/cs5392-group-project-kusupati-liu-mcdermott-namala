@@ -91,5 +91,10 @@ CTL model checker written in Java and using a JavaCC parser for Texas State CS 5
 - a few helpful maven commands after you make development changes:
     - `mvn package` This creates the jar file in /out
     - `mvn clean` This removes extra directories that get created like /target - so it's good to `mvn clean` before you commit
-             
+- if you want to run your own custom end to end test:
+    - go to /src/main/resources/end-to-end-tests
+    - model your two files on `Model 1.txt` and `Model 1 - Test Formulas.txt` and the first will be your kripke and the second will contain the states/formulas/expected-results that you want to run on your kripke
+    - the easiest way might be to delete all other files in the /end-to-end-tests folder except your two files
+    - you can leave the other files in there if you want - in that case, perhaps it would be best to use the same file naming structure and name your files `Model 8.txt` and `Model 8 - Test Formulas.txt` if the last test currently in the folder is 7.
+    - you can then run your test by changing your directory to the top level /out folder and then running `java -jar modelCheckingCTL.jar -e`
             
