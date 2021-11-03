@@ -36,11 +36,9 @@ CTL model checker written in Java and using a JavaCC parser for Texas State CS 5
     - type `mvn -version` and if everything worked the response should start with something like `Apache Maven 3.8.3`
 3) Clone the repo  
    - `git clone cs5392-group-project-kusupati-liu-mcdermott-namala`
-4) Cd into project
-5) `cd cs5392-group-project-kusupati-liu-mcdermott-namala`
-6) Cd into /out folder
-7) `cd out`
-8) Run the program
+4) Cd into project: `cd cs5392-group-project-kusupati-liu-mcdermott-namala`
+5) Cd into /out folder: `cd out`
+6) Run the program
     - `java -jar modelCheckingCTL.jar -k <kripke file> [-s <state to check>] -af <formula> [-e]` (note the "-af" flag is signifying that you must choose either -a or -f. `-af` does not actually work.)
     - The arguments in `[ ]` are optional
     - The model flag takes either `-a` for specifying the formula in directly in the argument (inside quotes) or `-f` for specifying a file which contains the formula. Can must choose either -f or -a, you cannot use both and you cannot do -af. `-e` is to specify to run the end to end tests 
@@ -51,7 +49,7 @@ CTL model checker written in Java and using a JavaCC parser for Texas State CS 5
         - `java -jar modelCheckingCTL.jar -k kripke.txt -s s0 -a "EXp" -e`
         - `java -jar modelCheckingCTL.jar -k kripke.txt -s s13 -f model.txt` 
         - `java -jar modelCheckingCTL.jar -e`
-9) Run the unit tests
+7) Run the unit tests (totally optional)
    - `mvn test`
     
 ## Development Notes
