@@ -49,6 +49,7 @@ CTL model checker written in Java and using a JavaCC parser for Texas State CS 5
         - `java -jar modelCheckingCTL.jar -k kripke.txt -s s0 -a "EXp" -e`
         - `java -jar modelCheckingCTL.jar -k kripke.txt -s s13 -f model.txt` 
         - `java -jar modelCheckingCTL.jar -e`
+    - any kripke or formula files in the command line arguments need to be located in src/main/resources. You can see there is already a formula.txt and a kripke.txt there. You may modify these files or create your own here.
 7) Run the unit tests (totally optional)
    - `mvn test`
     
