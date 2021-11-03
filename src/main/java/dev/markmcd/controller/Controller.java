@@ -94,7 +94,7 @@ public class Controller {
 
             // run model checking
             statesThatHold = modelCheck(options.getKripkeFilepath(), getFormula(options));
-            ModelCheckResults modelCheckResults = new ModelCheckResults(statesThatHold, allStates, stateToCheck, formula);
+            ModelCheckResults modelCheckResults = new ModelCheckResults(statesThatHold, allStates, stateToCheck, getFormula(options));
             model.setModelCheckResults(modelCheckResults);
         }
 
