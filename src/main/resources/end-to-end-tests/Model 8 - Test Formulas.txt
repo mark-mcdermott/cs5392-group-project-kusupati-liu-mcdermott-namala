@@ -208,3 +208,17 @@ s4;AG(s->A(pU(not r and A(not pUq))));True
 s5;AG(s->A(pU(not r and A(not pUq))));True
 s6;AG(s->A(pU(not r and A(not pUq))));True
 s7;AG(s->A(pU(not r and A(not pUq))));True
+s1;EF(p and EG not r);True
+s2;EF(p and EG not r);True
+s3;EF(p and EG not r);True
+s4;EF(p and EG not r);True
+s5;EF(p and EG not r);True
+s6;EF(p and EG not r);True
+s7;EF(p and EG not r);True
+s1;not EF(p and EG not r);False
+s2;not EF(p and EG not r);False
+s3;not EF(p and EG not r);False
+s4;not EF(p and EG not r);False
+s5;not EF(p and EG not r);False
+s6;not EF(p and EG not r);False
+s7;not EF(p and EG not r);False
