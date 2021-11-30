@@ -46,7 +46,7 @@ public class View {
     }
 
     /**
-     * Prints the end to end test results only
+     * Prints all end to end tests results only
      * @param allEndToEndTestResults
      * @throws Exception
      */
@@ -55,7 +55,16 @@ public class View {
     }
 
     /**
-     * Prints the end to end test results. There's a lot here and this output is quite long. First prints model validation results (with descriptive error messages with line numbers on failed model validations), then formula validation and then the results of the model checking.
+     * Prints one end to end test results only
+     * @param endToEndTestResult
+     * @throws Exception
+     */
+    public void updateView(EndToEndTestResultWithValidation endToEndTestResult) throws Exception {
+        printEndToEndTestResult(endToEndTestResult);
+    }
+
+    /**
+     * Prints all the end to end test results. There's a lot here and this output is quite long. First prints model validation results (with descriptive error messages with line numbers on failed model validations), then formula validation and then the results of the model checking.
      * @param allEndToEndTestResults
      * @throws Exception
      */
@@ -110,6 +119,57 @@ public class View {
 
         }
         System.out.println("-- end to end tests done --\n");
+    }
+
+    /**
+     * Prints one end to end test result.
+     * @param endToEndResultsObj
+     * @throws Exception
+     */
+    public void printEndToEndTestResult(EndToEndTestResultWithValidation endToEndResultsObj) throws Exception {
+        ValidateModelResults validateModelResults = endToEndResultsObj.getValidateModelResults();
+        ValidateFormulaResults validateFormulaResults = endToEndResultsObj.getValidateFormulaResults();
+        List endToEndTestResultsList = endToEndResultsObj.getEndToEndTestResult();
+
+        Boolean passValidation = validateModelResults.getPassValidation();
+        String originalErrorMessage = validateModelResults.getOriginalErrorMessage();
+        String testFile = validateModelResults.getKripkeFilepath();
+
+        if (!passValidation) {
+            originalErrorMessage = originalErrorMessage;
+            String newErrorMessage = "❌ failed parsing - " + originalErrorMessage;
+            handleError(newErrorMessage,options.getPrintExceptions());
+        } else {
+            System.out.println("✅ passed parsing - " + testFile);
+        }
+
+        String formulaForValidation = validateFormulaResults.getFormula();
+        String formulaFilename = validateFormulaResults.getFormulaFilename();
+        System.out.println("✅ passed parsing - Formula \"" + formulaForValidation + "\" is well formed (\"" + formulaFilename + "\")");
+
+        for (Object endToEndTestResultObj : endToEndTestResultsList) {
+            EndToEndTestResult endToEndTestResult = (EndToEndTestResult) endToEndTestResultObj;
+            Boolean actualResult = endToEndTestResult.getActualResult();
+            Boolean expectedResult = endToEndTestResult.getExpectedResult();
+            Boolean testPass = endToEndTestResult.getTestPass();
+            String formula = endToEndTestResult.getFormula();
+            String stateToTest = endToEndTestResult.getStateToTest();
+
+            if (testPass) {
+                if (actualResult) {
+                    System.out.println("✅ passed model checking - " + formula + " holds for " + stateToTest);
+                } else if (!actualResult) {
+                    System.out.println("✅ passed model checking - " + formula + " does not hold for " + stateToTest);
+                }
+            } else {
+                if (expectedResult) {
+                    System.out.println("❌ failed model checking - " + formula + " should hold for " + stateToTest + " but did not.");
+                } else {
+                    System.out.println("❌ failed model checking - " + formula + " should not hold for " + stateToTest + " but did");
+                }
+            }
+
+        }
     }
 
     /**

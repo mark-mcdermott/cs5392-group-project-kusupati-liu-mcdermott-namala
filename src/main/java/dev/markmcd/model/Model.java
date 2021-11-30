@@ -1,6 +1,7 @@
 package dev.markmcd.model;
 
 import dev.markmcd.controller.types.modelCheckRelated.AllEndToEndTestResults;
+import dev.markmcd.controller.types.modelCheckRelated.EndToEndTestResultWithValidation;
 import dev.markmcd.controller.types.modelCheckRelated.ModelCheckResults;
 import dev.markmcd.controller.types.modelCheckRelated.ValidationResults;
 
@@ -30,6 +31,11 @@ public class Model {
      */
     AllEndToEndTestResults allEndToEndTestResults;
 
+    /**
+     * {@link EndToEndTestResultWithValidation} is a custom object containing validateModelResults, validateFormulaResult, endToEndTestResults.
+     */
+    EndToEndTestResultWithValidation endToEndTestResult;
+
     public ValidationResults getValidationResults() {
         return validationResults;
     }
@@ -54,4 +60,11 @@ public class Model {
         this.allEndToEndTestResults = allEndToEndTestResults;
     }
 
+    public void setEndToEndTestResult(EndToEndTestResultWithValidation endToEndTestResult) {
+        this.endToEndTestResult = endToEndTestResult;
+    }
+
+    public EndToEndTestResultWithValidation getEndToEndTestResult() {
+        return endToEndTestResult;
+    }
 }

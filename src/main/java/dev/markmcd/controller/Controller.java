@@ -12,6 +12,7 @@ import dev.markmcd.controller.types.kripke.State;
 import dev.markmcd.controller.types.kripke.Transition;
 import dev.markmcd.view.View;
 import dev.markmcd.controller.ctl.Parser.Parser;
+import hep.aida.ref.Test;
 import org.apache.commons.collections15.ListUtils;
 
 import java.io.*;
@@ -90,7 +91,12 @@ public class Controller {
                 AllEndToEndTestResults allEndToEndTestResults = runAllEndToEndTests(options);
                 model.setAllEndToEndTestResults(allEndToEndTestResults);
             } else {
-                // ???
+                Integer numTestFile = options.getEndToEndTestNum() - 1;
+                TestFiles testFiles = options.getEndToEndTests();
+                String kripkeFilepath = (String) testFiles.getKripkesValid().get(numTestFile);
+                String formulasFilename = (String) testFiles.getFormulas().get(numTestFile);
+                EndToEndTestResultWithValidation endToEndTestResult = runEndToEndTest(kripkeFilepath, formulasFilename, options);
+                model.setEndToEndTestResult(endToEndTestResult);
             }
         }
 
@@ -107,7 +113,11 @@ public class Controller {
 
         // update view
         if (runOnlyEndToEndTests) {
-            view.updateView(model.getAllEndToEndTestResults());
+            if (options.getRunAllEndToEndTests()) {
+                view.updateView(model.getAllEndToEndTestResults());
+            } else {
+                view.updateView(model.getEndToEndTestResult());
+            }
         } else {
             if (runEndToEndTests) {
                 view.updateView(model.getValidationResults(), model.getModelCheckResults(), model.getAllEndToEndTestResults());
@@ -451,7 +461,7 @@ public class Controller {
     // END TO END TESTS
 
     /**
-     * Runs all the end to end tests in the /resources/end-to-end-tests folder. Validates the models and formulas to make sure they don't contain syntax errors and checks if the states to check are in the models. Then model checks all the test files.
+     * Runs all the end to end tests in the /resources folder. Validates the models and formulas to make sure they don't contain syntax errors and checks if the states to check are in the models. Then model checks all the test files.
      * @param {@link Option} object with options specified by user in the command line arguments as well as the hardcoded options at the top of Main.java
      * @return {@link AllEndToEndTestResults} object which has three {@link List}s - one of the results of the model validations, one of the results of the formula validations and one with the results of the model checks
      * @throws Exception
@@ -462,6 +472,20 @@ public class Controller {
         List endToEndTestResultsList = modelCheckEndToEndTests(options);
         AllEndToEndTestResults allEndToEndTestResults = new AllEndToEndTestResults(validateModelResultsList, validateFormulaResultList, endToEndTestResultsList);
         return allEndToEndTestResults;
+    }
+
+    /**
+     * Runs one end to end tests in the /resources folder. Validates the models and formulas to make sure they don't contain syntax errors and checks if the states to check are in the models. Then model checks all the test files.
+     * @param {@link Option} object with options specified by user in the command line arguments as well as the hardcoded options at the top of Main.java
+     * @return {@link AllEndToEndTestResults} object which has three {@link List}s - one of the results of the model validations, one of the results of the formula validations and one with the results of the model checks
+     * @throws Exception
+     */
+    private EndToEndTestResultWithValidation runEndToEndTest(String kripkeFilepath, String formulasFilename, Options options) throws Exception {
+        ValidateModelResults validateModelResults = validateEndToEndTestModel(kripkeFilepath, options);
+        ValidateFormulaResults validateFormulaResults = validateEndToEndFormula(formulasFilename, new ArrayList());
+        List endToEndTestResults = modelCheckEndToEndTest(kripkeFilepath, formulasFilename, options);
+        EndToEndTestResultWithValidation endToEndTestResultWithValidation = new EndToEndTestResultWithValidation(validateModelResults, validateFormulaResults, endToEndTestResults);
+        return endToEndTestResultWithValidation;
     }
 
     /**
@@ -560,7 +584,7 @@ public class Controller {
         for (Object formulasFileObj : testFilesObj.getFormulas()) {
             String formulasFilename = (String) formulasFileObj;
 
-            ValidateFormulaResults validateFormulaResults = validateEndToEndFormula(formulasFilename, passedFormulas, options);
+            ValidateFormulaResults validateFormulaResults = validateEndToEndFormula(formulasFilename, passedFormulas);
             if (validateFormulaResults.getPassValidation()) {
                 if (!passedFormulas.contains(validateFormulaResults.getFormula())) {
                     passedFormulas.add(validateFormulaResults.getFormula());
@@ -575,12 +599,11 @@ public class Controller {
     /**
      * Validates the formula in an end to end tests (ie, checks to make sure it's well formed / does not contain syntax errors)
      * Read input stream line by line approach with the BufferedReader from https://stackoverflow.com/a/55420102, accessed 9/18/21
-     * @param options (@link Options) object containing user entered options in command line arguments as well as the options hard coded at the top of Main.java
      * @return a {@link List} of {@link ValidateFormulaResults} objects, each containing the results of one formula validation
      * @throws IOException
      * @throws ParseException
      */
-    private ValidateFormulaResults validateEndToEndFormula(String formulasFilename, List passedFormulas, Options options) throws IOException, ParseException {
+    private ValidateFormulaResults validateEndToEndFormula(String formulasFilename, List passedFormulas) throws IOException, ParseException {
         ValidateFormulaResults validateFormulaResults = null;
         ClassLoader classLoader = getClass().getClassLoader();
         Boolean validateFormulaPass = null;
