@@ -3,6 +3,7 @@ package dev.markmcd.controller.types.misc;
 import dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource;
 
 import java.io.IOException;
+import java.util.List;
 
 import static dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource.ARGUMENT;
 import static dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource.FILE;
@@ -45,6 +46,11 @@ public class Options {
     Boolean runEndToEndTests;
 
     /**
+     * {@link TestFiles} hard coded list of end to end tests
+     */
+    TestFiles endToEndTests;
+
+    /**
      * {@link Boolean} specifying to only run the end to end tests and not model check any user inputted model/formula
      */
     Boolean runOnlyEndToEndTests;
@@ -54,12 +60,6 @@ public class Options {
      * This is hardcoded at the top of Main.java
      */
     Boolean printExceptions;
-
-    /**
-     * {@link String} name of the test file directory inside the resources folder, ie. end-to-end-tests
-     * This is hardcoded at the top of Main.java
-     */
-    private String testFilesDir;
 
 
 
@@ -71,13 +71,11 @@ public class Options {
     /**
      * The sole Options constructor. Sets the two properties hardcoded at the top of Main.java and then parses the args param, pulling out any specified arguments. Includes some simple logic around determining if the formula is specified as an argument directly or is in an file specified as an argument as well as determining if only the end to end tests are meant to be run.
      * @param args
-     * @param testFilesDir
      * @throws IOException
      */
-    public Options(String[] args, String testFilesDir, Boolean printExceptions) throws IOException {
+    public Options(String[] args, TestFiles endToEndTests, Boolean printExceptions) throws IOException {
 
         // set user set options
-        this.testFilesDir = testFilesDir;
         this.printExceptions = printExceptions;
 
         // parse command line arguments and set the options found there
@@ -86,6 +84,8 @@ public class Options {
         this.kripkeFilepath = kripkeFileName;
         this.stateToCheckStr = arguments.getStateToCheckStr();
         this.formulaInputSource = arguments.getFormulaInputSource();
+        this.endToEndTests = endToEndTests;
+
         if (arguments.getFormulaFilename() != null) {
             this.formulaInputFilename = arguments.getFormulaFilename();
             this.formulaInputSource = arguments.getFormulaInputSource();
@@ -215,10 +215,6 @@ public class Options {
         return formulaInputFilename;
     }
 
-    public String getTestFilesDir() {
-        return testFilesDir;
-    }
-
     public Boolean getPrintExceptions() {
         return printExceptions;
     }
@@ -226,4 +222,9 @@ public class Options {
     public Boolean getRunOnlyEndToEndTests() {
         return runOnlyEndToEndTests;
     }
+
+    public TestFiles getEndToEndTests() {
+        return endToEndTests;
+    }
+
 }

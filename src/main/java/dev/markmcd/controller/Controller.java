@@ -78,7 +78,7 @@ public class Controller {
         Set allStates = null;
         if (!runOnlyEndToEndTests) { allStates = getKripkeFileObj(options.getKripkeFilepath()).getStates(); }
         String stateToCheck = options.getStateToCheckStr();
-        String formula = options.getFormula();
+        // String formula = options.getFormula();
 
         // check for null options param and run end to end tests, if specified
         if (options == null) { throw new NullPointerException("runProgram options param is null"); }
@@ -265,42 +265,40 @@ public class Controller {
     }
 
     /**
-     * Goes through the files in the testFileDir inside the resources folder and returns a {@link TestFiles} object of the end to end tests, which is just an object with three array lists - kripkesValid, kripkesInvalid and models.
-     * Read input stream line by line with BufferedReader approach from https://stackoverflow.com/a/55420102, accessed 9/18/21
-     * @param testFilesDir A {@link String} of the folder inside the resources folder that has all the end to end test files
      * @return a {@link TestFiles} object of the end to end tests, which is just an object with three array lists - kripkesValid, kripkesInvalid and models.
      * @throws IOException
      */
-    public TestFiles getTestFiles(String testFilesDir) throws IOException {
-        if (testFilesDir == null) { throw new NullPointerException("testFilesDir param is null in getTestFiles"); }
-        List kripkesValid = new ArrayList();
-        List kripkesInvalid = new ArrayList();
-        List models = new ArrayList();
-        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream(testFilesDir);
-        if (inputStream == null) {
-            throw new IllegalArgumentException("file not found!");
-        } else {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-                String filename;
-                while ((filename = reader.readLine()) != null) {
-                    if (!filename.matches("(.*).png(.*)")) {
-                        if (filename.matches("(.*)Broken(.*)")) {
-                            kripkesInvalid.add(filename);
-                        } else if (filename.matches("(.*)Formulas(.*)")) {
-                            models.add(filename);
-                        } else if (filename.matches("(.*)Model(.*)")) {
-                            kripkesValid.add(filename);
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        inputStream.close();
-        return new TestFiles(kripkesValid, kripkesInvalid, models);
-    }
+    // public TestFiles getTestFiles(List endToEndTests) throws IOException {
+//        List kripkesValid = new ArrayList();
+//        List kripkesInvalid = new ArrayList();
+//        List models = new ArrayList();
+//        ClassLoader classLoader = getClass().getClassLoader();
+//        // testFilesDir = "/" + testFilesDir;
+//        // InputStream inputStream = this.getClass().getResourceAsStream(testFilesDir);
+//        InputStream inputStream = classLoader.getResourceAsStream(testFilesDir);
+//        if (inputStream == null) {
+//            throw new IllegalArgumentException("file not found!");
+//        } else {
+//            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+//                String filename;
+//                while ((filename = reader.readLine()) != null) {
+//                    if (!filename.matches("(.*).png(.*)")) {
+//                        if (filename.matches("(.*)Broken(.*)")) {
+//                            kripkesInvalid.add(filename);
+//                        } else if (filename.matches("(.*)Formulas(.*)")) {
+//                            models.add(filename);
+//                        } else if (filename.matches("(.*)Model(.*)")) {
+//                            kripkesValid.add(filename);
+//                        }
+//                    }
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        inputStream.close();
+        //return new TestFiles(kripkesValid, kripkesInvalid, models);
+    // }
 
     /**
      * Parses a text file containing information for a specific Kripke structure and returns a {@link Kripke} with all that info.
@@ -486,7 +484,7 @@ public class Controller {
      * @throws Exception
      */
     private AllEndToEndTestResults runEndToEndTests(Options options) throws Exception {
-        List validateModelResultsList = validateEndToEndTestModels(options.getTestFilesDir());
+        List validateModelResultsList = validateEndToEndTestModels(options);
         List validateFormulaResultList = validateEndToEndFormulas(options);
         List endToEndTestResultsList = modelCheckEndToEndTests(options);
         AllEndToEndTestResults allEndToEndTestResults = new AllEndToEndTestResults(validateModelResultsList, validateFormulaResultList, endToEndTestResultsList);
@@ -495,19 +493,21 @@ public class Controller {
 
     /**
      * Checks the CTL models in the end to end tests to see if they're well formed.
-     * @param testFilesDir A {@link String} of the folder inside the resources folder that has all the end to end test files
+     * @param {@link Option} object with options specified by user in the command line arguments as well as the hardcoded options at the top of Main.java
      * @throws IOException
      */
-    public List validateEndToEndTestModels(String testFilesDir) throws Exception {
-        TestFiles testFiles = getTestFiles(testFilesDir);
+    public List validateEndToEndTestModels(Options options) throws Exception {
+        TestFiles testFiles = options.getEndToEndTests();
         List validateModelResultsList = new ArrayList();
 
         for (Object testFilesObj : testFiles.getKripkesValid()) {
             String testFile = (String) testFilesObj;
-            String kripkeFilepath = testFilesDir + "/" + testFile;
+            // String kripkeFilepath = testFilesDir + "/" + testFile;
+            String kripkeFilepath = testFile;
             Boolean modelValidationPass = null;
             String originalErrorMessage = "";
-            KripkeFileObj kripkeFileObj = getKripkeFileObj(testFilesDir + "/" + testFile);
+            // KripkeFileObj kripkeFileObj = getKripkeFileObj(testFilesDir + "/" + testFile);
+            KripkeFileObj kripkeFileObj = getKripkeFileObj(testFile);
 
             if (kripkeFileObj.getErrorMessage() != null) {
                 modelValidationPass = false;
@@ -521,7 +521,8 @@ public class Controller {
 
         for (Object testFilesObj : testFiles.getKripkesInvalid()) {
             String testFile = (String) testFilesObj;
-            String kripkeFilepath = testFilesDir + "/" + testFile;
+            // String kripkeFilepath = testFilesDir + "/" + testFile;
+            String kripkeFilepath = testFile;
             KripkeFileObj kripkeFileObj = getKripkeFileObj(kripkeFilepath);
             Boolean modelValidationPass = null;
             String originalErrorMessage = "";
@@ -549,7 +550,8 @@ public class Controller {
         List formulaFileObjs = new ArrayList();
         ClassLoader classLoader = getClass().getClassLoader();
 
-        try (InputStream inputStream = classLoader.getResourceAsStream(options.getTestFilesDir() + "/" + formulasFilename)) {
+        // try (InputStream inputStream = classLoader.getResourceAsStream(options.getTestFilesDir() + "/" + formulasFilename)) {
+        try (InputStream inputStream = classLoader.getResourceAsStream(formulasFilename)) {
             String formula = "";
             String stateToCheck = "";
             Boolean expected = null;
@@ -583,7 +585,8 @@ public class Controller {
      * @throws ParseException
      */
     private List validateEndToEndFormulas(Options options) throws IOException, ParseException {
-        TestFiles testFilesObj = getTestFiles(testFilesDir);
+        // TestFiles testFilesObj = getTestFiles(testFilesDir);
+        TestFiles testFilesObj = options.getEndToEndTests();
         List validateFormulaResultList = new ArrayList();
         for (Object formulasFileObj : testFilesObj.getFormulas()) {
             String formulasFilename = (String) formulasFileObj;
@@ -593,7 +596,8 @@ public class Controller {
             String ctlFormula = "";
             String error = "";
 
-            try (InputStream inputStream = classLoader.getResourceAsStream(options.getTestFilesDir() + "/" + formulasFilename)) {
+            // try (InputStream inputStream = classLoader.getResourceAsStream(options.getTestFilesDir() + "/" + formulasFilename)) {
+            try (InputStream inputStream = classLoader.getResourceAsStream(formulasFilename)) {
                 if (inputStream == null) {
                     throw new IllegalArgumentException("file not found! " + formulasFilename);
                 } else {
@@ -634,7 +638,8 @@ public class Controller {
      */
     private List modelCheckEndToEndTests(Options options) throws IOException, dev.markmcd.controller.ctl.Parser.ParseException {
         List endToEndTestResultsList = new ArrayList();
-        TestFiles testFilesObj = getTestFiles(testFilesDir);
+        // TestFiles testFilesObj = getTestFiles(testFilesDir);
+        TestFiles testFilesObj = options.getEndToEndTests();
         List kripkeFiles = testFilesObj.getKripkesValid();
         List formulaFiles = testFilesObj.getFormulas();
 
@@ -657,7 +662,8 @@ public class Controller {
                 Boolean testPass = null;
                 ModelCheckResults modelCheckResults;
                 EndToEndTestResult endToEndTestResult;
-                String kripkeFilepath = testFilesDir + "/" + kripkeFilename;
+                // String kripkeFilepath = testFilesDir + "/" + kripkeFilename;
+                String kripkeFilepath = kripkeFilename;
                 KripkeFileObj kripkeFileObj = getKripkeFileObj(kripkeFilepath);
                 EndToEndFormulaFileObj endToEndFormulaFileObj = (EndToEndFormulaFileObj) formulaFileObjList.get(numTested);
                 Kripke kripke = kripkeFileObj.getKripke();
