@@ -77,9 +77,17 @@ public class Controller {
         Boolean runEndToEndTests = options.getRunEndToEndTests();
         Boolean runAllEndToEndTests = options.getRunAllEndToEndTests();
         Boolean runOnlyEndToEndTests = options.getRunOnlyEndToEndTests();
+        Boolean runOnlyMicrowave = options.getRunOnlyMicrowave();
         Set statesThatHold = null;
         Set allStates = null;
-        if (!runOnlyEndToEndTests) { allStates = getKripkeFileObj(options.getKripkeFilepath()).getStates(); }
+        if (!runOnlyEndToEndTests) {
+            if (runOnlyMicrowave) {
+                EndToEndTestResultWithValidation endToEndTestResult = runEndToEndTest("Microwave.txt", "Microwave - Test Formulas.txt", options);
+                model.setEndToEndTestResult(endToEndTestResult);
+            } else {
+                allStates = getKripkeFileObj(options.getKripkeFilepath()).getStates();
+            }
+        }
         String stateToCheck = options.getStateToCheckStr();
         // String formula = options.getFormula();
 
@@ -99,7 +107,7 @@ public class Controller {
             }
         }
 
-        if (!options.getRunOnlyEndToEndTests()) {
+        if (!options.getRunOnlyEndToEndTests() && !options.getRunOnlyMicrowave()) {
             // run validation (validate the model, the formula and the state to check)
             ValidationResults validationResults = validateModelFormulaAndStateToCheck(options);
             model.setValidationResults(validationResults);
@@ -111,7 +119,7 @@ public class Controller {
         }
 
         // update view
-        if (runOnlyEndToEndTests) {
+        if (runOnlyEndToEndTests || runOnlyMicrowave) {
             if (options.getRunAllEndToEndTests()) {
                 view.updateView(model.getAllEndToEndTestResults());
             } else {

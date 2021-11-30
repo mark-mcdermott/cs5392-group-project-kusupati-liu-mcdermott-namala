@@ -69,13 +69,19 @@ public class Arguments {
     Boolean runEndToEndTests;
 
     /**
+     * {@Boolean} specifying to only run the microwave example
+     */
+    Boolean runOnlyMicrowave;
+
+    /**
      * {@Intger} specifying the end to end test number to run (optional)
      */
     Integer endToEndTestNum;
 
-    public Arguments(Boolean runEndToEndTests, Integer endToEndTestNum) throws IOException {
+    public Arguments(Boolean runEndToEndTests, Integer endToEndTestNum, Boolean runOnlyMicrowave) throws IOException {
         this.runEndToEndTests = runEndToEndTests;
         this.endToEndTestNum = endToEndTestNum;
+        this.runOnlyMicrowave = runOnlyMicrowave;
     }
 
     /**
@@ -86,9 +92,10 @@ public class Arguments {
      * @param modelInputStr {@link String} representing either the .txt filename where the model is supplied or is actual CTL model string itself. Whether this string is the filename or the model is determined by the above modelInputSource param - FILE means filename and ARGUMENT means the model itself.
      * @param runEndToEndTests {@Boolean} specifying that the end to end tests should be run
      * @param endToEndTestNum {@Integer} specifying the end to end test number to run (optional)
+     * @param runOnlyMicrowave {@Boolean} specifying to only run the microwave example
      * @throws IOException
      */
-    public Arguments(String kripkeFilename, String stateToCheckStr, FormulaInputSource formulaInputSource, String modelInputStr, Boolean runEndToEndTests, Integer endToEndTestNum) throws IOException {
+    public Arguments(String kripkeFilename, String stateToCheckStr, FormulaInputSource formulaInputSource, String modelInputStr, Boolean runEndToEndTests, Integer endToEndTestNum, Boolean runOnlyMicrowave) throws IOException {
         if (kripkeFilename == null || stateToCheckStr == null || formulaInputSource == null || formulaInputSource == null) {
             throw new NullPointerException("Arguments param is null");
         } else if (kripkeFilename == "" || stateToCheckStr == "" || modelInputStr == "") {
@@ -115,6 +122,7 @@ public class Arguments {
         }
         this.runEndToEndTests = runEndToEndTests;
         this.endToEndTestNum = endToEndTestNum;
+        this.runOnlyMicrowave = runOnlyMicrowave;
     }
 
     /**
@@ -124,9 +132,10 @@ public class Arguments {
      * @param modelInputStr {@link String} representing either the .txt filename where the model is supplied or is actual CTL model string itself. Whether this string is the filename or the model is determined by the above modelInputSource param - FILE means filename and ARGUMENT means the model itself.
      * @param runEndToEndTests {@Boolean} specifying that the end to end tests should be run
      * @param endToEndTestNum {@Integer} specifying the end to end test number to run (optional)
+     * @param runOnlyMicrowave {@Boolean} specifying to only run the microwave example
      * @throws IOException
      */
-    public Arguments(String kripkeFilename, FormulaInputSource formulaInputSource, String modelInputStr, Boolean runEndToEndTests, Integer endToEndTestNum) throws IOException {
+    public Arguments(String kripkeFilename, FormulaInputSource formulaInputSource, String modelInputStr, Boolean runEndToEndTests, Integer endToEndTestNum, Boolean runOnlyMicrowave) throws IOException {
         if (kripkeFilename == null || formulaInputSource == null || formulaInputSource == null) {
             throw new NullPointerException("Arguments param is null");
         } else if (kripkeFilename == "" || modelInputStr == "") {
@@ -149,6 +158,7 @@ public class Arguments {
         }
         this.runEndToEndTests = runEndToEndTests;
         this.endToEndTestNum = endToEndTestNum;
+        this.runOnlyMicrowave = runOnlyMicrowave;
     }
 
     public String getFormula() {
@@ -177,5 +187,9 @@ public class Arguments {
 
     public Integer getEndToEndTestNum() {
         return endToEndTestNum;
+    }
+
+    public Boolean getRunOnlyMicrowave() {
+        return runOnlyMicrowave;
     }
 }

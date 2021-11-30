@@ -2,16 +2,6 @@
 
 CTL model checker written in Java and using a JavaCC parser for Texas State CS 5392 Formal Methods Fall '21, taught by Dr. Podorozhny.
 
-## Items Left 
-- [x] get user models/formulas working<br>
-- [x] descriptive error if state to check isn't in model<br>
-- [ ] code up the microwave example (mchPeled.zip) (lanlan)<br>
-- [ ] description of acceptance testcases (lanlan)<br>
-- [ ] description of execution of acceptancve testcases illustrated with screenshots of all windows/popups of system and console output along testcase (divitha)<br>
-- [ ] UML class diagram for the software system (shravanthi)<br>
-- [ ] everyone: double check / study Model 4 for presentation<br>
-- [ ] powerpoint (divitha)
-
 ## How To Run 
 1) Install Java 14 (if you have a higher version it probably works, but I haven't tried)
     - Go to https://www.oracle.com/java/technologies/javase/jdk14-archive-downloads.html
@@ -39,9 +29,9 @@ CTL model checker written in Java and using a JavaCC parser for Texas State CS 5
 4) Cd into project: `cd cs5392-group-project-kusupati-liu-mcdermott-namala`
 5) Cd into /out folder: `cd out`
 6) Run the program
-    - `java -jar modelCheckingCTL.jar -k <kripke file> [-s <state to check>] -af <formula> [-e]` (note the "-af" flag is signifying that you must choose either -a or -f. `-af` does not actually work.)
+    - `java -jar modelCheckingCTL.jar -k <kripke file> [-s <state to check>] -af <formula> [-e [<end to end test number>]] [-m]` (note the "-af" flag is signifying that you must choose either -a or -f. `-af` does not actually work.)
     - The arguments in `[ ]` are optional
-    - The model flag takes either `-a` for specifying the formula in directly in the argument (inside quotes) or `-f` for specifying a file which contains the formula. Can must choose either -f or -a, you cannot use both and you cannot do -af. `-e` is to specify to run the end to end tests 
+    - The model flag takes either `-a` for specifying the formula in directly in the argument (inside quotes) or `-f` for specifying a file which contains the formula. Can must choose either -f or -a, you cannot use both and you cannot do -af. `-e` is to specify to run the end to end tests. The `-e` flag may be used alone and in that case will run all the end to end tests. You may also do `-e <test num>`, which will run only the end to end test number specified, ie `-e 1` will run the first end to end test ("Model 1.txt" and "Model 1 - Test Formulas.txt"). You may also just use the `-m` flag which will run the microwave example.  
     - The `-s` argument for state to check is optional. If omitted, all states are checked.
     - An alternative way to run the program is to only run the end to end tests, which is specified by - `java -jar modelCheckingCTL.jar -e`
     - Some command line examples:
@@ -49,6 +39,8 @@ CTL model checker written in Java and using a JavaCC parser for Texas State CS 5
         - `java -jar modelCheckingCTL.jar -k kripke.txt -s s0 -a "EXp" -e`
         - `java -jar modelCheckingCTL.jar -k kripke.txt -s s13 -f model.txt` 
         - `java -jar modelCheckingCTL.jar -e`
+        - `java -jar modelCheckingCTL.jar -e 2`
+        - `java -jar modelCheckingCTL.jar -m`
     - any kripke or formula files in the command line arguments need to be located in src/main/resources. You can see there is already a formula.txt and a kripke.txt there. You may modify these files or create your own here.
 7) Run the unit tests (totally optional)
    - `mvn test`

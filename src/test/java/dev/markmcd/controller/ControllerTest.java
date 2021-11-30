@@ -94,11 +94,11 @@ public class ControllerTest {
 //        List kripkesInvalidActual = testFiles.getKripkesInvalid();
 //        List kripkesValidActual = testFiles.getKripkesValid();
 //        List modelsActual = testFiles.getFormulas();
-//        List kripkesInvalidExpected = Arrays.asList("Broken Model 1.txt", "Broken Model 2.txt", "Broken Model 3.txt", "Broken Model 4.txt", "Broken Model 5.txt", "Broken Model 6.txt", "Broken Model 7.txt", "Broken Model 8.txt");
+//        List kripkesInvalidExpected = Arrays.asList("Broken Model 1.txt", "Broken Model 2.txt", "Broken Model 3.txt", "Broken Model 4.txt", "Broken Model 5.txt", "Broken Model 6.txt", "Broken Model 7.txt", "Broken Microwave.txt");
 //        // List kripkesValidExpected = Arrays.asList("Model 1.txt","Model 2.txt","Model 3.txt","Model 4.txt","Model 5.txt","Model 6.txt","Model 7.txt");
-//        List kripkesValidExpected = Arrays.asList("Model 1.txt","Model 2.txt","Model 3.txt","Model 4.txt","Model 5.txt","Model 6.txt","Model 7.txt","Model 8.txt");
+//        List kripkesValidExpected = Arrays.asList("Model 1.txt","Model 2.txt","Model 3.txt","Model 4.txt","Model 5.txt","Model 6.txt","Model 7.txt","Microwave.txt");
 //        // List modelsExpected = Arrays.asList("Model 1 - Test Formulas.txt","Model 2 - Test Formulas.txt","Model 3 - Test Formulas.txt","Model 4 - Test Formulas.txt","Model 5 - Test Formulas.txt","Model 6 - Test Formulas.txt","Model 7 - Test Formulas.txt");
-//        List modelsExpected = Arrays.asList("Model 1 - Test Formulas.txt","Model 2 - Test Formulas.txt","Model 3 - Test Formulas.txt","Model 4 - Test Formulas.txt","Model 5 - Test Formulas.txt","Model 6 - Test Formulas.txt","Model 7 - Test Formulas.txt","Model 8 - Test Formulas.txt");
+//        List modelsExpected = Arrays.asList("Model 1 - Test Formulas.txt","Model 2 - Test Formulas.txt","Model 3 - Test Formulas.txt","Model 4 - Test Formulas.txt","Model 5 - Test Formulas.txt","Model 6 - Test Formulas.txt","Model 7 - Test Formulas.txt","Microwave - Test Formulas.txt");
 //        assertEquals(kripkesInvalidActual, kripkesInvalidExpected);
 //        assertEquals(kripkesValidActual, kripkesValidExpected);
 //        assertEquals(modelsActual, modelsExpected);

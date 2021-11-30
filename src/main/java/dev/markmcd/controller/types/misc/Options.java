@@ -72,6 +72,10 @@ public class Options {
      */
     Boolean printExceptions;
 
+    /**
+     * {@link Boolean} specifying to only run the microwave example
+     */
+    Boolean runOnlyMicrowave;
 
 
     /**
@@ -96,6 +100,7 @@ public class Options {
         this.stateToCheckStr = arguments.getStateToCheckStr();
         this.formulaInputSource = arguments.getFormulaInputSource();
         this.endToEndTests = endToEndTests;
+        this.runOnlyMicrowave = arguments.getRunOnlyMicrowave();
 
         if (arguments.getFormulaFilename() != null) {
             this.formulaInputFilename = arguments.getFormulaFilename();
@@ -160,6 +165,7 @@ public class Options {
         FormulaInputSource formulaInputSource = ARGUMENT;
         String formulaInputStr = "";
         Boolean runEndToEndTests = false;
+        Boolean runOnlyMicrowave = false;
         Integer endToEndTestNum = null;
 
         while (i < args.length && args[i].startsWith("-")) {
@@ -199,17 +205,22 @@ public class Options {
                 }
             }
 
+            // microwave example
+            if (arg.equals("-m")) {
+                runOnlyMicrowave = true;
+            }
+
         }
         if (i != args.length)
             System.err.println("Usage: java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <formula> -e [<test num>]");
         else if (stateToCheckStr == null) {
             if (kripkeFilename.equals("")) {
-                return new Arguments(runEndToEndTests, endToEndTestNum);
+                return new Arguments(runEndToEndTests, endToEndTestNum, runOnlyMicrowave);
             } else {
-                return new Arguments(kripkeFilename, formulaInputSource, formulaInputStr, runEndToEndTests, endToEndTestNum);
+                return new Arguments(kripkeFilename, formulaInputSource, formulaInputStr, runEndToEndTests, endToEndTestNum, runOnlyMicrowave);
             }
         } else if (stateToCheckStr != null) {
-            return new Arguments(kripkeFilename,stateToCheckStr,formulaInputSource,formulaInputStr,runEndToEndTests, endToEndTestNum);
+            return new Arguments(kripkeFilename,stateToCheckStr,formulaInputSource,formulaInputStr,runEndToEndTests, endToEndTestNum, runOnlyMicrowave);
         }
         return null;
     }
@@ -258,6 +269,7 @@ public class Options {
         return runAllEndToEndTests;
     }
 
-
-
+    public Boolean getRunOnlyMicrowave() {
+        return runOnlyMicrowave;
+    }
 }
