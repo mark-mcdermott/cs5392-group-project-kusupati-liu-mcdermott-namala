@@ -68,8 +68,14 @@ public class Arguments {
      */
     Boolean runEndToEndTests;
 
-    public Arguments(Boolean runEndToEndTests) throws IOException {
+    /**
+     * {@Intger} specifying the end to end test number to run (optional)
+     */
+    Integer endToEndTestNum;
+
+    public Arguments(Boolean runEndToEndTests, Integer endToEndTestNum) throws IOException {
         this.runEndToEndTests = runEndToEndTests;
+        this.endToEndTestNum = endToEndTestNum;
     }
 
     /**
@@ -79,9 +85,10 @@ public class Arguments {
      * @param formulaInputSource Simple {@link FormulaInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the model is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the model itself is hardcoded in the command line argument after the -a flag.
      * @param modelInputStr {@link String} representing either the .txt filename where the model is supplied or is actual CTL model string itself. Whether this string is the filename or the model is determined by the above modelInputSource param - FILE means filename and ARGUMENT means the model itself.
      * @param runEndToEndTests {@Boolean} specifying that the end to end tests should be run
+     * @param endToEndTestNum {@Integer} specifying the end to end test number to run (optional)
      * @throws IOException
      */
-    public Arguments(String kripkeFilename, String stateToCheckStr, FormulaInputSource formulaInputSource, String modelInputStr, Boolean runEndToEndTests) throws IOException {
+    public Arguments(String kripkeFilename, String stateToCheckStr, FormulaInputSource formulaInputSource, String modelInputStr, Boolean runEndToEndTests, Integer endToEndTestNum) throws IOException {
         if (kripkeFilename == null || stateToCheckStr == null || formulaInputSource == null || formulaInputSource == null) {
             throw new NullPointerException("Arguments param is null");
         } else if (kripkeFilename == "" || stateToCheckStr == "" || modelInputStr == "") {
@@ -107,6 +114,7 @@ public class Arguments {
             this.formulaFilename = null;
         }
         this.runEndToEndTests = runEndToEndTests;
+        this.endToEndTestNum = endToEndTestNum;
     }
 
     /**
@@ -115,9 +123,10 @@ public class Arguments {
      * @param formulaInputSource Simple {@link FormulaInputSource} enum value that's either FILE or ARGUMENT. Refers to whether user specified the -f or -a flag. FILE means the model is supplied in a textfile specified after the -f flag in the command line arguments. ARGUMENT means the model itself is hardcoded in the command line argument after the -a flag.
      * @param modelInputStr {@link String} representing either the .txt filename where the model is supplied or is actual CTL model string itself. Whether this string is the filename or the model is determined by the above modelInputSource param - FILE means filename and ARGUMENT means the model itself.
      * @param runEndToEndTests {@Boolean} specifying that the end to end tests should be run
+     * @param endToEndTestNum {@Integer} specifying the end to end test number to run (optional)
      * @throws IOException
      */
-    public Arguments(String kripkeFilename, FormulaInputSource formulaInputSource, String modelInputStr, Boolean runEndToEndTests) throws IOException {
+    public Arguments(String kripkeFilename, FormulaInputSource formulaInputSource, String modelInputStr, Boolean runEndToEndTests, Integer endToEndTestNum) throws IOException {
         if (kripkeFilename == null || formulaInputSource == null || formulaInputSource == null) {
             throw new NullPointerException("Arguments param is null");
         } else if (kripkeFilename == "" || modelInputStr == "") {
@@ -139,6 +148,7 @@ public class Arguments {
             this.formulaFilename = null;
         }
         this.runEndToEndTests = runEndToEndTests;
+        this.endToEndTestNum = endToEndTestNum;
     }
 
     public String getFormula() {
@@ -163,5 +173,9 @@ public class Arguments {
 
     public Boolean getRunEndToEndTests() {
         return runEndToEndTests;
+    }
+
+    public Integer getEndToEndTestNum() {
+        return endToEndTestNum;
     }
 }

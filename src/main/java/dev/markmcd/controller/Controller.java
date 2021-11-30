@@ -73,6 +73,7 @@ public class Controller {
 
         // declare vars
         Boolean runEndToEndTests = options.getRunEndToEndTests();
+        Boolean runAllEndToEndTests = options.getRunAllEndToEndTests();
         Boolean runOnlyEndToEndTests = options.getRunOnlyEndToEndTests();
         Set statesThatHold = null;
         Set allStates = null;
@@ -83,8 +84,12 @@ public class Controller {
         // check for null options param and run end to end tests, if specified
         if (options == null) { throw new NullPointerException("runProgram options param is null"); }
         if (runEndToEndTests) {
-            AllEndToEndTestResults allEndToEndTestResults = runEndToEndTests(options);
-            model.setAllEndToEndTestResults(allEndToEndTestResults);
+            if (runAllEndToEndTests) {
+                AllEndToEndTestResults allEndToEndTestResults = runAllEndToEndTests(options);
+                model.setAllEndToEndTestResults(allEndToEndTestResults);
+            } else {
+                // ???
+            }
         }
 
         if (!options.getRunOnlyEndToEndTests()) {
@@ -483,7 +488,7 @@ public class Controller {
      * @return {@link AllEndToEndTestResults} object which has three {@link List}s - one of the results of the model validations, one of the results of the formula validations and one with the results of the model checks
      * @throws Exception
      */
-    private AllEndToEndTestResults runEndToEndTests(Options options) throws Exception {
+    private AllEndToEndTestResults runAllEndToEndTests(Options options) throws Exception {
         List validateModelResultsList = validateEndToEndTestModels(options);
         List validateFormulaResultList = validateEndToEndFormulas(options);
         List endToEndTestResultsList = modelCheckEndToEndTests(options);
@@ -502,30 +507,28 @@ public class Controller {
 
         for (Object testFilesObj : testFiles.getKripkesValid()) {
             String testFile = (String) testFilesObj;
-            // String kripkeFilepath = testFilesDir + "/" + testFile;
-            String kripkeFilepath = testFile;
-            Boolean modelValidationPass = null;
-            String originalErrorMessage = "";
-            // KripkeFileObj kripkeFileObj = getKripkeFileObj(testFilesDir + "/" + testFile);
-            KripkeFileObj kripkeFileObj = getKripkeFileObj(testFile);
-
-            if (kripkeFileObj.getErrorMessage() != null) {
-                modelValidationPass = false;
-                originalErrorMessage = kripkeFileObj.getErrorMessage();
-            } else {
-                modelValidationPass = true;
-            }
-            ValidateModelResults validateModelResults = new ValidateModelResults(modelValidationPass,originalErrorMessage,kripkeFilepath);
+            ValidateModelResults validateModelResults = validateEndToEndTestModel(testFile, options);
             validateModelResultsList.add(validateModelResults);
         }
 
         for (Object testFilesObj : testFiles.getKripkesInvalid()) {
             String testFile = (String) testFilesObj;
-            // String kripkeFilepath = testFilesDir + "/" + testFile;
-            String kripkeFilepath = testFile;
-            KripkeFileObj kripkeFileObj = getKripkeFileObj(kripkeFilepath);
+            ValidateModelResults validateModelResults = validateEndToEndTestModel(testFile, options);
+            validateModelResultsList.add(validateModelResults);
+        }
+        return validateModelResultsList;
+    }
+
+     /**
+     * Checks a CTL end to end model to see if they're well formed.
+     * @param {@link Option} object with options specified by user in the command line arguments as well as the hardcoded options at the top of Main.java
+     * @throws IOException
+     */
+    public ValidateModelResults validateEndToEndTestModel(String kripkeFilepath, Options options) throws Exception {
             Boolean modelValidationPass = null;
             String originalErrorMessage = "";
+            KripkeFileObj kripkeFileObj = getKripkeFileObj(kripkeFilepath);
+
             if (kripkeFileObj.getErrorMessage() != null) {
                 modelValidationPass = false;
                 originalErrorMessage = kripkeFileObj.getErrorMessage();
@@ -533,9 +536,7 @@ public class Controller {
                 modelValidationPass = true;
             }
             ValidateModelResults validateModelResults = new ValidateModelResults(modelValidationPass,originalErrorMessage,kripkeFilepath);
-            validateModelResultsList.add(validateModelResults);
-        }
-        return validateModelResultsList;
+            return validateModelResults;
     }
 
     /**

@@ -7,6 +7,7 @@ import java.util.List;
 
 import static dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource.ARGUMENT;
 import static dev.markmcd.controller.types.modelCheckRelated.FormulaInputSource.FILE;
+import static java.lang.Integer.parseInt;
 
 /**
  * Class with user set options. Some of these options get set at the top of Main. The args come into Main as command line arguments, which are parsed and processed here.
@@ -46,6 +47,11 @@ public class Options {
     Boolean runEndToEndTests;
 
     /**
+     * {@link Integer} specifying the end to end test number to run
+     */
+    Integer endToEndTestNum;
+
+    /**
      * {@link TestFiles} hard coded list of end to end tests
      */
     TestFiles endToEndTests;
@@ -54,6 +60,11 @@ public class Options {
      * {@link Boolean} specifying to only run the end to end tests and not model check any user inputted model/formula
      */
     Boolean runOnlyEndToEndTests;
+
+    /**
+     * {@link Boolean} specifying whether all the end to end tests will be run or not
+     */
+    Boolean runAllEndToEndTests;
 
     /**
      * {@Boolean} true for printing exceptions to console and not halting program, false for throwing exceptions which halt program
@@ -94,15 +105,23 @@ public class Options {
             this.formula = arguments.getFormula();
         }
         this.runEndToEndTests = arguments.runEndToEndTests;
+        this.endToEndTestNum = arguments.getEndToEndTestNum();
         if (this.runEndToEndTests) {
             if (this.kripkeFilepath == null) {
                 this.runOnlyEndToEndTests = true;
             } else {
                 this.runOnlyEndToEndTests = false;
             }
+            if (this.endToEndTestNum == null) {
+                this.runAllEndToEndTests = true;
+            } else {
+                this.runAllEndToEndTests = false;
+            }
         } else {
             this.runOnlyEndToEndTests = false;
+            this.runAllEndToEndTests = false;
         }
+
 
     }
 
@@ -141,6 +160,7 @@ public class Options {
         FormulaInputSource formulaInputSource = ARGUMENT;
         String formulaInputStr = "";
         Boolean runEndToEndTests = false;
+        Integer endToEndTestNum = null;
 
         while (i < args.length && args[i].startsWith("-")) {
             arg = args[i++];
@@ -174,19 +194,22 @@ public class Options {
             // end to end tests
             if (arg.equals("-e")) {
                 runEndToEndTests = true;
+                if (i < args.length) {
+                    endToEndTestNum = parseInt(args[i++]);
+                }
             }
 
         }
         if (i != args.length)
-            System.err.println("Usage: java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <formula> -e");
+            System.err.println("Usage: java -jar modelCheckingCTL -k <kripke file> [-s <state to check>] -af <formula> -e [<test num>]");
         else if (stateToCheckStr == null) {
             if (kripkeFilename.equals("")) {
-                return new Arguments(runEndToEndTests);
+                return new Arguments(runEndToEndTests, endToEndTestNum);
             } else {
-                return new Arguments(kripkeFilename, formulaInputSource, formulaInputStr, runEndToEndTests);
+                return new Arguments(kripkeFilename, formulaInputSource, formulaInputStr, runEndToEndTests, endToEndTestNum);
             }
         } else if (stateToCheckStr != null) {
-            return new Arguments(kripkeFilename,stateToCheckStr,formulaInputSource,formulaInputStr,runEndToEndTests);
+            return new Arguments(kripkeFilename,stateToCheckStr,formulaInputSource,formulaInputStr,runEndToEndTests, endToEndTestNum);
         }
         return null;
     }
@@ -225,6 +248,14 @@ public class Options {
 
     public TestFiles getEndToEndTests() {
         return endToEndTests;
+    }
+
+    public Integer getEndToEndTestNum() {
+        return endToEndTestNum;
+    }
+
+    public Boolean getRunAllEndToEndTests() {
+        return runAllEndToEndTests;
     }
 
 }
