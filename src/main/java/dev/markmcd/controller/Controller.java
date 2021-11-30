@@ -12,7 +12,6 @@ import dev.markmcd.controller.types.kripke.State;
 import dev.markmcd.controller.types.kripke.Transition;
 import dev.markmcd.view.View;
 import dev.markmcd.controller.ctl.Parser.Parser;
-import org.apache.commons.collections15.ListUtils;
 
 import java.io.*;
 import java.util.*;
@@ -672,8 +671,18 @@ public class Controller {
             Object formulaFilenameObj = formulaFiles.get(i);
             String formulaFilename = (String) formulaFilenameObj;
 
+            List newEndToEndTestResultList = new ArrayList();
             List thisEndToEndTestResultsList = modelCheckEndToEndTest(kripkeFilename, formulaFilename, options);
-            endToEndTestResultsList = ListUtils.union(endToEndTestResultsList, thisEndToEndTestResultsList);
+            for (Object thisEndToEndTestResultObj : thisEndToEndTestResultsList) {
+                EndToEndTestResult thisEndToEndTestResult = (EndToEndTestResult) thisEndToEndTestResultObj;
+                newEndToEndTestResultList.add(thisEndToEndTestResult);
+            }
+            for (Object endToEndTestResultsObj : endToEndTestResultsList) {
+                EndToEndTestResult endToEndTestResults = (EndToEndTestResult) endToEndTestResultsObj;
+                newEndToEndTestResultList.add(endToEndTestResults);
+            }
+
+            endToEndTestResultsList = newEndToEndTestResultList;
         }
         return endToEndTestResultsList;
     }
