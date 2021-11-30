@@ -588,46 +588,58 @@ public class Controller {
     private List validateEndToEndFormulas(Options options) throws IOException, ParseException {
         // TestFiles testFilesObj = getTestFiles(testFilesDir);
         TestFiles testFilesObj = options.getEndToEndTests();
+        List passedFormulas = new ArrayList();
         List validateFormulaResultList = new ArrayList();
         for (Object formulasFileObj : testFilesObj.getFormulas()) {
             String formulasFilename = (String) formulasFileObj;
-            ClassLoader classLoader = getClass().getClassLoader();
-            List passedFormulas = new ArrayList();
-            Boolean validateFormulaPass = null;
-            String ctlFormula = "";
-            String error = "";
 
-            // try (InputStream inputStream = classLoader.getResourceAsStream(options.getTestFilesDir() + "/" + formulasFilename)) {
-            try (InputStream inputStream = classLoader.getResourceAsStream(formulasFilename)) {
-                if (inputStream == null) {
-                    throw new IllegalArgumentException("file not found! " + formulasFilename);
-                } else {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-                        String rawLine = reader.readLine();
-                        while ((rawLine = reader.readLine()) != null) {
-                            rawLine = rawLine.replaceAll("s\\d+;", "");
-                            rawLine = rawLine.replaceAll(";True", "");
-                            ctlFormula = rawLine.replaceAll(";False", "");
-                            ctlFormula = ctlFormula.replaceAll("\\ufeff", "");
-                            if (!passedFormulas.contains(ctlFormula)) {
-                                InputStream stringStream = new ByteArrayInputStream(ctlFormula.getBytes("UTF-8"));
-                                Validator validator = new Validator(stringStream);
-                                validateFormulaPass = true;
-                                validator.Validate();
-                                passedFormulas.add(ctlFormula);
-                                ValidateFormulaResults validateFormulaResults = new ValidateFormulaResults(validateFormulaPass,ctlFormula,error,formulasFilename);
-                                validateFormulaResultList.add(validateFormulaResults);
-                            }
-                        }
-
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+            ValidateFormulaResults validateFormulaResults = validateEndToEndFormula(formulasFilename, passedFormulas, options);
+            if (validateFormulaResults.getPassValidation()) {
+                if (!passedFormulas.contains(validateFormulaResults.getFormula())) {
+                    passedFormulas.add(validateFormulaResults.getFormula());
                 }
             }
-
+            validateFormulaResultList.add(validateFormulaResults);
         }
         return validateFormulaResultList;
+    }
+
+
+    private ValidateFormulaResults validateEndToEndFormula(String formulasFilename, List passedFormulas, Options options) throws IOException, ParseException {
+
+        ValidateFormulaResults validateFormulaResults = null;
+        ClassLoader classLoader = getClass().getClassLoader();
+        Boolean validateFormulaPass = null;
+        String ctlFormula = "";
+        String error = "";
+
+        try (InputStream inputStream = classLoader.getResourceAsStream(formulasFilename)) {
+            if (inputStream == null) {
+                throw new IllegalArgumentException("file not found! " + formulasFilename);
+            } else {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                    String rawLine = reader.readLine();
+                    while ((rawLine = reader.readLine()) != null) {
+                        rawLine = rawLine.replaceAll("s\\d+;", "");
+                        rawLine = rawLine.replaceAll(";True", "");
+                        ctlFormula = rawLine.replaceAll(";False", "");
+                        ctlFormula = ctlFormula.replaceAll("\\ufeff", "");
+                        if (!passedFormulas.contains(ctlFormula)) {
+                            InputStream stringStream = new ByteArrayInputStream(ctlFormula.getBytes("UTF-8"));
+                            Validator validator = new Validator(stringStream);
+                            validateFormulaPass = true;
+                            validator.Validate();
+                            passedFormulas.add(ctlFormula);
+                            validateFormulaResults = new ValidateFormulaResults(validateFormulaPass,ctlFormula,error,formulasFilename);
+                        }
+                    }
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return validateFormulaResults;
     }
 
     /**
