@@ -12,7 +12,6 @@ import dev.markmcd.controller.types.kripke.State;
 import dev.markmcd.controller.types.kripke.Transition;
 import dev.markmcd.view.View;
 import dev.markmcd.controller.ctl.Parser.Parser;
-import hep.aida.ref.Test;
 import org.apache.commons.collections15.ListUtils;
 
 import java.io.*;
@@ -482,9 +481,9 @@ public class Controller {
      */
     private EndToEndTestResultWithValidation runEndToEndTest(String kripkeFilepath, String formulasFilename, Options options) throws Exception {
         ValidateModelResults validateModelResults = validateEndToEndTestModel(kripkeFilepath, options);
-        ValidateFormulaResults validateFormulaResults = validateEndToEndFormula(formulasFilename, new ArrayList());
+        List validateFormulaResultsList = validateEndToEndFormulaFile(formulasFilename, new ArrayList());
         List endToEndTestResults = modelCheckEndToEndTest(kripkeFilepath, formulasFilename, options);
-        EndToEndTestResultWithValidation endToEndTestResultWithValidation = new EndToEndTestResultWithValidation(validateModelResults, validateFormulaResults, endToEndTestResults);
+        EndToEndTestResultWithValidation endToEndTestResultWithValidation = new EndToEndTestResultWithValidation(validateModelResults, validateFormulaResultsList, endToEndTestResults);
         return endToEndTestResultWithValidation;
     }
 
@@ -584,13 +583,12 @@ public class Controller {
         for (Object formulasFileObj : testFilesObj.getFormulas()) {
             String formulasFilename = (String) formulasFileObj;
 
-            ValidateFormulaResults validateFormulaResults = validateEndToEndFormula(formulasFilename, passedFormulas);
-            if (validateFormulaResults.getPassValidation()) {
-                if (!passedFormulas.contains(validateFormulaResults.getFormula())) {
-                    passedFormulas.add(validateFormulaResults.getFormula());
-                }
+            // ValidateFormulaResults validateFormulaResults = validateEndToEndFormulaFile(formulasFilename, passedFormulas);
+            List validateFormulaResultsList = validateEndToEndFormulaFile(formulasFilename, passedFormulas);
+            for (Object validateFormulaResultsObj : validateFormulaResultList) {
+                ValidateFormulaResults validateFormulaResults = (ValidateFormulaResults) validateFormulaResultsObj;
+                passedFormulas.add(validateFormulaResults.getFormula());
             }
-            validateFormulaResultList.add(validateFormulaResults);
         }
         return validateFormulaResultList;
     }
@@ -603,8 +601,9 @@ public class Controller {
      * @throws IOException
      * @throws ParseException
      */
-    private ValidateFormulaResults validateEndToEndFormula(String formulasFilename, List passedFormulas) throws IOException, ParseException {
-        ValidateFormulaResults validateFormulaResults = null;
+    private List validateEndToEndFormulaFile(String formulasFilename, List passedFormulas) throws IOException, ParseException {
+        List validateFormulaResultsList = new ArrayList();
+        // ValidateFormulaResults validateFormulaResults = null;
         ClassLoader classLoader = getClass().getClassLoader();
         Boolean validateFormulaPass = null;
         String ctlFormula = "";
@@ -627,7 +626,13 @@ public class Controller {
                             validateFormulaPass = true;
                             validator.Validate();
                             passedFormulas.add(ctlFormula);
-                            validateFormulaResults = new ValidateFormulaResults(validateFormulaPass,ctlFormula,error,formulasFilename);
+                            ValidateFormulaResults validateFormulaResults = new ValidateFormulaResults(validateFormulaPass,ctlFormula,error,formulasFilename);
+                            if (validateFormulaResults.getPassValidation()) {
+                                if (!passedFormulas.contains(validateFormulaResults.getFormula())) {
+                                    passedFormulas.add(validateFormulaResults.getFormula());
+                                }
+                            }
+                            validateFormulaResultsList.add(validateFormulaResults);
                         }
                     }
 
@@ -636,7 +641,7 @@ public class Controller {
                 }
             }
         }
-        return validateFormulaResults;
+        return validateFormulaResultsList;
     }
 
     /**

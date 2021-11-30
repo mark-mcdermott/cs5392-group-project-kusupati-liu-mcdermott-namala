@@ -128,14 +128,14 @@ public class View {
      */
     public void printEndToEndTestResult(EndToEndTestResultWithValidation endToEndResultsObj) throws Exception {
         ValidateModelResults validateModelResults = endToEndResultsObj.getValidateModelResults();
-        ValidateFormulaResults validateFormulaResults = endToEndResultsObj.getValidateFormulaResults();
+        List validateFormulaResultsList = endToEndResultsObj.getValidateFormulaResultsList();
         List endToEndTestResultsList = endToEndResultsObj.getEndToEndTestResult();
 
-        Boolean passValidation = validateModelResults.getPassValidation();
+        Boolean passModelValidation = validateModelResults.getPassValidation();
         String originalErrorMessage = validateModelResults.getOriginalErrorMessage();
         String testFile = validateModelResults.getKripkeFilepath();
 
-        if (!passValidation) {
+        if (!passModelValidation) {
             originalErrorMessage = originalErrorMessage;
             String newErrorMessage = "❌ failed parsing - " + originalErrorMessage;
             handleError(newErrorMessage,options.getPrintExceptions());
@@ -143,9 +143,12 @@ public class View {
             System.out.println("✅ passed parsing - " + testFile);
         }
 
-        String formulaForValidation = validateFormulaResults.getFormula();
-        String formulaFilename = validateFormulaResults.getFormulaFilename();
-        System.out.println("✅ passed parsing - Formula \"" + formulaForValidation + "\" is well formed (\"" + formulaFilename + "\")");
+        for (Object validateFormulaResultsObj : validateFormulaResultsList) {
+            ValidateFormulaResults validateFormulaResults = (ValidateFormulaResults) validateFormulaResultsObj;
+            String formulaForValidation = validateFormulaResults.getFormula();
+            String formulaFilename = validateFormulaResults.getFormulaFilename();
+            System.out.println("✅ passed parsing - Formula \"" + formulaForValidation + "\" is well formed (\"" + formulaFilename + "\")");
+        }
 
         for (Object endToEndTestResultObj : endToEndTestResultsList) {
             EndToEndTestResult endToEndTestResult = (EndToEndTestResult) endToEndTestResultObj;
